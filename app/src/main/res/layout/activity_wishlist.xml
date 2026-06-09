@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="←"
+            android:textSize="24sp"
+            android:background="?attr/selectableItemBackground" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Danh Sách Yêu Thích"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:gravity="center" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+    </LinearLayout>
+
+    <!-- RecyclerView cho sản phẩm yêu thích -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_wishlist"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="12dp" />
+
+    <!-- Empty State (hiển thị khi không có sản phẩm) -->
+    <LinearLayout
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Danh sách yêu thích trống"
+            android:textSize="16sp"
+            android:textColor="#999999" />
+
+        <Button
+            android:id="@+id/btn_continue_shopping"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Tiếp tục mua sắm"
+            android:textSize="12sp"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

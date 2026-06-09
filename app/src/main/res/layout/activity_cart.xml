@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="←"
+            android:textSize="24sp"
+            android:background="?attr/selectableItemBackground" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Giỏ Hàng"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:gravity="center" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+    </LinearLayout>
+
+    <!-- RecyclerView cho sản phẩm trong giỏ -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_cart_items"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="12dp" />
+
+    <!-- Separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EEEEEE" />
+
+    <!-- Tóm tắt giá -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Mã Promo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="12dp">
+
+            <EditText
+                android:id="@+id/et_promo_code"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="Nhập Mã Promo"
+                android:textSize="14sp"
+                android:background="@null"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/btn_apply_promo"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Áp dụng"
+                android:textSize="12sp"
+                android:paddingHorizontal="12dp" />
+
+        </LinearLayout>
+
+        <!-- Tổng phụ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tổng Phụ"
+                android:textSize="14sp"
+                android:textColor="#999999" />
+
+            <TextView
+                android:id="@+id/txt_subtotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp. 132.000"
+                android:textSize="14sp"
+                android:textColor="#999999" />
+
+        </LinearLayout>
+
+        <!-- Biaya Vận Chuyển -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Biaya Vận Chuyển"
+                android:textSize="14sp"
+                android:textColor="#999999" />
+
+            <TextView
+                android:id="@+id/txt_shipping_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp. 12.000"
+                android:textSize="14sp"
+                android:textColor="#999999" />
+
+        </LinearLayout>
+
+        <!-- Separator -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"
+            android:layout_marginVertical="8dp" />
+
+        <!-- Tổng Cộng -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tổng Cộng"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/txt_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp. 144.000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#FF6B6B" />
+
+        </LinearLayout>
+
+        <!-- Nút Checkout -->
+        <Button
+            android:id="@+id/btn_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Thanh Toán"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#1A1A1A" />
+
+    </LinearLayout>
+
+</LinearLayout>

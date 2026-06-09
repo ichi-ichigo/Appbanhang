@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Header với nút quay lại -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="←"
+            android:textSize="24sp"
+            android:background="?attr/selectableItemBackground" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/btn_favorite"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="❤️"
+            android:textSize="24sp"
+            android:background="?attr/selectableItemBackground" />
+
+    </LinearLayout>
+
+    <!-- ScrollView cho nội dung -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Ảnh sản phẩm chính -->
+            <ImageView
+                android:id="@+id/img_product_main"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:contentDescription="@string/product_image"
+                android:src="@drawable/ic_launcher_foreground"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Thumbnail ảnh -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:contentDescription="@string/product_thumbnail"
+                        android:src="@drawable/ic_launcher_foreground"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="8dp" />
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:contentDescription="@string/product_thumbnail"
+                        android:src="@drawable/ic_launcher_foreground"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="8dp" />
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:contentDescription="@string/product_thumbnail"
+                        android:src="@drawable/ic_launcher_foreground"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="8dp" />
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:contentDescription="@string/product_thumbnail"
+                        android:src="@drawable/ic_launcher_foreground"
+                        android:scaleType="centerCrop" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            <!-- Tên sản phẩm -->
+            <TextView
+                android:id="@+id/txt_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nike Air VaporMax Evo"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Loại sản phẩm -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sepatu Laki laki"
+                android:textSize="12sp"
+                android:textColor="#999999"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Giá tiền -->
+            <TextView
+                android:id="@+id/txt_product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp. 120.000"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FF6B6B"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Lựa chọn kích cỡ -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ukuran Tersedia"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="39"
+                    android:textSize="12sp"
+                    android:background="@drawable/button_size_style"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="40"
+                    android:textSize="12sp"
+                    android:background="@drawable/button_size_style"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="41"
+                    android:textSize="12sp"
+                    android:background="@drawable/button_size_style"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="42"
+                    android:textSize="12sp"
+                    android:background="@drawable/button_size_style"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="43"
+                    android:textSize="12sp"
+                    android:background="@drawable/button_size_style" />
+
+            </LinearLayout>
+
+            <!-- Mô tả sản phẩm -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mô Tả"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/txt_product_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tạo bởi sáng tạo của Nike. Nike Air VaporMax 2021 lại mang lại những điều bất ngờ nhất cùng với các chất liệu công nghệ cao và phối màu tươi mới."
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Nút Mua Ngay -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btn_buy_now"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Beli Sekarang"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#1A1A1A" />
+
+    </LinearLayout>
+
+</LinearLayout>

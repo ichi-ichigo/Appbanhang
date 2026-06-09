@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:layout_margin="6dp">
+
+    <!-- Ảnh sản phẩm -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:id="@+id/img_product"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/product_image"
+            android:src="@drawable/ic_launcher_foreground"
+            android:scaleType="centerCrop"
+            android:background="#F0F0F0" />
+
+        <!-- Badge promotion (NEW, HOT DEAL, TRENDING) -->
+        <TextView
+            android:id="@+id/badge_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_margin="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:text="NEW"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:background="#FF6B6B"
+            android:visibility="gone" />
+
+        <!-- Badge yêu thích -->
+        <Button
+            android:id="@+id/btn_favorite"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:text="🤍"
+            android:textSize="20sp"
+            android:background="@drawable/button_favorite_style" />
+
+    </FrameLayout>
+
+    <!-- Tên sản phẩm -->
+    <TextView
+        android:id="@+id/txt_product_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nike Air Max"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingHorizontal="8dp"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Loại sản phẩm -->
+    <TextView
+        android:id="@+id/txt_product_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sepatu Pria"
+        android:textSize="11sp"
+        android:textColor="#999999"
+        android:paddingHorizontal="8dp"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Giá tiền -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="8dp"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/txt_product_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rp. 120.000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#FF6B6B" />
+
+        <!-- Rating -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⭐"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txt_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5.0"
+                android:textSize="11sp"
+                android:textColor="#000000"
+                android:layout_marginStart="2dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

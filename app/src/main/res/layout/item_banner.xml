@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+    <!-- Banner Image -->
+    <ImageView
+        android:id="@+id/banner_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="Banner Image" />
+
+    <!-- Gradient overlay -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_overlay" />
+
+    <!-- Text Content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/banner_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Summer Collection"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/banner_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hot Deal"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
+</FrameLayout>

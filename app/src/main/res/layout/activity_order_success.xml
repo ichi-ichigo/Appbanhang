@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#FFFFFF">
+
+    <!-- Header với Progress Indicator -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Progress Step -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="✓"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textColor="#00BCD4" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#00BCD4" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="✓"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textColor="#00BCD4" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="#00BCD4" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="✓"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textColor="#00BCD4" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Icon Giỏ Hàng với Dấu Tích -->
+    <FrameLayout
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginVertical="32dp">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/shopping_cart"
+            android:src="@drawable/ic_launcher_foreground"
+            android:scaleType="centerInside"
+            app:tint="#00BCD4" />
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom|end"
+            android:text="✓"
+            android:textSize="32sp"
+            android:textColor="#FFFFFF"
+            android:background="#00BCD4"
+            android:gravity="center" />
+
+    </FrameLayout>
+
+    <!-- Tiêu đề -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đơn Hàng Thành Công"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Thông báo -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cảm ơn bạn đã đặt hàng.\nĐơn hàng sẽ được xử lý trong 3-5 ngày làm việc"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:gravity="center"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginBottom="40dp" />
+
+    <!-- Nút Quay Lại -->
+    <Button
+        android:id="@+id/btn_continue_shopping"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:text="Tiếp Tục Mua Sắm"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="#1A1A1A" />
+
+</LinearLayout>

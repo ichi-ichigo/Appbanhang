@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Smarteshop</string>
+    
+    <!-- Common -->
+    <string name="user_avatar">Avatar Người Dùng</string>
+    <string name="shoe_image">Ảnh Giày</string>
+    <string name="product_image">Ảnh Sản Phẩm</string>
+    <string name="product_thumbnail">Ảnh Thu Nhỏ Sản Phẩm</string>
+    <string name="shopping_cart">Giỏ Hàng</string>
+    
+    <!-- Login Screen -->
+    <string name="login_title">Đăng Nhập</string>
+    <string name="login_email">Email</string>
+    <string name="login_email_hint">Nhập email của bạn</string>
+    <string name="login_password">Mật khẩu</string>
+    <string name="login_password_hint">Nhập mật khẩu</string>
+    <string name="login_remember_me">Ghi nhớ tôi</string>
+    <string name="login_forgot_password">Quên mật khẩu?</string>
+    <string name="login_button">Đăng Nhập</string>
+    <string name="login_or">HOẶC</string>
+    <string name="login_google">Đăng Nhập với Google</string>
+    <string name="login_facebook">Đăng Nhập với Facebook</string>
+    <string name="login_no_account">Chưa có tài khoản?</string>
+    <string name="login_sign_up">Đăng Kí</string>
+    
+    <!-- Register Screen -->
+    <string name="register_title">Đăng Kí Tài Khoản</string>
+    <string name="register_full_name">Họ và Tên</string>
+    <string name="register_full_name_hint">Nhập họ và tên</string>
+    <string name="register_email">Email</string>
+    <string name="register_email_hint">Nhập email</string>
+    <string name="register_phone">Số Điện Thoại</string>
+    <string name="register_phone_hint">Nhập số điện thoại</string>
+    <string name="register_password">Mật khẩu</string>
+    <string name="register_password_hint">Nhập mật khẩu</string>
+    <string name="register_confirm_password">Xác Nhận Mật Khẩu</string>
+    <string name="register_confirm_password_hint">Xác nhận mật khẩu</string>
+    <string name="register_terms">Tôi đồng ý với</string>
+    <string name="register_terms_link">Điều khoản &amp; Dịch vụ</string>
+    <string name="register_button">Đăng Kí</string>
+    <string name="register_have_account">Đã có tài khoản?</string>
+    <string name="register_login">Đăng Nhập</string>
+    <string name="register_back">← Quay Lại</string>
+    
+</resources>

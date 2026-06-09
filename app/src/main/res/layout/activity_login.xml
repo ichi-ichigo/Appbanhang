@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:padding="20dp">
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Logo/Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="40dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Smarteshop"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:textColor="#00BCD4"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đăng Nhập"
+                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Email Input -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/etLoginEmail"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/edittext_style"
+                android:inputType="textEmailAddress"
+                android:hint="Nhập email của bạn"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="#000000"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Password Input -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mật khẩu"
+                android:textSize="14sp"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:layout_marginBottom="6dp" />
+
+            <EditText
+                android:id="@+id/etLoginPassword"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/edittext_style"
+                android:inputType="textPassword"
+                android:hint="Nhập mật khẩu"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="#000000"
+                android:textColorHint="#999999"
+                android:textSize="14sp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Forgot Password Link -->
+            <TextView
+                android:id="@+id/tvForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quên mật khẩu?"
+                android:textSize="12sp"
+                android:textColor="#00BCD4"
+                android:layout_marginBottom="24dp"
+                android:layout_gravity="end" />
+
+            <!-- Remember Me -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <CheckBox
+                    android:id="@+id/cbRememberMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ghi nhớ tôi"
+                    android:textSize="12sp"
+                    android:textColor="#000000" />
+
+            </LinearLayout>
+
+            <!-- Login Button -->
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/button_brand_style"
+                android:text="Đăng Nhập"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Divider -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginVertical="16dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#E0E0E0" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HOẶC"
+                    android:textSize="12sp"
+                    android:textColor="#999999"
+                    android:layout_marginHorizontal="12dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#E0E0E0" />
+
+            </LinearLayout>
+
+            <!-- Social Login Buttons -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLoginGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="#FFFFFF"
+                android:text="Đăng Nhập với Google"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:layout_marginBottom="12dp"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLoginFacebook"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="#4267B2"
+                android:text="Đăng Nhập với Facebook"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Sign Up Link -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chưa có tài khoản? "
+                    android:textSize="14sp"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/tvSignUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Đăng Kí"
+                    android:textSize="14sp"
+                    android:textColor="#00BCD4"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

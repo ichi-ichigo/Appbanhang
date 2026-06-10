@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appbanhang.R;
+import com.example.appbanhang.managers.ImageManager;
 import com.example.appbanhang.models.CartItem;
 
 import java.util.List;
@@ -54,8 +55,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             cartItem.getProduct().getPrice()));
         holder.txtQuantity.setText(String.valueOf(cartItem.getQuantity()));
         
-        // Set product image (mô phỏng)
-        holder.imgProduct.setImageResource(R.drawable.ic_launcher_foreground);
+        ImageManager.getInstance().loadThumbnail(cartItem.getProduct().getImageUrl(), holder.imgProduct);
         
         // Quantity buttons
         holder.btnMinus.setOnClickListener(v -> {
@@ -80,10 +80,14 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         
         // Delete button
         holder.btnDelete.setOnClickListener(v -> {
+            int adapterPosition = holder.getAdapterPosition();
+            if (adapterPosition == RecyclerView.NO_POSITION) {
+                return;
+            }
             if (onCartItemListener != null) {
                 onCartItemListener.onItemRemoved(cartItem);
             }
-            notifyItemRemoved(position);
+            notifyItemRemoved(adapterPosition);
         });
     }
 

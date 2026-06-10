@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="@drawable/bg_card"
     android:layout_margin="6dp">
 
     <!-- Ảnh sản phẩm -->
@@ -19,7 +19,7 @@
             android:contentDescription="@string/product_image"
             android:src="@drawable/ic_launcher_foreground"
             android:scaleType="centerCrop"
-            android:background="#F0F0F0" />
+            android:background="@drawable/bg_card_soft" />
 
         <!-- Badge promotion (NEW, HOT DEAL, TRENDING) -->
         <TextView
@@ -60,7 +60,7 @@
         android:text="Nike Air Max"
         android:textSize="13sp"
         android:textStyle="bold"
-        android:textColor="#000000"
+            android:textColor="@color/text_primary"
         android:ellipsize="end"
         android:maxLines="1"
         android:paddingHorizontal="8dp"
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:text="Sepatu Pria"
         android:textSize="11sp"
-        android:textColor="#999999"
+        android:textColor="@color/text_secondary"
         android:paddingHorizontal="8dp"
         android:layout_marginBottom="6dp" />
 
@@ -94,7 +94,7 @@
             android:text="Rp. 120.000"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#FF6B6B" />
+            android:textColor="@color/price" />
 
         <!-- Rating -->
         <LinearLayout
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:text="5.0"
                 android:textSize="11sp"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:layout_marginStart="2dp" />
 
         </LinearLayout>

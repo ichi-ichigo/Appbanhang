@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/app_bg">
 
     <!-- Header -->
     <LinearLayout
@@ -19,7 +19,8 @@
             android:layout_height="40dp"
             android:text="←"
             android:textSize="24sp"
-            android:background="?attr/selectableItemBackground" />
+            android:textColor="@color/text_primary"
+            android:background="@drawable/button_icon_style" />
 
         <TextView
             android:layout_width="0dp"
@@ -28,7 +29,7 @@
             android:text="Giỏ Hàng"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="@color/text_primary"
             android:gravity="center" />
 
         <View
@@ -49,7 +50,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#EEEEEE" />
+        android:background="@color/line" />
 
     <!-- Tóm tắt giá -->
     <LinearLayout
@@ -63,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:orientation="horizontal"
-            android:background="#FFFFFF"
+            android:background="@drawable/edittext_style"
             android:gravity="center_vertical"
             android:paddingHorizontal="12dp"
             android:layout_marginBottom="12dp">
@@ -84,6 +85,9 @@
                 android:layout_height="36dp"
                 android:text="Áp dụng"
                 android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:background="@drawable/button_brand_style"
                 android:paddingHorizontal="12dp" />
 
         </LinearLayout>
@@ -101,7 +105,7 @@
                 android:layout_weight="1"
                 android:text="Tổng Phụ"
                 android:textSize="14sp"
-                android:textColor="#999999" />
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/txt_subtotal"
@@ -109,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:text="Rp. 132.000"
                 android:textSize="14sp"
-                android:textColor="#999999" />
+                android:textColor="@color/text_secondary" />
 
         </LinearLayout>
 
@@ -126,7 +130,7 @@
                 android:layout_weight="1"
                 android:text="Biaya Vận Chuyển"
                 android:textSize="14sp"
-                android:textColor="#999999" />
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/txt_shipping_fee"
@@ -134,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:text="Rp. 12.000"
                 android:textSize="14sp"
-                android:textColor="#999999" />
+                android:textColor="@color/text_secondary" />
 
         </LinearLayout>
 
@@ -142,7 +146,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#EEEEEE"
+            android:background="@color/line"
             android:layout_marginVertical="8dp" />
 
         <!-- Tổng Cộng -->
@@ -159,7 +163,7 @@
                 android:text="Tổng Cộng"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textColor="@color/text_primary" />
 
             <TextView
                 android:id="@+id/txt_total"
@@ -168,7 +172,7 @@
                 android:text="Rp. 144.000"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#FF6B6B" />
+                android:textColor="@color/price" />
 
         </LinearLayout>
 
@@ -181,7 +185,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:background="#1A1A1A" />
+            android:textAllCaps="false"
+            android:background="@drawable/button_buy_style" />
 
     </LinearLayout>
 

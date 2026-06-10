@@ -1,6 +1,7 @@
 package com.example.appbanhang;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,6 +16,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.appbanhang.database.DatabaseHelper;
 import com.example.appbanhang.managers.AuthManager;
+import com.example.appbanhang.managers.CartManager;
+import com.example.appbanhang.managers.WishlistManager;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         initializeViews();
         initializeManager();
         setupListeners();
+        setupCompletedListeners();
     }
 
     private void initializeDatabase() {
@@ -62,25 +66,37 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initializeManager() {
         authManager = AuthManager.getInstance();
+        CartManager.initialize(dbHelper, authManager);
+        WishlistManager.initialize(dbHelper, authManager);
     }
 
     private void setupListeners() {
         btnLogin.setOnClickListener(v -> handleLogin());
         
         btnLoginGoogle.setOnClickListener(v -> {
-            Toast.makeText(this, "Google Login - Chưa cài đặt", Toast.LENGTH_SHORT).show();
+            handleProviderLogin("Google");
         });
         
         btnLoginFacebook.setOnClickListener(v -> {
-            Toast.makeText(this, "Facebook Login - Chưa cài đặt", Toast.LENGTH_SHORT).show();
+            handleProviderLogin("Facebook");
         });
         
         tvForgotPassword.setOnClickListener(v -> {
-            Toast.makeText(this, "Quên mật khẩu - Chức năng đang phát triển", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
         });
         
         tvSignUp.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void setupCompletedListeners() {
+        btnLoginGoogle.setOnClickListener(v -> handleProviderLogin("Google"));
+        btnLoginFacebook.setOnClickListener(v -> handleProviderLogin("Facebook"));
+        tvForgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
             startActivity(intent);
         });
     }
@@ -107,6 +123,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Attempt login
         if (authManager.login(email, password)) {
+            saveRememberedLogin(email);
+            CartManager.getInstance().syncFromDatabase();
             Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
             
             // Navigate to MainActivity
@@ -118,7 +136,30 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void handleProviderLogin(String provider) {
+        if (authManager.loginWithProvider(provider)) {
+            saveRememberedLogin(authManager.getCurrentUser().getEmail());
+            CartManager.getInstance().syncFromDatabase();
+            Toast.makeText(this, "Dang nhap bang " + provider + " thanh cong", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(this, "Khong the dang nhap bang " + provider, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private boolean isValidEmail(String email) {
         return email.contains("@") && email.contains(".");
+    }
+
+    private void saveRememberedLogin(String email) {
+        SharedPreferences.Editor editor = getSharedPreferences(SplashActivity.PREFS_NAME, MODE_PRIVATE).edit();
+        if (cbRememberMe.isChecked()) {
+            editor.putString(SplashActivity.KEY_REMEMBERED_EMAIL, email.trim().toLowerCase());
+        } else {
+            editor.remove(SplashActivity.KEY_REMEMBERED_EMAIL);
+        }
+        editor.apply();
     }
 }

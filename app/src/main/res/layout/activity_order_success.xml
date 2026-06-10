@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="#FFFFFF">
+    android:background="@color/surface">
 
     <!-- Header với Progress Indicator -->
     <LinearLayout
@@ -28,13 +28,13 @@
                 android:text="✓"
                 android:textSize="20sp"
                 android:gravity="center"
-                android:textColor="#00BCD4" />
+                android:textColor="@color/primary" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#00BCD4" />
+                android:background="@color/primary" />
 
             <TextView
                 android:layout_width="0dp"
@@ -43,13 +43,13 @@
                 android:text="✓"
                 android:textSize="20sp"
                 android:gravity="center"
-                android:textColor="#00BCD4" />
+                android:textColor="@color/primary" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#00BCD4" />
+                android:background="@color/primary" />
 
             <TextView
                 android:layout_width="0dp"
@@ -58,7 +58,7 @@
                 android:text="✓"
                 android:textSize="20sp"
                 android:gravity="center"
-                android:textColor="#00BCD4" />
+                android:textColor="@color/primary" />
 
         </LinearLayout>
 
@@ -77,7 +77,7 @@
             android:contentDescription="@string/shopping_cart"
             android:src="@drawable/ic_launcher_foreground"
             android:scaleType="centerInside"
-            app:tint="#00BCD4" />
+            app:tint="@color/primary" />
 
         <TextView
             android:layout_width="40dp"
@@ -86,7 +86,7 @@
             android:text="✓"
             android:textSize="32sp"
             android:textColor="#FFFFFF"
-            android:background="#00BCD4"
+            android:background="@color/primary"
             android:gravity="center" />
 
     </FrameLayout>
@@ -98,7 +98,7 @@
         android:text="Đơn Hàng Thành Công"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="#000000"
+        android:textColor="@color/text_primary"
         android:layout_marginBottom="16dp" />
 
     <!-- Thông báo -->
@@ -107,7 +107,7 @@
         android:layout_height="wrap_content"
         android:text="Cảm ơn bạn đã đặt hàng.\nĐơn hàng sẽ được xử lý trong 3-5 ngày làm việc"
         android:textSize="14sp"
-        android:textColor="#666666"
+        android:textColor="@color/text_secondary"
         android:gravity="center"
         android:layout_marginHorizontal="32dp"
         android:layout_marginBottom="40dp" />
@@ -121,6 +121,7 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
-        android:background="#1A1A1A" />
+        android:textAllCaps="false"
+        android:background="@drawable/button_buy_style" />
 
 </LinearLayout>

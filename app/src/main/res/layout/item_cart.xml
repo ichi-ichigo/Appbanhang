@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="#FFFFFF"
+    android:background="@drawable/bg_card"
     android:padding="12dp"
     android:layout_marginBottom="8dp">
 
@@ -15,7 +15,7 @@
         android:contentDescription="@string/product_image"
         android:src="@drawable/ic_launcher_foreground"
         android:scaleType="centerCrop"
-        android:background="#F0F0F0"
+        android:background="@drawable/bg_card_soft"
         android:layout_marginEnd="12dp" />
 
     <!-- Thông tin sản phẩm -->
@@ -35,7 +35,7 @@
             android:text="Nike Air Max"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="4dp" />
 
         <!-- Loại sản phẩm -->
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:text="Size: 42"
             android:textSize="11sp"
-            android:textColor="#999999"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="6dp" />
 
         <!-- Giá tiền -->
@@ -56,7 +56,7 @@
             android:text="Rp. 120.000"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:textColor="#FF6B6B" />
+            android:textColor="@color/price" />
 
     </LinearLayout>
 
@@ -72,7 +72,7 @@
             android:layout_width="60dp"
             android:layout_height="28dp"
             android:orientation="horizontal"
-            android:background="#F5F5F5"
+            android:background="@drawable/bg_card_soft"
             android:layout_marginBottom="8dp">
 
             <Button
@@ -82,7 +82,8 @@
                 android:layout_weight="1"
                 android:text="-"
                 android:textSize="14sp"
-                android:background="?attr/selectableItemBackground" />
+                android:textColor="@color/text_primary"
+                android:background="@drawable/button_outline_style" />
 
             <TextView
                 android:id="@+id/txt_quantity"
@@ -92,7 +93,7 @@
                 android:text="1"
                 android:textSize="12sp"
                 android:gravity="center"
-                android:textColor="#000000" />
+                android:textColor="@color/text_primary" />
 
             <Button
                 android:id="@+id/btn_plus"
@@ -101,7 +102,8 @@
                 android:layout_weight="1"
                 android:text="+"
                 android:textSize="14sp"
-                android:background="?attr/selectableItemBackground" />
+                android:textColor="@color/text_primary"
+                android:background="@drawable/button_outline_style" />
 
         </LinearLayout>
 
@@ -112,6 +114,8 @@
             android:layout_height="24dp"
             android:text="Xóa"
             android:textSize="10sp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
             android:background="@drawable/button_delete_style" />
 
     </LinearLayout>

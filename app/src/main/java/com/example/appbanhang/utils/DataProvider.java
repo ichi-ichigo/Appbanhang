@@ -133,4 +133,13 @@ public class DataProvider {
         
         return featured;
     }
+
+    public static Product getProductById(int productId) {
+        for (Product product : getProducts()) {
+            if (product.getId() == productId) {
+                return product;
+            }
+        }
+        return null;
+    }
 }

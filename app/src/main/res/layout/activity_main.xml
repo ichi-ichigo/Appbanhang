@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5"
+    android:background="@color/app_bg"
     tools:context=".MainActivity">
 
     <!-- Header -->
@@ -29,14 +29,14 @@
                 android:text="Xin chào, Sultan !"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textColor="@color/text_primary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chào mừng trở lại"
                 android:textSize="12sp"
-                android:textColor="#999999"
+                android:textColor="@color/text_secondary"
                 android:layout_marginTop="4dp" />
 
         </LinearLayout>
@@ -67,7 +67,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="#F5F5F5"
+                android:background="@color/app_bg"
                 android:layout_marginBottom="16dp">
 
                 <!-- ViewPager2 cho carousel -->
@@ -96,7 +96,7 @@
                 android:text="Thương Hiệu"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:layout_marginBottom="12dp" />
 
             <HorizontalScrollView
@@ -115,7 +115,9 @@
                         android:layout_height="40dp"
                         android:text="Nike"
                         android:textSize="12sp"
-                        android:background="#FFFFFF"
+                        android:textColor="@color/text_primary"
+                        android:textAllCaps="false"
+                        android:background="@drawable/bg_chip"
                         android:layout_marginEnd="8dp" />
 
                     <Button
@@ -123,7 +125,9 @@
                         android:layout_height="40dp"
                         android:text="Puma"
                         android:textSize="12sp"
-                        android:background="#FFFFFF"
+                        android:textColor="@color/text_primary"
+                        android:textAllCaps="false"
+                        android:background="@drawable/bg_chip"
                         android:layout_marginEnd="8dp" />
 
                     <Button
@@ -131,7 +135,9 @@
                         android:layout_height="40dp"
                         android:text="Adidas"
                         android:textSize="12sp"
-                        android:background="#FFFFFF"
+                        android:textColor="@color/text_primary"
+                        android:textAllCaps="false"
+                        android:background="@drawable/bg_chip"
                         android:layout_marginEnd="8dp" />
 
                     <Button
@@ -139,7 +145,9 @@
                         android:layout_height="40dp"
                         android:text="Nike"
                         android:textSize="12sp"
-                        android:background="#FFFFFF"
+                        android:textColor="@color/text_primary"
+                        android:textAllCaps="false"
+                        android:background="@drawable/bg_chip"
                         android:layout_marginEnd="8dp" />
 
                 </LinearLayout>
@@ -164,7 +172,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:weightSum="5"
-        android:background="#FFFFFF"
+        android:background="@drawable/bg_card"
         android:elevation="8dp">
 
         <Button
@@ -174,7 +182,7 @@
             android:layout_weight="1"
             android:text="🏠"
             android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
+            android:background="@drawable/button_icon_style" />
 
         <Button
             android:id="@+id/btn_search"
@@ -183,7 +191,7 @@
             android:layout_weight="1"
             android:text="🔍"
             android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
+            android:background="@drawable/button_icon_style" />
 
         <Button
             android:id="@+id/btn_cart"
@@ -192,7 +200,7 @@
             android:layout_weight="1"
             android:text="🛒"
             android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
+            android:background="@drawable/button_icon_style" />
 
         <Button
             android:id="@+id/btn_wishlist"
@@ -201,7 +209,7 @@
             android:layout_weight="1"
             android:text="❤️"
             android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
+            android:background="@drawable/button_icon_style" />
 
         <Button
             android:id="@+id/btn_account"
@@ -210,7 +218,7 @@
             android:layout_weight="1"
             android:text="👤"
             android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
+            android:background="@drawable/button_icon_style" />
 
     </LinearLayout>
 

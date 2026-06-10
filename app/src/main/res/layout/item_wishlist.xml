@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="#FFFFFF"
+    android:background="@drawable/bg_card"
     android:padding="12dp"
     android:layout_marginBottom="8dp">
 
@@ -15,7 +15,7 @@
         android:contentDescription="@string/product_image"
         android:src="@drawable/ic_launcher_foreground"
         android:scaleType="centerCrop"
-        android:background="#F0F0F0"
+        android:background="@drawable/bg_card_soft"
         android:layout_marginEnd="12dp" />
 
     <!-- Thông tin sản phẩm -->
@@ -34,7 +34,7 @@
             android:text="Nike Air Max"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="4dp" />
 
         <!-- Loại sản phẩm -->
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="Sepatu Pria"
             android:textSize="11sp"
-            android:textColor="#999999"
+            android:textColor="@color/text_secondary"
             android:layout_marginBottom="6dp" />
 
         <!-- Giá tiền -->
@@ -55,7 +55,7 @@
             android:text="Rp. 120.000"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:textColor="#FF6B6B" />
+            android:textColor="@color/price" />
 
     </LinearLayout>
 
@@ -66,6 +66,8 @@
         android:layout_height="40dp"
         android:text="Beli Sekarang"
         android:textSize="11sp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
         android:gravity="center"
         android:layout_gravity="center_vertical"
         android:background="@drawable/button_buy_style" />

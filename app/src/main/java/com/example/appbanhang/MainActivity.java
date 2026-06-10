@@ -21,6 +21,7 @@ import com.example.appbanhang.adapters.BannerAdapter;
 import com.example.appbanhang.adapters.ProductAdapter;
 import com.example.appbanhang.managers.AuthManager;
 import com.example.appbanhang.managers.CartManager;
+import com.example.appbanhang.managers.WishlistManager;
 import com.example.appbanhang.models.Banner;
 import com.example.appbanhang.models.Product;
 import com.example.appbanhang.database.DatabaseHelper;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper;
     private CartManager cartManager;
     private AuthManager authManager;
+    private WishlistManager wishlistManager;
     private List<Product> productList;
     private List<Banner> bannerList;
     private BannerAdapter bannerAdapter;
@@ -65,15 +67,16 @@ public class MainActivity extends AppCompatActivity {
         loadProducts();
         setupRecyclerView();
         setupNavigationButtons();
-
-        // Test login
-        testLogin();
     }
 
     private void initializeManagers() {
         dbHelper = new DatabaseHelper(this);
         cartManager = CartManager.getInstance();
         authManager = AuthManager.getInstance();
+        CartManager.initialize(dbHelper, authManager);
+        cartManager.syncFromDatabase();
+        wishlistManager = WishlistManager.getInstance();
+        WishlistManager.initialize(dbHelper, authManager);
         bannerHandler = new Handler(Looper.getMainLooper());
     }
 
@@ -149,6 +152,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startBannerAutoScroll() {
+        if (bannerList == null || bannerList.isEmpty()) {
+            return;
+        }
+        stopBannerAutoScroll();
         bannerRunnable = new Runnable() {
             @Override
             public void run() {
@@ -169,6 +176,11 @@ public class MainActivity extends AppCompatActivity {
     private void loadProducts() {
         // Load products from DataProvider with images
         productList = DataProvider.getProducts();
+        dbHelper.seedProductsIfEmpty(productList);
+        wishlistManager.syncFromDatabase(productList);
+        for (Product product : productList) {
+            product.setFavorite(wishlistManager.isInWishlist(product.getId()));
+        }
     }
 
     private void setupRecyclerView() {
@@ -186,6 +198,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFavoriteClick(Product product, boolean isFavorite) {
+                if (isFavorite) {
+                    wishlistManager.addToWishlist(product);
+                } else {
+                    wishlistManager.removeFromWishlistById(product.getId());
+                }
                 String message = isFavorite ? 
                     "Added to Wishlist: " + product.getName() :
                     "Removed from Wishlist: " + product.getName();
@@ -201,7 +218,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnSearch.setOnClickListener(v -> {
-            Toast.makeText(this, "Tìm Kiếm - Chức năng đang phát triển", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+            startActivity(intent);
         });
 
         btnCart.setOnClickListener(v -> {
@@ -222,15 +240,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Vui lòng Đăng Nhập", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void testLogin() {
-        // Test đăng nhập với tài khoản mẫu
-        boolean loginSuccess = authManager.login("sultan@example.com", "password123");
-        if (loginSuccess) {
-            Toast.makeText(this, "Đã đăng nhập: " + 
-                authManager.getCurrentUser().getFullName(), Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

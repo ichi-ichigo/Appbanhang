@@ -120,18 +120,17 @@ TABLE_ORDERS:
 
 **Lưu ở đâu:**
 ```java
-private List<CartItem> cartItems;        // ← Lưu trong RAM
+private List<CartItem> cartItems;        // Cache trong RAM
+DatabaseHelper.saveCartItem(...)        // Lưu bền vào SQLite
 private double subtotal;
 private double shippingFee = 12000;
 private double discount = 0;
 ```
 
-**🚨 VẤN ĐỀ HIỆN TẠI:**
-- Giỏ hàng chỉ lưu **trong RAM** (biến ArrayList)
-- **Mất hết khi người dùng:**
-  - Đóng app
-  - Kill process
-  - Restart device
+**✅ Trạng thái hiện tại:**
+- Giỏ hàng được cache trong RAM để UI cập nhật nhanh
+- Khi user đã đăng nhập, cart item được lưu vào bảng `cart_items`
+- Khi mở app/cart/payment, app đồng bộ lại từ SQLite theo `user_id`
 
 **📌 Cách sử dụng:**
 ```java
@@ -168,13 +167,14 @@ CartItem:
 
 **Lưu ở đâu:**
 ```java
-private List<Product> wishlistItems;     // ← Lưu trong RAM
+private List<Product> wishlistItems;     // Cache trong RAM
+DatabaseHelper.addToFavorites(...)       // Lưu bền vào SQLite
 ```
 
-**🚨 VẤN ĐỀ HIỆN TẠI:**
-- Danh sách yêu thích chỉ lưu **trong RAM**
-- **Mất khi đóng app**
-- Không được save vào database
+**✅ Trạng thái hiện tại:**
+- Danh sách yêu thích được cache trong RAM để hiển thị nhanh
+- Khi user đã đăng nhập, favorite được lưu vào bảng `favorites`
+- Khi mở wishlist/home, app đồng bộ lại từ SQLite theo `user_id`
 
 **📌 Cách sử dụng:**
 ```java
@@ -254,8 +254,8 @@ String value = prefs.getString("key", "default");
 |---------|---------|-------------|-----------|--------|
 | **User (Login/Register)** | SQLite Database | ✅ Có | DatabaseHelper + AuthManager | Lưu email, password, họ tên |
 | **Danh sách sản phẩm** | SQLite Database | ✅ Có | DatabaseHelper | Giá, ảnh, thông tin |
-| **Giỏ hàng (Cart)** | RAM (Memory) | ❌ Không | CartManager | **Mất khi đóng app** ⚠️ |
-| **Danh sách yêu thích** | RAM (Memory) | ❌ Không | WishlistManager | **Mất khi đóng app** ⚠️ |
+| **Giỏ hàng (Cart)** | SQLite + RAM cache | ✅ Có | CartManager + DatabaseHelper | Lưu theo user_id |
+| **Danh sách yêu thích** | SQLite + RAM cache | ✅ Có | WishlistManager + DatabaseHelper | Lưu theo user_id |
 | **Lịch sử đơn hàng** | SQLite Database | ✅ Có | DatabaseHelper | Bảng `orders` |
 | **Sản phẩm yêu thích (DB)** | SQLite Database | ✅ Có | DatabaseHelper | Bảng `favorites` |
 
@@ -263,16 +263,14 @@ String value = prefs.getString("key", "default");
 
 ## ⚠️ VẤNS ĐỀ CẦN BIẾT
 
-### 🔴 Problem 1: Giỏ Hàng Mất Khi Đóng App
+### ✅ Problem 1: Giỏ Hàng Mất Khi Đóng App
 ```
-✗ Hiện tại: CartManager dùng ArrayList trong RAM
-✓ Nên là: Lưu vào SQLite table `cart_items` hoặc SharedPreferences
+✓ Đã xử lý: CartManager sync với SQLite table `cart_items` theo user_id
 ```
 
-### 🔴 Problem 2: Danh Sách Yêu Thích Mất Khi Đóng App
+### ✅ Problem 2: Danh Sách Yêu Thích Mất Khi Đóng App
 ```
-✗ Hiện tại: WishlistManager dùng ArrayList trong RAM
-✓ Nên là: Lưu vào SQLite table `favorites` cho từng user
+✓ Đã xử lý: WishlistManager sync với SQLite table `favorites` cho từng user
 ```
 
 ### 🔴 Problem 3: User Hiện Tại Mất Khi Đóng App
@@ -348,11 +346,25 @@ SELECT * FROM orders;
 | Câu Hỏi | Câu Trả Lời |
 |--------|-----------|
 | **Dữ liệu đăng nhập lưu ở đâu?** | SQLite Database (bảng `users`) + RAM (AuthManager) |
-| **Giỏ hàng lưu ở đâu?** | RAM - CartManager (⚠️ mất khi đóng app) |
-| **Danh sách yêu thích lưu ở đâu?** | RAM - WishlistManager (⚠️ mất khi đóng app) |
+| **Giỏ hàng lưu ở đâu?** | SQLite bảng `cart_items` + RAM cache trong CartManager |
+| **Danh sách yêu thích lưu ở đâu?** | SQLite bảng `favorites` + RAM cache trong WishlistManager |
 | **Sản phẩm lưu ở đâu?** | SQLite Database (bảng `products`) |
 | **Lịch sử mua hàng lưu ở đâu?** | SQLite Database (bảng `orders`) |
 | **File database ở đâu?** | `/data/data/com.example.appbanhang/databases/smarteshop.db` |
 | **Class nào quản lý database?** | DatabaseHelper.java |
-| **Làm sao để giỏ hàng không mất?** | Cần save vào Database hoặc SharedPreferences |
+| **Làm sao để giỏ hàng không mất?** | Đã lưu vào SQLite bảng `cart_items` theo user_id |
 
+# Cap nhat 2026-06-09
+
+- Password co the duoc dat lai bang ForgotPasswordActivity neu email da ton tai trong SQLite.
+- Ho so user co the cap nhat ho ten/so dien thoai bang EditProfileActivity.
+- Google/Facebook login trong ban hien tai la local demo provider account, chua phai OAuth Firebase/Google/Facebook that.
+- SharedPreferences hien dang duoc su dung de ghi nho email dang nhap khi user tick "Ghi nho toi".
+- `AuthManager.restoreSession(email)` khoi phuc user tu SQLite khi mo lai app.
+- `cart_items` luu gio hang theo `user_id`.
+- `favorites` luu wishlist theo `user_id`.
+- `orders` luu lich su don hang, tong tien, trang thai, phuong thuc thanh toan va dia chi giao hang.
+- `products` duoc seed tu `DataProvider` vao SQLite neu database rong.
+- `banners` va `brands` da co schema trong SQLite de san sang thay mock data bang du lieu dong.
+
+Firebase chua phai backend dang chay cua app hien tai. App van luu local bang SQLite vi chua co `app/google-services.json` va chua bat Google Services plugin.

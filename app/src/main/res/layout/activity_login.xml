@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="@color/surface"
     android:padding="20dp">
 
     <!-- Scrollable Content -->
@@ -33,7 +33,7 @@
                     android:text="Smarteshop"
                     android:textSize="32sp"
                     android:textStyle="bold"
-                    android:textColor="#00BCD4"
+                    android:textColor="@color/primary"
                     android:layout_marginBottom="8dp" />
 
                 <TextView
@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:text="Đăng Nhập"
                     android:textSize="20sp"
-                    android:textColor="#000000"
+                    android:textColor="@color/text_primary"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:text="Email"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:textStyle="bold"
                 android:layout_marginBottom="6dp" />
 
@@ -65,7 +65,7 @@
                 android:hint="Nhập email của bạn"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:textColorHint="#999999"
                 android:textSize="14sp"
                 android:layout_marginBottom="16dp" />
@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:text="Quên mật khẩu?"
                 android:textSize="12sp"
-                android:textColor="#00BCD4"
+                android:textColor="@color/primary"
                 android:layout_marginBottom="24dp"
                 android:layout_gravity="end" />
 
@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:text="Ghi nhớ tôi"
                     android:textSize="12sp"
-                    android:textColor="#000000" />
+                    android:textColor="@color/text_primary" />
 
             </LinearLayout>
 
@@ -132,6 +132,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                android:textAllCaps="false"
                 android:layout_marginBottom="16dp" />
 
             <!-- Divider -->
@@ -153,7 +154,7 @@
                     android:layout_height="wrap_content"
                     android:text="HOẶC"
                     android:textSize="12sp"
-                    android:textColor="#999999"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginHorizontal="12dp" />
 
                 <View
@@ -171,10 +172,11 @@
                 android:layout_height="48dp"
                 android:background="#FFFFFF"
                 android:text="Đăng Nhập với Google"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:textSize="14sp"
                 android:layout_marginBottom="12dp"
-                app:strokeColor="#E0E0E0"
+                android:textAllCaps="false"
+                app:strokeColor="@color/line"
                 app:strokeWidth="1dp" />
 
             <com.google.android.material.button.MaterialButton
@@ -185,6 +187,7 @@
                 android:text="Đăng Nhập với Facebook"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
+                android:textAllCaps="false"
                 android:layout_marginBottom="24dp" />
 
             <!-- Sign Up Link -->
@@ -199,7 +202,7 @@
                     android:layout_height="wrap_content"
                     android:text="Chưa có tài khoản? "
                     android:textSize="14sp"
-                    android:textColor="#000000" />
+                    android:textColor="@color/text_primary" />
 
                 <TextView
                     android:id="@+id/tvSignUp"
@@ -207,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:text="Đăng Kí"
                     android:textSize="14sp"
-                    android:textColor="#00BCD4"
+                    android:textColor="@color/primary"
                     android:textStyle="bold" />
 
             </LinearLayout>

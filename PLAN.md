@@ -212,3 +212,21 @@ Xây dựng ứng dụng di động bán giày thể thao (Smarteshop) với gia
 ---
 **Cập nhật lần cuối**: June 8, 2026
 **Trạng thái**: Phase 1, 2 & 3 Hoàn Thành ✓
+# Cap nhat 2026-06-09 - Hoan thien luong app
+
+- [x] Quen mat khau local: dat lai password theo email trong SQLite.
+- [x] Chinh sua ho so: cap nhat ho ten va so dien thoai trong SQLite.
+- [x] Google/Facebook login local demo: tao/khoi phuc user provider trong SQLite.
+- [x] Dieu khoan & Dich vu mo man thong tin that, khong con placeholder.
+- [x] Dang ki / dang nhap bang SQLite hoat dong.
+- [x] Ghi nho dang nhap bang SharedPreferences.
+- [x] Gio hang luu theo user trong SQLite (`cart_items`).
+- [x] Wishlist luu theo user trong SQLite (`favorites`).
+- [x] Home co banner carousel tu cuon 5 giay.
+- [x] Search/Promotion screen da co tim kiem, filter va banner khuyen mai.
+- [x] Product detail mo Add to Cart screen de chon size/so luong.
+- [x] Checkout luu order vao SQLite va xoa gio hang sau khi dat.
+- [x] Account co lich su don hang, voucher, dia chi, FAQ, ho tro va settings.
+- [x] Build debug thanh cong sau cac thay doi.
+
+Ghi chu Firebase: project hien co dependency Firebase nhung chua co `google-services.json`, nen ban hien tai van chay theo SQLite local. Migration Firebase can tao project Firebase that va them config truoc khi bat plugin Google Services.

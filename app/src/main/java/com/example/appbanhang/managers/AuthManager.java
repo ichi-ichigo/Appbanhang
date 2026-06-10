@@ -33,20 +33,25 @@ public class AuthManager {
 
     // Login
     public boolean login(String email, String password) {
+        String normalizedEmail = normalizeEmail(email);
+
         // Check database first
-        if (dbHelper != null && dbHelper.verifyUser(email, password)) {
-            currentUser = new User();
-            currentUser.setEmail(email);
-            currentUser.setFullName(email.split("@")[0]);
+        if (dbHelper != null && dbHelper.verifyUser(normalizedEmail, password)) {
+            User user = dbHelper.getUserProfile(normalizedEmail);
+            if (user != null) {
+                currentUser = user;
+            } else {
+                currentUser = new User(normalizedEmail.split("@")[0], normalizedEmail, "");
+            }
             return true;
         }
 
         // Fallback to in-memory database
-        if (userDatabase.containsKey(email) && 
-            userDatabase.get(email).equals(password)) {
+        if (userDatabase.containsKey(normalizedEmail) &&
+            userDatabase.get(normalizedEmail).equals(password)) {
             currentUser = new User();
-            currentUser.setEmail(email);
-            currentUser.setFullName(email.split("@")[0]);
+            currentUser.setEmail(normalizedEmail);
+            currentUser.setFullName(normalizedEmail.split("@")[0]);
             return true;
         }
         return false;
@@ -54,31 +59,79 @@ public class AuthManager {
 
     // Register
     public boolean register(String email, String password, String fullName) {
+        return register(email, password, fullName, "");
+    }
+
+    public boolean register(String email, String password, String fullName, String phoneNumber) {
+        String normalizedEmail = normalizeEmail(email);
+
         // Check if email already exists
-        if (userDatabase.containsKey(email)) {
+        if (userDatabase.containsKey(normalizedEmail)) {
             return false; // Email đã tồn tại
         }
 
         if (dbHelper != null) {
             // Try to add to database
-            boolean success = dbHelper.addUser(fullName, email, "", password);
+            boolean success = dbHelper.addUser(fullName, normalizedEmail, phoneNumber, password);
             if (success) {
-                userDatabase.put(email, password); // Also add to in-memory for fallback
-                currentUser = new User(fullName, email, "");
+                userDatabase.put(normalizedEmail, password); // Also add to in-memory for fallback
+                User savedUser = dbHelper.getUserProfile(normalizedEmail);
+                currentUser = savedUser != null ? savedUser : new User(fullName, normalizedEmail, phoneNumber);
                 return true;
             }
             return false;
         }
 
         // Fallback to in-memory storage
-        userDatabase.put(email, password);
-        currentUser = new User(fullName, email, "");
+        userDatabase.put(normalizedEmail, password);
+        currentUser = new User(fullName, normalizedEmail, phoneNumber);
         return true;
     }
 
     // Logout
     public void logout() {
         currentUser = null;
+    }
+
+    public boolean restoreSession(String email) {
+        String normalizedEmail = normalizeEmail(email);
+        if (normalizedEmail.isEmpty() || dbHelper == null) {
+            return false;
+        }
+
+        User user = dbHelper.getUserProfile(normalizedEmail);
+        if (user == null) {
+            return false;
+        }
+
+        currentUser = user;
+        return true;
+    }
+
+    public boolean loginWithProvider(String providerName) {
+        String provider = providerName == null ? "Social" : providerName.trim();
+        if (provider.isEmpty()) {
+            provider = "Social";
+        }
+
+        String normalizedProvider = provider.toLowerCase().replace(" ", "");
+        String email = normalizedProvider + "@smarteshop.local";
+        String fullName = provider + " User";
+
+        if (dbHelper != null) {
+            if (!dbHelper.getUserByEmail(email)) {
+                dbHelper.addUser(fullName, email, "", "provider-login");
+            }
+
+            User user = dbHelper.getUserProfile(email);
+            if (user != null) {
+                currentUser = user;
+                return true;
+            }
+        }
+
+        currentUser = new User(fullName, email, "");
+        return true;
     }
 
     // Get current user
@@ -96,16 +149,49 @@ public class AuthManager {
         this.currentUser = user;
     }
 
+    public boolean updateCurrentUserProfile(String fullName, String phoneNumber) {
+        if (currentUser == null || dbHelper == null) {
+            return false;
+        }
+
+        boolean updated = dbHelper.updateUserProfile(currentUser.getId(), fullName, phoneNumber);
+        if (updated) {
+            currentUser.setFullName(fullName);
+            currentUser.setPhoneNumber(phoneNumber);
+        }
+        return updated;
+    }
+
     // Change password
     public boolean changePassword(String email, String oldPassword, String newPassword) {
-        if (userDatabase.containsKey(email) && 
-            userDatabase.get(email).equals(oldPassword)) {
-            userDatabase.put(email, newPassword);
+        String normalizedEmail = normalizeEmail(email);
+
+        if (userDatabase.containsKey(normalizedEmail) &&
+            userDatabase.get(normalizedEmail).equals(oldPassword)) {
+            userDatabase.put(normalizedEmail, newPassword);
             if (dbHelper != null) {
-                dbHelper.addUserCredential(email, newPassword);
+                dbHelper.addUserCredential(normalizedEmail, newPassword);
             }
             return true;
         }
         return false;
+    }
+
+    public boolean resetPassword(String email, String newPassword) {
+        String normalizedEmail = normalizeEmail(email);
+        if (dbHelper != null && dbHelper.getUserByEmail(normalizedEmail)) {
+            userDatabase.put(normalizedEmail, newPassword);
+            return dbHelper.updatePassword(normalizedEmail, newPassword);
+        }
+
+        if (userDatabase.containsKey(normalizedEmail)) {
+            userDatabase.put(normalizedEmail, newPassword);
+            return true;
+        }
+        return false;
+    }
+
+    private String normalizeEmail(String email) {
+        return email == null ? "" : email.trim().toLowerCase();
     }
 }

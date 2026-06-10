@@ -2,6 +2,7 @@ package com.example.appbanhang;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -30,6 +31,7 @@ public class BillingAddressActivity extends AppCompatActivity {
         });
 
         initializeViews();
+        setupSpinners();
         setupListeners();
     }
 
@@ -44,10 +46,17 @@ public class BillingAddressActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btn_back);
     }
 
+    private void setupSpinners() {
+        setSpinnerItems(spProvince, new String[]{"Hà Nội", "TP. Hồ Chí Minh", "Đà Nẵng", "Cần Thơ"});
+        setSpinnerItems(spCountry, new String[]{"Việt Nam", "Indonesia", "Malaysia"});
+        setSpinnerItems(spShipping, new String[]{"Tiêu chuẩn", "Nhanh", "Hỏa tốc"});
+    }
+
     private void setupListeners() {
         btnContinue.setOnClickListener(v -> {
             if (validateInput()) {
                 Intent intent = new Intent(BillingAddressActivity.this, PaymentActivity.class);
+                intent.putExtra("delivery_address", etAddress.getText().toString().trim());
                 startActivity(intent);
             }
         });
@@ -72,5 +81,15 @@ public class BillingAddressActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void setSpinnerItems(Spinner spinner, String[] items) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                items
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
     }
 }

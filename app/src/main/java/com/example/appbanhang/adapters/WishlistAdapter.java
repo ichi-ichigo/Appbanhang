@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appbanhang.R;
+import com.example.appbanhang.managers.ImageManager;
 import com.example.appbanhang.models.Product;
 
 import java.util.List;
@@ -52,8 +53,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
         holder.txtProductCategory.setText(product.getCategory());
         holder.txtProductPrice.setText(String.format("Rp. %.0f", product.getPrice()));
         
-        // Set product image (mô phỏng)
-        holder.imgProduct.setImageResource(R.drawable.ic_launcher_foreground);
+        ImageManager.getInstance().loadThumbnail(product.getImageUrl(), holder.imgProduct);
         
         // Buy button
         holder.btnBuy.setOnClickListener(v -> {

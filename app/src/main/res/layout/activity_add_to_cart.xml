@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/app_bg">
 
     <!-- Header -->
     <LinearLayout
@@ -19,7 +19,8 @@
             android:layout_height="40dp"
             android:text="←"
             android:textSize="24sp"
-            android:background="?attr/selectableItemBackground" />
+            android:textColor="@color/text_primary"
+            android:background="@drawable/button_icon_style" />
 
         <TextView
             android:layout_width="0dp"
@@ -28,7 +29,7 @@
             android:text="Thêm vào Giỏ"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="@color/text_primary"
             android:gravity="center" />
 
         <View
@@ -57,7 +58,7 @@
                 android:contentDescription="@string/product_image"
                 android:src="@drawable/ic_launcher_foreground"
                 android:scaleType="centerCrop"
-                android:background="#E0E0E0"
+                android:background="@drawable/bg_card"
                 android:layout_marginBottom="12dp" />
 
             <!-- Thumbnail ảnh -->
@@ -67,6 +68,7 @@
                 android:layout_marginBottom="16dp">
 
                 <LinearLayout
+                    android:id="@+id/thumbnail_container"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:orientation="horizontal">
@@ -108,21 +110,23 @@
 
             <!-- Tên & Giá sản phẩm -->
             <TextView
+                android:id="@+id/txt_product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nike Air VaporMax Evo"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:layout_marginBottom="4dp" />
 
             <TextView
+                android:id="@+id/txt_product_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rp. 120.000"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#FF6B6B"
+                android:textColor="@color/price"
                 android:layout_marginBottom="16dp" />
 
             <!-- Lựa chọn kích cỡ -->
@@ -132,7 +136,7 @@
                 android:text="Pilih Ukuran"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:layout_marginBottom="8dp" />
 
             <LinearLayout
@@ -142,6 +146,7 @@
                 android:layout_marginBottom="16dp">
 
                 <Button
+                    android:id="@+id/btn_size_39"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -151,6 +156,7 @@
                     android:layout_marginEnd="6dp" />
 
                 <Button
+                    android:id="@+id/btn_size_40"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -160,6 +166,7 @@
                     android:layout_marginEnd="6dp" />
 
                 <Button
+                    android:id="@+id/btn_size_41"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -169,6 +176,7 @@
                     android:layout_marginEnd="6dp" />
 
                 <Button
+                    android:id="@+id/btn_size_42"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -178,6 +186,7 @@
                     android:layout_marginEnd="6dp" />
 
                 <Button
+                    android:id="@+id/btn_size_43"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -194,14 +203,14 @@
                 android:text="Số Lượng"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:layout_marginBottom="8dp" />
 
             <LinearLayout
                 android:layout_width="120dp"
                 android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:background="#FFFFFF"
+                android:background="@drawable/bg_card"
                 android:layout_marginBottom="16dp">
 
                 <Button
@@ -210,7 +219,8 @@
                     android:layout_height="match_parent"
                     android:text="-"
                     android:textSize="18sp"
-                    android:background="?attr/selectableItemBackground" />
+                    android:textColor="@color/text_primary"
+                    android:background="@drawable/button_outline_style" />
 
                 <TextView
                     android:id="@+id/txt_quantity"
@@ -220,7 +230,7 @@
                     android:text="1"
                     android:textSize="16sp"
                     android:gravity="center"
-                    android:textColor="#000000" />
+                    android:textColor="@color/text_primary" />
 
                 <Button
                     android:id="@+id/btn_plus"
@@ -228,7 +238,8 @@
                     android:layout_height="match_parent"
                     android:text="+"
                     android:textSize="18sp"
-                    android:background="?attr/selectableItemBackground" />
+                    android:textColor="@color/text_primary"
+                    android:background="@drawable/button_outline_style" />
 
             </LinearLayout>
 
@@ -253,7 +264,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:background="#1A1A1A" />
+            android:textAllCaps="false"
+            android:background="@drawable/button_buy_style" />
 
     </LinearLayout>
 

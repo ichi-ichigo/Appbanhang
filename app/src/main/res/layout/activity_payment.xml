@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/app_bg">
 
     <!-- Header với Progress Indicator -->
     <LinearLayout
@@ -24,7 +24,8 @@
                 android:layout_height="40dp"
                 android:text="←"
                 android:textSize="24sp"
-                android:background="?attr/selectableItemBackground" />
+                android:textColor="@color/text_primary"
+                android:background="@drawable/button_icon_style" />
 
             <TextView
                 android:layout_width="0dp"
@@ -33,7 +34,7 @@
                 android:text="Thanh Toán"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:gravity="center" />
 
             <View
@@ -57,13 +58,13 @@
                 android:text="✓"
                 android:textSize="20sp"
                 android:gravity="center"
-                android:textColor="#00BCD4" />
+                android:textColor="@color/primary" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#00BCD4" />
+                android:background="@color/primary" />
 
             <TextView
                 android:layout_width="0dp"
@@ -77,7 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1"
-                android:background="#EEEEEE" />
+                android:background="@color/line" />
 
             <TextView
                 android:layout_width="0dp"
@@ -110,7 +111,7 @@
                 android:text="Phương Thức Thanh Toán"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:layout_marginBottom="12dp" />
 
             <!-- Online Banking (FPX) -->
@@ -119,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
-                android:background="#FFFFFF"
+                android:background="@drawable/bg_card"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16dp"
                 android:layout_marginBottom="12dp">
@@ -143,14 +144,14 @@
                         android:text="Ngân Hàng Trực Tuyến"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:textColor="@color/text_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thanh toán qua cổng ngân hàng"
                         android:textSize="12sp"
-                        android:textColor="#999999" />
+                        android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
@@ -160,7 +161,7 @@
                     android:text="FPX"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:textColor="#00BCD4" />
+                    android:textColor="@color/primary" />
 
             </LinearLayout>
 
@@ -170,7 +171,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
-                android:background="#FFFFFF"
+                android:background="@drawable/bg_card"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16dp"
                 android:layout_marginBottom="12dp">
@@ -193,7 +194,7 @@
                         android:text="Thẻ Tín Dụng / Thẻ Ghi Nợ"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:textColor="@color/text_primary" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -205,7 +206,7 @@
                             android:layout_height="wrap_content"
                             android:text="💳 VISA"
                             android:textSize="12sp"
-                            android:textColor="#999999"
+                            android:textColor="@color/text_secondary"
                             android:layout_marginEnd="8dp" />
 
                         <TextView
@@ -213,7 +214,7 @@
                             android:layout_height="wrap_content"
                             android:text="💳 MasterCard"
                             android:textSize="12sp"
-                            android:textColor="#999999" />
+                            android:textColor="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -227,7 +228,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
-                android:background="#FFFFFF"
+                android:background="@drawable/bg_card"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="16dp">
 
@@ -249,14 +250,14 @@
                         android:text="PayPal"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:textColor="@color/text_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thanh toán qua PayPal"
                         android:textSize="12sp"
-                        android:textColor="#999999" />
+                        android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
@@ -276,7 +277,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#EEEEEE" />
+        android:background="@color/line" />
 
     <!-- Tổng tiền -->
     <LinearLayout
@@ -297,7 +298,7 @@
                 android:layout_weight="1"
                 android:text="Tổng Phụ"
                 android:textSize="14sp"
-                android:textColor="#999999" />
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/txt_subtotal"
@@ -305,7 +306,7 @@
                 android:layout_height="wrap_content"
                 android:text="Rp. 132.000"
                 android:textSize="14sp"
-                android:textColor="#999999" />
+                android:textColor="@color/text_secondary" />
 
         </LinearLayout>
 
@@ -321,7 +322,7 @@
                 android:layout_weight="1"
                 android:text="Biaya Vận Chuyển"
                 android:textSize="14sp"
-                android:textColor="#999999" />
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/txt_shipping"
@@ -329,7 +330,7 @@
                 android:layout_height="wrap_content"
                 android:text="Rp. 12.000"
                 android:textSize="14sp"
-                android:textColor="#999999" />
+                android:textColor="@color/text_secondary" />
 
         </LinearLayout>
 
@@ -337,7 +338,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#EEEEEE"
+            android:background="@color/line"
             android:layout_marginVertical="8dp" />
 
         <LinearLayout
@@ -353,7 +354,7 @@
                 android:text="Tổng Thanh Toán"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textColor="@color/text_primary" />
 
             <TextView
                 android:id="@+id/txt_total_payment"
@@ -362,7 +363,7 @@
                 android:text="Rp. 144.000"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#FF6B6B" />
+                android:textColor="@color/price" />
 
         </LinearLayout>
 
@@ -375,7 +376,8 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:background="#1A1A1A" />
+            android:textAllCaps="false"
+            android:background="@drawable/button_buy_style" />
 
     </LinearLayout>
 

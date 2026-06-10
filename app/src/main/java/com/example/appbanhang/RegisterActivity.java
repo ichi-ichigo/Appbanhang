@@ -13,6 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.appbanhang.database.DatabaseHelper;
 import com.example.appbanhang.managers.AuthManager;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -22,6 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
     private CheckBox cbTerms;
     private TextView tvTermsLink, tvLogin;
     private AuthManager authManager;
+    private DatabaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +38,16 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         // Initialize
+        initializeDatabase();
         initializeViews();
         initializeManager();
         setupListeners();
+        setupCompletedListeners();
+    }
+
+    private void initializeDatabase() {
+        dbHelper = new DatabaseHelper(this);
+        AuthManager.initialize(dbHelper);
     }
 
     private void initializeViews() {
@@ -66,13 +75,23 @@ public class RegisterActivity extends AppCompatActivity {
         });
         
         tvTermsLink.setOnClickListener(v -> {
-            Toast.makeText(this, "Điều khoản & Dịch vụ - Chức năng đang phát triển", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(RegisterActivity.this, AccountInfoActivity.class);
+            intent.putExtra("screen", "terms");
+            startActivity(intent);
         });
         
         tvLogin.setOnClickListener(v -> {
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
+        });
+    }
+
+    private void setupCompletedListeners() {
+        tvTermsLink.setOnClickListener(v -> {
+            Intent intent = new Intent(RegisterActivity.this, AccountInfoActivity.class);
+            intent.putExtra("screen", "terms");
+            startActivity(intent);
         });
     }
 
@@ -130,7 +149,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // Attempt registration
-        if (authManager.register(email, password, fullName)) {
+        if (authManager.register(email, password, fullName, phone)) {
             Toast.makeText(this, "Đăng kí thành công! Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
             
             // Navigate to LoginActivity

@@ -883,3 +883,17 @@ ALTER TABLE products ADD COLUMN is_new BOOLEAN;
 4. **WebP Format**: Dùng WebP thay PNG/JPG để giảm kích thước
 5. **CDN**: Upload ảnh lên Firebase Storage hoặc AWS S3
 
+# Cap nhat 2026-06-09 - Trang thai da thuc hien
+
+- [x] Product model da co imageUrls, thumbnailUrl, discount, promotion, stock, color, isNew.
+- [x] Banner va Brand model da co.
+- [x] ImageManager dung Glide, co placeholder/error fallback bang launcher foreground.
+- [x] Carousel banner tren Home da tu scroll moi 5 giay.
+- [x] Product grid load anh bang Glide, co badge promotion va favorite.
+- [x] Product detail co gallery thumbnail va animation khi doi anh.
+- [x] Search/Promotion screen da them: search bar, promo banners, filter, product grid.
+- [x] SQLite schema da bo sung bang `banners`, `brands` va cac cot product mo rong.
+- [x] San pham mau duoc seed vao SQLite neu database dang rong.
+- [x] Build debug thanh cong.
+
+Muc chua lam vi can dich vu ngoai: upload anh len Firebase Storage/CDN. Ban hien tai dung URL placeholder de test Glide/cache/error handling.

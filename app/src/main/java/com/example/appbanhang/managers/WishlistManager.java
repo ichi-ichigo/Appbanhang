@@ -1,18 +1,24 @@
 package com.example.appbanhang.managers;
 
+import com.example.appbanhang.database.DatabaseHelper;
 import com.example.appbanhang.models.Product;
+import com.example.appbanhang.models.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class WishlistManager {
     private static WishlistManager instance;
-    private List<Product> wishlistItems;
+    private static DatabaseHelper dbHelper;
+    private static AuthManager authManager;
+    private final List<Product> wishlistItems;
+    private final List<Integer> favoriteProductIds;
 
     private WishlistManager() {
         this.wishlistItems = new ArrayList<>();
+        this.favoriteProductIds = new ArrayList<>();
     }
 
-    // Singleton Pattern
     public static WishlistManager getInstance() {
         if (instance == null) {
             instance = new WishlistManager();
@@ -20,63 +26,110 @@ public class WishlistManager {
         return instance;
     }
 
-    // Add to wishlist
+    public static void initialize(DatabaseHelper helper, AuthManager manager) {
+        dbHelper = helper;
+        authManager = manager;
+    }
+
     public void addToWishlist(Product product) {
-        // Kiểm tra sản phẩm đã có chưa
-        if (!isInWishlist(product.getId())) {
-            product.setFavorite(true);
-            wishlistItems.add(product);
+        if (product == null || isInWishlist(product.getId())) {
+            return;
+        }
+
+        product.setFavorite(true);
+        wishlistItems.add(product);
+        int userId = getCurrentUserId();
+        if (dbHelper != null && userId > 0) {
+            dbHelper.addToFavorites(userId, product.getId());
+        }
+        if (!favoriteProductIds.contains(product.getId())) {
+            favoriteProductIds.add(product.getId());
         }
     }
 
-    // Remove from wishlist
     public void removeFromWishlist(Product product) {
-        wishlistItems.remove(product);
+        if (product == null) {
+            return;
+        }
+
+        removeFromWishlistById(product.getId());
         product.setFavorite(false);
     }
 
-    // Remove by ID
     public void removeFromWishlistById(int productId) {
-        for (Product product : wishlistItems) {
+        for (Product product : new ArrayList<>(wishlistItems)) {
             if (product.getId() == productId) {
-                wishlistItems.remove(product);
                 product.setFavorite(false);
+                wishlistItems.remove(product);
                 break;
             }
         }
+
+        int userId = getCurrentUserId();
+        if (dbHelper != null && userId > 0) {
+            dbHelper.removeFromFavorites(userId, productId);
+        }
+        favoriteProductIds.remove(Integer.valueOf(productId));
     }
 
-    // Get all wishlist items
     public List<Product> getWishlistItems() {
         return wishlistItems;
     }
 
-    // Check if product is in wishlist
     public boolean isInWishlist(int productId) {
         for (Product product : wishlistItems) {
             if (product.getId() == productId) {
                 return true;
             }
         }
-        return false;
+
+        return favoriteProductIds.contains(productId);
     }
 
-    // Get wishlist count
     public int getWishlistCount() {
         return wishlistItems.size();
     }
 
-    // Clear wishlist
     public void clearWishlist() {
         wishlistItems.clear();
     }
 
-    // Toggle wishlist
     public void toggleWishlist(Product product) {
+        if (product == null) {
+            return;
+        }
+
         if (isInWishlist(product.getId())) {
             removeFromWishlist(product);
         } else {
             addToWishlist(product);
         }
+    }
+
+    public void syncFromDatabase(List<Product> products) {
+        int userId = getCurrentUserId();
+        if (dbHelper == null || userId <= 0 || products == null) {
+            return;
+        }
+
+        List<Integer> favoriteIds = dbHelper.getFavoriteProductIds(userId);
+        favoriteProductIds.clear();
+        favoriteProductIds.addAll(favoriteIds);
+        wishlistItems.clear();
+        for (Product product : products) {
+            boolean favorite = favoriteIds.contains(product.getId());
+            product.setFavorite(favorite);
+            if (favorite) {
+                wishlistItems.add(product);
+            }
+        }
+    }
+
+    private int getCurrentUserId() {
+        if (authManager == null) {
+            return 0;
+        }
+        User currentUser = authManager.getCurrentUser();
+        return currentUser == null ? 0 : currentUser.getId();
     }
 }

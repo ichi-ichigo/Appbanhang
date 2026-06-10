@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/app_bg">
 
     <!-- Header -->
     <LinearLayout
@@ -19,7 +19,8 @@
             android:layout_height="40dp"
             android:text="←"
             android:textSize="24sp"
-            android:background="?attr/selectableItemBackground" />
+            android:textColor="@color/text_primary"
+            android:background="@drawable/button_icon_style" />
 
         <TextView
             android:layout_width="0dp"
@@ -28,7 +29,7 @@
             android:text="Danh Sách Yêu Thích"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="@color/text_primary"
             android:gravity="center" />
 
         <View
@@ -60,7 +61,7 @@
             android:layout_height="wrap_content"
             android:text="Danh sách yêu thích trống"
             android:textSize="16sp"
-            android:textColor="#999999" />
+            android:textColor="@color/text_secondary" />
 
         <Button
             android:id="@+id/btn_continue_shopping"
@@ -68,6 +69,9 @@
             android:layout_height="40dp"
             android:text="Tiếp tục mua sắm"
             android:textSize="12sp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:background="@drawable/button_brand_style"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>

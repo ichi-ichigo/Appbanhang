@@ -90,6 +90,10 @@ public class Order {
         return totalAmount;
     }
 
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
     private void calculateTotal() {
         this.totalAmount = this.subtotal + this.shippingFee - this.discount;
     }

@@ -614,3 +614,6 @@ Sau khi chuyển Firebase:
 ✅ Phí rẻ (hoặc free cho app nhỏ)
 ```
 
+# Cap nhat 2026-06-09
+
+Ban hien tai cua app chua ket noi Firebase that. Source co Firebase dependencies de san sang migration, nhung chua co `app/google-services.json` va chua apply plugin `com.google.gms.google-services`. App dang chay on-device bang SQLite local. Muon chuyen sang Firebase can tao Firebase project, tai `google-services.json`, bat Authentication/Firestore/Storage, sau do moi thay AuthManager/DatabaseHelper bang service Firebase.

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "383401607828",
+    "project_id": "appbanhang-b322a",
+    "storage_bucket": "appbanhang-b322a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:383401607828:android:7e1a9d236c728c44b4ea81",
+        "android_client_info": {
+          "package_name": "com.example.appbanhang"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3B2eMayTKeYmnZrTWgu2yi3g_DIvqgsI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

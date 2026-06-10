@@ -11,6 +11,7 @@ glide = "4.15.1"
 viewpager2 = "1.0.0"
 firebaseBom = "33.0.0"
 lottie = "6.0.0"
+googleServices = "4.4.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -32,4 +33,5 @@ lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 

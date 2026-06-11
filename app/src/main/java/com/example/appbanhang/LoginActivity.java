@@ -18,6 +18,7 @@ import com.example.appbanhang.database.DatabaseHelper;
 import com.example.appbanhang.managers.AuthManager;
 import com.example.appbanhang.managers.CartManager;
 import com.example.appbanhang.managers.WishlistManager;
+import com.example.appbanhang.models.User;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -50,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initializeDatabase() {
         dbHelper = new DatabaseHelper(this);
-        AuthManager.initialize(dbHelper);
     }
 
     private void initializeViews() {
@@ -122,31 +122,26 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Attempt login
-        if (authManager.login(email, password)) {
-            saveRememberedLogin(email);
-            CartManager.getInstance().syncFromDatabase();
-            Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-            
-            // Navigate to MainActivity
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Email hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
-        }
+        authManager.login(email, password, new AuthManager.AuthCallback() {
+            @Override
+            public void onSuccess(User user) {
+                saveRememberedLogin(email);
+                CartManager.getInstance().syncFromDatabase(); // Giữ nguyên, sửa Cart sau
+                Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void handleProviderLogin(String provider) {
-        if (authManager.loginWithProvider(provider)) {
-            saveRememberedLogin(authManager.getCurrentUser().getEmail());
-            CartManager.getInstance().syncFromDatabase();
-            Toast.makeText(this, "Dang nhap bang " + provider + " thanh cong", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Khong the dang nhap bang " + provider, Toast.LENGTH_SHORT).show();
-        }
+        // Tạm thời thông báo chưa hỗ trợ để app không bị lỗi
+        Toast.makeText(this, "Tính năng đăng nhập bằng " + provider + " đang được cập nhật sang Firebase!", Toast.LENGTH_SHORT).show();
     }
 
     private boolean isValidEmail(String email) {

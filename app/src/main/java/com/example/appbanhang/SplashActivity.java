@@ -22,16 +22,14 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        AuthManager.initialize(dbHelper);
         AuthManager authManager = AuthManager.getInstance();
         CartManager.initialize(dbHelper, authManager);
         WishlistManager.initialize(dbHelper, authManager);
 
         new Handler().postDelayed(() -> {
-            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            String rememberedEmail = prefs.getString(KEY_REMEMBERED_EMAIL, "");
             Intent intent;
-            if (authManager.restoreSession(rememberedEmail)) {
+            // Thay đổi lớn: Check bằng Firebase isLoggedIn
+            if (authManager.isLoggedIn()) {
                 CartManager.getInstance().syncFromDatabase();
                 intent = new Intent(SplashActivity.this, MainActivity.class);
             } else {

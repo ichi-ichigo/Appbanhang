@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.appbanhang.database.DatabaseHelper;
 import com.example.appbanhang.managers.AuthManager;
+import com.example.appbanhang.models.User;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     private EditText etEmail, etNewPassword, etConfirmPassword;
@@ -19,7 +20,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_password);
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        AuthManager.initialize(dbHelper);
         authManager = AuthManager.getInstance();
 
         etEmail = findViewById(R.id.et_email);
@@ -32,29 +32,24 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private void resetPassword() {
         String email = etEmail.getText().toString().trim();
-        String newPassword = etNewPassword.getText().toString().trim();
-        String confirmPassword = etConfirmPassword.getText().toString().trim();
 
         if (email.isEmpty() || !email.contains("@")) {
-            Toast.makeText(this, "Email khong hop le", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (newPassword.length() < 6) {
-            Toast.makeText(this, "Mat khau phai co it nhat 6 ky tu", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // Gọi hàm reset mật khẩu của Firebase (gửi email)
+        authManager.resetPassword(email, new AuthManager.AuthCallback() {
+            @Override
+            public void onSuccess(User user) {
+                Toast.makeText(ForgotPasswordActivity.this, "Đã gửi link đặt lại mật khẩu vào Email của bạn!", Toast.LENGTH_LONG).show();
+                finish();
+            }
 
-        if (!newPassword.equals(confirmPassword)) {
-            Toast.makeText(this, "Mat khau nhap lai khong khop", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (authManager.resetPassword(email, newPassword)) {
-            Toast.makeText(this, "Da dat lai mat khau", Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            Toast.makeText(this, "Email chua duoc dang ki", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onError(String message) {
+                Toast.makeText(ForgotPasswordActivity.this, "Lỗi: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

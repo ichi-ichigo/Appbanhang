@@ -1,26 +1,15 @@
 package com.example.appbanhang.managers;
 
-import com.example.appbanhang.database.DatabaseHelper;
+import com.example.appbanhang.firebase.FirebaseHelper;
 import com.example.appbanhang.models.User;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.firebase.auth.FirebaseUser;
 
 public class AuthManager {
     private static AuthManager instance;
     private User currentUser;
-    private Map<String, String> userDatabase; // Email -> Password (fallback in memory)
-    private static DatabaseHelper dbHelper; // For persistent storage
 
     private AuthManager() {
-        this.userDatabase = new HashMap<>();
-        // Tài khoản mẫu (fallback)
-        userDatabase.put("sultan@example.com", "password123");
-        userDatabase.put("user@example.com", "user123");
-    }
-
-    // Initialize with DatabaseHelper
-    public static void initialize(DatabaseHelper helper) {
-        dbHelper = helper;
+        // Đã xóa bỏ HashMap userDatabase và DatabaseHelper cũ
     }
 
     // Singleton Pattern
@@ -31,167 +20,106 @@ public class AuthManager {
         return instance;
     }
 
-    // Login
-    public boolean login(String email, String password) {
+    // TẠO INTERFACE LẮNG NGHE KẾT QUẢ TỪ FIREBASE
+    public interface AuthCallback {
+        void onSuccess(User user);
+        void onError(String message);
+    }
+
+    // 1. SỬA HÀM LOGIN
+    public void login(String email, String password, AuthCallback callback) {
         String normalizedEmail = normalizeEmail(email);
 
-        // Check database first
-        if (dbHelper != null && dbHelper.verifyUser(normalizedEmail, password)) {
-            User user = dbHelper.getUserProfile(normalizedEmail);
-            if (user != null) {
-                currentUser = user;
-            } else {
-                currentUser = new User(normalizedEmail.split("@")[0], normalizedEmail, "");
-            }
-            return true;
-        }
-
-        // Fallback to in-memory database
-        if (userDatabase.containsKey(normalizedEmail) &&
-            userDatabase.get(normalizedEmail).equals(password)) {
-            currentUser = new User();
-            currentUser.setEmail(normalizedEmail);
-            currentUser.setFullName(normalizedEmail.split("@")[0]);
-            return true;
-        }
-        return false;
+        FirebaseHelper.getAuth().signInWithEmailAndPassword(normalizedEmail, password)
+            .addOnSuccessListener(authResult -> {
+                // Đăng nhập Auth thành công, lấy thông tin User từ Firestore
+                String uid = authResult.getUser().getUid();
+                fetchUserFromFirestore(uid, normalizedEmail, callback);
+            })
+            .addOnFailureListener(e -> {
+                callback.onError("Đăng nhập thất bại: " + e.getMessage());
+            });
     }
 
-    // Register
-    public boolean register(String email, String password, String fullName) {
-        return register(email, password, fullName, "");
-    }
-
-    public boolean register(String email, String password, String fullName, String phoneNumber) {
+    // 2. SỬA HÀM REGISTER
+    public void register(String email, String password, String fullName, String phoneNumber, AuthCallback callback) {
         String normalizedEmail = normalizeEmail(email);
 
-        // Check if email already exists
-        if (userDatabase.containsKey(normalizedEmail)) {
-            return false; // Email đã tồn tại
-        }
-
-        if (dbHelper != null) {
-            // Try to add to database
-            boolean success = dbHelper.addUser(fullName, normalizedEmail, phoneNumber, password);
-            if (success) {
-                userDatabase.put(normalizedEmail, password); // Also add to in-memory for fallback
-                User savedUser = dbHelper.getUserProfile(normalizedEmail);
-                currentUser = savedUser != null ? savedUser : new User(fullName, normalizedEmail, phoneNumber);
-                return true;
-            }
-            return false;
-        }
-
-        // Fallback to in-memory storage
-        userDatabase.put(normalizedEmail, password);
-        currentUser = new User(fullName, normalizedEmail, phoneNumber);
-        return true;
+        // Tạo tài khoản trên Firebase Auth
+        FirebaseHelper.getAuth().createUserWithEmailAndPassword(normalizedEmail, password)
+            .addOnSuccessListener(authResult -> {
+                String uid = authResult.getUser().getUid();
+                
+                // Tạo đối tượng User để lưu thêm thông tin (Tên, SDT) lên Firestore
+                User newUser = new User(fullName, normalizedEmail, phoneNumber);
+                
+                // Lưu vào Collection "users"
+                FirebaseHelper.getFirestore().collection("users").document(uid)
+                    .set(newUser)
+                    .addOnSuccessListener(aVoid -> {
+                        this.currentUser = newUser;
+                        callback.onSuccess(newUser);
+                    })
+                    .addOnFailureListener(e -> callback.onError("Lỗi lưu dữ liệu: " + e.getMessage()));
+            })
+            .addOnFailureListener(e -> callback.onError("Đăng ký thất bại: " + e.getMessage()));
     }
 
-    // Logout
+    // 3. SỬA HÀM LOGOUT
     public void logout() {
+        FirebaseHelper.getAuth().signOut(); // Đăng xuất khỏi Firebase
         currentUser = null;
     }
 
-    public boolean restoreSession(String email) {
-        String normalizedEmail = normalizeEmail(email);
-        if (normalizedEmail.isEmpty() || dbHelper == null) {
-            return false;
-        }
-
-        User user = dbHelper.getUserProfile(normalizedEmail);
-        if (user == null) {
-            return false;
-        }
-
-        currentUser = user;
-        return true;
+    // 4. KIỂM TRA ĐĂNG NHẬP
+    public boolean isLoggedIn() {
+        return FirebaseHelper.getAuth().getCurrentUser() != null;
     }
 
-    public boolean loginWithProvider(String providerName) {
-        String provider = providerName == null ? "Social" : providerName.trim();
-        if (provider.isEmpty()) {
-            provider = "Social";
-        }
-
-        String normalizedProvider = provider.toLowerCase().replace(" ", "");
-        String email = normalizedProvider + "@smarteshop.local";
-        String fullName = provider + " User";
-
-        if (dbHelper != null) {
-            if (!dbHelper.getUserByEmail(email)) {
-                dbHelper.addUser(fullName, email, "", "provider-login");
-            }
-
-            User user = dbHelper.getUserProfile(email);
-            if (user != null) {
-                currentUser = user;
-                return true;
-            }
-        }
-
-        currentUser = new User(fullName, email, "");
-        return true;
+    // Hàm phụ trợ: Lấy dữ liệu User từ Firestore
+    private void fetchUserFromFirestore(String uid, String email, AuthCallback callback) {
+        FirebaseHelper.getFirestore().collection("users").document(uid)
+            .get()
+            .addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    currentUser = documentSnapshot.toObject(User.class);
+                } else {
+                    // Nếu tài khoản chưa có dữ liệu profile trên Firestore thì tạo tạm
+                    currentUser = new User(email.split("@")[0], email, "");
+                }
+                callback.onSuccess(currentUser);
+            })
+            .addOnFailureListener(e -> callback.onError("Lỗi lấy thông tin: " + e.getMessage()));
     }
 
-    // Get current user
     public User getCurrentUser() {
         return currentUser;
     }
 
-    // Check if logged in
-    public boolean isLoggedIn() {
-        return currentUser != null;
-    }
-
-    // Update user profile
-    public void updateUserProfile(User user) {
-        this.currentUser = user;
-    }
-
-    public boolean updateCurrentUserProfile(String fullName, String phoneNumber) {
-        if (currentUser == null || dbHelper == null) {
-            return false;
-        }
-
-        boolean updated = dbHelper.updateUserProfile(currentUser.getId(), fullName, phoneNumber);
-        if (updated) {
-            currentUser.setFullName(fullName);
-            currentUser.setPhoneNumber(phoneNumber);
-        }
-        return updated;
-    }
-
-    // Change password
-    public boolean changePassword(String email, String oldPassword, String newPassword) {
-        String normalizedEmail = normalizeEmail(email);
-
-        if (userDatabase.containsKey(normalizedEmail) &&
-            userDatabase.get(normalizedEmail).equals(oldPassword)) {
-            userDatabase.put(normalizedEmail, newPassword);
-            if (dbHelper != null) {
-                dbHelper.addUserCredential(normalizedEmail, newPassword);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public boolean resetPassword(String email, String newPassword) {
-        String normalizedEmail = normalizeEmail(email);
-        if (dbHelper != null && dbHelper.getUserByEmail(normalizedEmail)) {
-            userDatabase.put(normalizedEmail, newPassword);
-            return dbHelper.updatePassword(normalizedEmail, newPassword);
-        }
-
-        if (userDatabase.containsKey(normalizedEmail)) {
-            userDatabase.put(normalizedEmail, newPassword);
-            return true;
-        }
-        return false;
-    }
-
     private String normalizeEmail(String email) {
         return email == null ? "" : email.trim().toLowerCase();
+    }
+    // Cập nhật Profile lên Firebase
+    public void updateCurrentUserProfile(String fullName, String phoneNumber, AuthCallback callback) {
+        if (currentUser == null) return;
+        currentUser.setFullName(fullName);
+        currentUser.setPhoneNumber(phoneNumber);
+        
+        FirebaseHelper.getFirestore().collection("users").document(FirebaseHelper.getAuth().getUid())
+            .set(currentUser)
+            .addOnSuccessListener(aVoid -> callback.onSuccess(currentUser))
+            .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
+    // Quên mật khẩu (Gửi email reset)
+    public void resetPassword(String email, AuthCallback callback) {
+        FirebaseHelper.getAuth().sendPasswordResetEmail(email)
+            .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+            .addOnFailureListener(e -> callback.onError(e.getMessage()));
+    }
+
+    // Đăng nhập bằng Google/Facebook (Tạm thời để trống, cấu hình sau)
+    public void loginWithProvider(String provider) {
+        // Sẽ code Firebase Social Login vào đây sau
     }
 }

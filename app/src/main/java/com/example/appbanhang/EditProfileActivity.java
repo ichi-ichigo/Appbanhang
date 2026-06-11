@@ -22,7 +22,6 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        AuthManager.initialize(dbHelper);
         authManager = AuthManager.getInstance();
 
         etFullName = findViewById(R.id.et_full_name);
@@ -52,20 +51,27 @@ public class EditProfileActivity extends AppCompatActivity {
         String phone = etPhone.getText().toString().trim();
 
         if (fullName.isEmpty()) {
-            Toast.makeText(this, "Vui long nhap ho ten", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng nhập họ tên", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (phone.length() < 10) {
-            Toast.makeText(this, "So dien thoai phai co it nhat 10 so", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Số điện thoại phải có ít nhất 10 số", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (authManager.updateCurrentUserProfile(fullName, phone)) {
-            Toast.makeText(this, "Da cap nhat ho so", Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            Toast.makeText(this, "Khong the cap nhat ho so", Toast.LENGTH_SHORT).show();
-        }
+        // Gọi hàm update Profile của Firebase (đã đổi sang dùng Callback)
+        authManager.updateCurrentUserProfile(fullName, phone, new AuthManager.AuthCallback() {
+            @Override
+            public void onSuccess(User user) {
+                Toast.makeText(EditProfileActivity.this, "Đã cập nhật hồ sơ", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(EditProfileActivity.this, "Lỗi: " + message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

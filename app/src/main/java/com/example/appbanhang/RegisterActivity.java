@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.appbanhang.database.DatabaseHelper;
 import com.example.appbanhang.managers.AuthManager;
+import com.example.appbanhang.models.User;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -47,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void initializeDatabase() {
         dbHelper = new DatabaseHelper(this);
-        AuthManager.initialize(dbHelper);
+        
     }
 
     private void initializeViews() {
@@ -149,16 +150,19 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // Attempt registration
-        if (authManager.register(email, password, fullName, phone)) {
-            Toast.makeText(this, "Đăng kí thành công! Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
-            
-            // Navigate to LoginActivity
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Email này đã được đăng kí", Toast.LENGTH_SHORT).show();
-        }
+        authManager.register(email, password, fullName, phone, new AuthManager.AuthCallback() {
+            @Override
+            public void onSuccess(User user) {
+                Toast.makeText(RegisterActivity.this, "Đăng kí thành công! Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                finish();
+            }
+
+            @Override
+            public void onError(String message) {
+                Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private boolean isValidEmail(String email) {

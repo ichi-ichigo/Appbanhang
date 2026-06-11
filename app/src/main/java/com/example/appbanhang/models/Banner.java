@@ -1,5 +1,7 @@
 package com.example.appbanhang.models;
 
+import com.google.firebase.firestore.PropertyName;
+
 public class Banner {
     private int id;
     private String title;                      // "Summer Collection", "50% OFF"
@@ -10,6 +12,9 @@ public class Banner {
     private boolean isActive;
     private String backgroundColor;            // Màu overlay
     private String subtitle;                   // Phụ đề banner
+
+    // No-arg constructor required by Firestore
+    public Banner() {}
 
     // Constructor
     public Banner(int id, String title, String imageUrl, String actionUrl, 
@@ -81,10 +86,12 @@ public class Banner {
         this.type = type;
     }
 
+    @PropertyName("isActive")
     public boolean isActive() {
         return isActive;
     }
 
+    @PropertyName("isActive")
     public void setActive(boolean active) {
         isActive = active;
     }

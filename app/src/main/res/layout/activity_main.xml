@@ -1,225 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/app_bg"
     tools:context=".MainActivity">
 
-    <!-- Header -->
+    <!-- Nội dung chính -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <!-- Lời chào -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Xin chào, Sultan !"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chào mừng trở lại"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="4dp" />
-
-        </LinearLayout>
-
-        <!-- Avatar -->
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/user_avatar"
-            android:src="@drawable/ic_launcher_foreground"
-            android:scaleType="centerCrop" />
-
-    </LinearLayout>
-
-    <!-- ScrollView cho nội dung -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
+        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
 
-            <!-- 🔥 CAROUSEL BANNER (NEW) -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/app_bg"
-                android:layout_marginBottom="16dp">
+            <!-- Lời chào -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <!-- ViewPager2 cho carousel -->
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/banner_view_pager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <!-- Dot indicator -->
-                <LinearLayout
-                    android:id="@+id/dots_indicator"
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/banner_view_pager"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center"
-                    android:orientation="horizontal" />
+                    android:text="Smarteshop 👟"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary" />
 
-            </RelativeLayout>
-
-            <!-- Thương hiệu (Brands) -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thương Hiệu"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="12dp" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp">
-
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:layout_height="wrap_content"
+                    android:text="Chào mừng trở lại"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="2dp" />
 
-                    <Button
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:text="Nike"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_primary"
-                        android:textAllCaps="false"
-                        android:background="@drawable/bg_chip"
-                        android:layout_marginEnd="8dp" />
+            </LinearLayout>
 
-                    <Button
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:text="Puma"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_primary"
-                        android:textAllCaps="false"
-                        android:background="@drawable/bg_chip"
-                        android:layout_marginEnd="8dp" />
-
-                    <Button
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:text="Adidas"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_primary"
-                        android:textAllCaps="false"
-                        android:background="@drawable/bg_chip"
-                        android:layout_marginEnd="8dp" />
-
-                    <Button
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:text="Nike"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_primary"
-                        android:textAllCaps="false"
-                        android:background="@drawable/bg_chip"
-                        android:layout_marginEnd="8dp" />
-
-                </LinearLayout>
-
-            </HorizontalScrollView>
-
-            <!-- RecyclerView cho sản phẩm (2 cột) -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_products"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
+            <!-- Avatar -->
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="@string/user_avatar"
+                android:src="@drawable/ic_launcher_foreground"
+                android:scaleType="centerCrop" />
 
         </LinearLayout>
 
-    </ScrollView>
+        <!-- ScrollView cho nội dung -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-    <!-- Bottom Navigation -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:weightSum="5"
-        android:background="@drawable/bg_card"
-        android:elevation="8dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
 
-        <Button
-            android:id="@+id/btn_home"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="🏠"
-            android:textSize="20sp"
-            android:background="@drawable/button_icon_style" />
+                <!-- Banner Carousel -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/app_bg"
+                    android:layout_marginBottom="16dp">
 
-        <Button
-            android:id="@+id/btn_search"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="🔍"
-            android:textSize="20sp"
-            android:background="@drawable/button_icon_style" />
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/banner_view_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
-        <Button
-            android:id="@+id/btn_cart"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="🛒"
-            android:textSize="20sp"
-            android:background="@drawable/button_icon_style" />
+                    <LinearLayout
+                        android:id="@+id/dots_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/banner_view_pager"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center"
+                        android:orientation="horizontal" />
 
-        <Button
-            android:id="@+id/btn_wishlist"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="❤️"
-            android:textSize="20sp"
-            android:background="@drawable/button_icon_style" />
+                </RelativeLayout>
 
-        <Button
-            android:id="@+id/btn_account"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="👤"
-            android:textSize="20sp"
-            android:background="@drawable/button_icon_style" />
+                <!-- Thương hiệu (Brands) -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thương Hiệu"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="12dp" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <Button
+                            android:layout_width="80dp"
+                            android:layout_height="40dp"
+                            android:text="Nike"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_primary"
+                            android:textAllCaps="false"
+                            android:background="@drawable/bg_chip"
+                            android:layout_marginEnd="8dp" />
+
+                        <Button
+                            android:layout_width="80dp"
+                            android:layout_height="40dp"
+                            android:text="Adidas"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_primary"
+                            android:textAllCaps="false"
+                            android:background="@drawable/bg_chip"
+                            android:layout_marginEnd="8dp" />
+
+                        <Button
+                            android:layout_width="80dp"
+                            android:layout_height="40dp"
+                            android:text="Puma"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_primary"
+                            android:textAllCaps="false"
+                            android:background="@drawable/bg_chip"
+                            android:layout_marginEnd="8dp" />
+
+                        <Button
+                            android:layout_width="80dp"
+                            android:layout_height="40dp"
+                            android:text="Converse"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_primary"
+                            android:textAllCaps="false"
+                            android:background="@drawable/bg_chip"
+                            android:layout_marginEnd="8dp" />
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+                <!-- Tiêu đề sản phẩm -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sản Phẩm Nổi Bật"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- RecyclerView sản phẩm 2 cột -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_products"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <!-- Bottom Navigation -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="5"
+            android:background="@drawable/bg_card"
+            android:elevation="8dp">
+
+            <Button
+                android:id="@+id/btn_home"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="🏠"
+                android:textSize="20sp"
+                android:background="@drawable/button_icon_style" />
+
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="🔍"
+                android:textSize="20sp"
+                android:background="@drawable/button_icon_style" />
+
+            <Button
+                android:id="@+id/btn_cart"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="🛒"
+                android:textSize="20sp"
+                android:background="@drawable/button_icon_style" />
+
+            <Button
+                android:id="@+id/btn_wishlist"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="❤️"
+                android:textSize="20sp"
+                android:background="@drawable/button_icon_style" />
+
+            <Button
+                android:id="@+id/btn_account"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="👤"
+                android:textSize="20sp"
+                android:background="@drawable/button_icon_style" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <!-- Loading Spinner (hiện khi đang tải từ Firestore) -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleLarge" />
+
+</FrameLayout>

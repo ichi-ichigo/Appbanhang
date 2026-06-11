@@ -1,5 +1,7 @@
 package com.example.appbanhang.models;
 
+import com.google.firebase.firestore.PropertyName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,11 @@ public class Product {
     private int stock;                         // Số lượng còn
     private String color;                      // Màu sắc chính
     private boolean isNew;                     // Sản phẩm mới
+
+    // No-arg constructor required by Firestore
+    public Product() {
+        this.imageUrls = new ArrayList<>();
+    }
 
     // Constructor - with basic fields
     public Product(int id, String name, String category, double price, 
@@ -188,10 +195,12 @@ public class Product {
         this.color = color;
     }
 
+    @PropertyName("isNew")
     public boolean isNew() {
         return isNew;
     }
 
+    @PropertyName("isNew")
     public void setNew(boolean aNew) {
         isNew = aNew;
     }

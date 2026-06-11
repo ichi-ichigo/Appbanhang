@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -25,7 +27,7 @@ import com.example.appbanhang.managers.WishlistManager;
 import com.example.appbanhang.models.Banner;
 import com.example.appbanhang.models.Product;
 import com.example.appbanhang.database.DatabaseHelper;
-import com.example.appbanhang.utils.DataProvider;
+import com.example.appbanhang.firebase.FirestoreRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +38,12 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout dotsIndicator;
     private RecyclerView recyclerProducts;
     private Button btnHome, btnSearch, btnCart, btnWishlist, btnAccount;
+    private ProgressBar progressBar;
     private DatabaseHelper dbHelper;
     private CartManager cartManager;
     private AuthManager authManager;
     private WishlistManager wishlistManager;
+    private FirestoreRepository firestoreRepository;
     private List<Product> productList;
     private List<Banner> bannerList;
     private BannerAdapter bannerAdapter;
@@ -52,20 +56,15 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         
-        // Áp dụng window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Initialize
         initializeManagers();
         initializeViews();
-        loadBanners();
-        setupBannerCarousel();
-        loadProducts();
-        setupRecyclerView();
+        fetchData();
         setupNavigationButtons();
     }
 
@@ -77,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         cartManager.syncFromDatabase();
         wishlistManager = WishlistManager.getInstance();
         WishlistManager.initialize(dbHelper, authManager);
+        firestoreRepository = FirestoreRepository.getInstance();
         bannerHandler = new Handler(Looper.getMainLooper());
     }
 
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         bannerViewPager = findViewById(R.id.banner_view_pager);
         dotsIndicator = findViewById(R.id.dots_indicator);
         recyclerProducts = findViewById(R.id.recycler_products);
+        progressBar = findViewById(R.id.progress_bar);
         btnHome = findViewById(R.id.btn_home);
         btnSearch = findViewById(R.id.btn_search);
         btnCart = findViewById(R.id.btn_cart);
@@ -91,48 +92,67 @@ public class MainActivity extends AppCompatActivity {
         btnAccount = findViewById(R.id.btn_account);
     }
 
-    private void loadBanners() {
-        bannerList = DataProvider.getBanners();
+    private void fetchData() {
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Load banners
+        firestoreRepository.fetchBanners(new FirestoreRepository.BannersCallback() {
+            @Override
+            public void onSuccess(List<Banner> banners) {
+                bannerList = banners;
+                if (!bannerList.isEmpty()) {
+                    setupBannerCarousel();
+                }
+            }
+            @Override
+            public void onError(String errorMessage) {
+                // Banner lỗi không block app
+                bannerList = new ArrayList<>();
+            }
+        });
+
+        // Load products
+        firestoreRepository.fetchProducts(new FirestoreRepository.ProductsCallback() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                progressBar.setVisibility(View.GONE);
+                productList = products;
+                if (productList.isEmpty()) {
+                    Toast.makeText(MainActivity.this,
+                        "Chưa có sản phẩm. Hãy thêm trên Firebase!", Toast.LENGTH_LONG).show();
+                }
+                setupRecyclerView();
+            }
+            @Override
+            public void onError(String errorMessage) {
+                progressBar.setVisibility(View.GONE);
+                productList = new ArrayList<>();
+                Toast.makeText(MainActivity.this,
+                    "Lỗi tải sản phẩm: " + errorMessage, Toast.LENGTH_LONG).show();
+                setupRecyclerView();
+            }
+        });
     }
 
     private void setupBannerCarousel() {
+        if (bannerList == null || bannerList.isEmpty()) return;
         bannerAdapter = new BannerAdapter(bannerList, this);
         bannerViewPager.setAdapter(bannerAdapter);
-        
-        // Setup banner click listener
-        bannerAdapter.setOnBannerClickListener(banner -> {
-            Toast.makeText(MainActivity.this, 
-                "Clicked: " + banner.getTitle(), Toast.LENGTH_SHORT).show();
-        });
-
-        // Setup dots indicator
         setupDotsIndicator();
-        
-        // Auto-scroll banner every 5 seconds
         startBannerAutoScroll();
     }
 
     private void setupDotsIndicator() {
         dotsIndicator.removeAllViews();
-        
         for (int i = 0; i < bannerList.size(); i++) {
             android.widget.ImageView dot = new android.widget.ImageView(this);
-            dot.setImageResource(i == 0 ? 
-                android.R.drawable.presence_online : 
-                android.R.drawable.presence_offline);
+            dot.setImageResource(i == 0 ? android.R.drawable.presence_online : android.R.drawable.presence_offline);
             dot.setScaleX(0.6f);
             dot.setScaleY(0.6f);
-            
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            );
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(5, 0, 5, 0);
-            
             dotsIndicator.addView(dot, params);
         }
-        
-        // Update dots when banner changes
         bannerViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -145,23 +165,19 @@ public class MainActivity extends AppCompatActivity {
     private void updateDotsIndicator(int position) {
         for (int i = 0; i < dotsIndicator.getChildCount(); i++) {
             android.widget.ImageView dot = (android.widget.ImageView) dotsIndicator.getChildAt(i);
-            dot.setImageResource(i == position ? 
-                android.R.drawable.presence_online : 
-                android.R.drawable.presence_offline);
+            dot.setImageResource(i == position ? android.R.drawable.presence_online : android.R.drawable.presence_offline);
         }
     }
 
     private void startBannerAutoScroll() {
-        if (bannerList == null || bannerList.isEmpty()) {
-            return;
-        }
+        if (bannerList == null || bannerList.isEmpty()) return;
         stopBannerAutoScroll();
         bannerRunnable = new Runnable() {
             @Override
             public void run() {
                 int nextItem = (bannerViewPager.getCurrentItem() + 1) % bannerList.size();
                 bannerViewPager.setCurrentItem(nextItem, true);
-                bannerHandler.postDelayed(this, 5000); // Auto-scroll every 5 seconds
+                bannerHandler.postDelayed(this, 5000);
             }
         };
         bannerHandler.postDelayed(bannerRunnable, 5000);
@@ -173,20 +189,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadProducts() {
-        // Load products from DataProvider with images
-        productList = DataProvider.getProducts();
-        dbHelper.seedProductsIfEmpty(productList);
+    private void setupRecyclerView() {
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        recyclerProducts.setLayoutManager(gridLayoutManager);
         wishlistManager.syncFromDatabase(productList);
         for (Product product : productList) {
             product.setFavorite(wishlistManager.isInWishlist(product.getId()));
         }
-    }
-
-    private void setupRecyclerView() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-        recyclerProducts.setLayoutManager(gridLayoutManager);
-        
         ProductAdapter adapter = new ProductAdapter(productList, this);
         adapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
@@ -198,47 +207,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFavoriteClick(Product product, boolean isFavorite) {
-                if (isFavorite) {
-                    wishlistManager.addToWishlist(product);
-                } else {
-                    wishlistManager.removeFromWishlistById(product.getId());
-                }
-                String message = isFavorite ? 
-                    "Added to Wishlist: " + product.getName() :
-                    "Removed from Wishlist: " + product.getName();
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                if (isFavorite) wishlistManager.addToWishlist(product);
+                else wishlistManager.removeFromWishlistById(product.getId());
+                Toast.makeText(MainActivity.this, (isFavorite ? "Added to " : "Removed from ") + "Wishlist", Toast.LENGTH_SHORT).show();
             }
         });
         recyclerProducts.setAdapter(adapter);
     }
 
     private void setupNavigationButtons() {
-        btnHome.setOnClickListener(v -> {
-            Toast.makeText(this, "Trang Chủ", Toast.LENGTH_SHORT).show();
-        });
-
-        btnSearch.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-            startActivity(intent);
-        });
-
-        btnCart.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CartActivity.class);
-            startActivity(intent);
-        });
-
-        btnWishlist.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, WishlistActivity.class);
-            startActivity(intent);
-        });
-
+        btnHome.setOnClickListener(v -> {});
+        btnSearch.setOnClickListener(v -> startActivity(new Intent(this, SearchActivity.class)));
+        btnCart.setOnClickListener(v -> startActivity(new Intent(this, CartActivity.class)));
+        btnWishlist.setOnClickListener(v -> startActivity(new Intent(this, WishlistActivity.class)));
         btnAccount.setOnClickListener(v -> {
-            if (authManager.isLoggedIn()) {
-                Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Vui lòng Đăng Nhập", Toast.LENGTH_SHORT).show();
-            }
+            if (authManager.isLoggedIn()) startActivity(new Intent(this, AccountActivity.class));
+            else Toast.makeText(this, "Vui lòng Đăng Nhập", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -251,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (bannerViewPager != null && bannerList != null && bannerList.size() > 0) {
+        if (bannerViewPager != null && bannerList != null && !bannerList.isEmpty()) {
             startBannerAutoScroll();
         }
     }

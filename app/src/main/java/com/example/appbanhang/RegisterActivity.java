@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +21,8 @@ import com.example.appbanhang.models.User;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText etFullName, etEmail, etPhone, etPassword, etConfirmPassword;
-    private Button btnRegister, btnBackRegister;
+    private Button btnRegister;
+    private ImageButton btnBackRegister;
     private CheckBox cbTerms;
     private TextView tvTermsLink, tvLogin;
     private AuthManager authManager;
@@ -31,24 +33,20 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Apply window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Initialize
         initializeDatabase();
         initializeViews();
         initializeManager();
         setupListeners();
-        setupCompletedListeners();
     }
 
     private void initializeDatabase() {
         dbHelper = new DatabaseHelper(this);
-        
     }
 
     private void initializeViews() {
@@ -70,29 +68,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void setupListeners() {
         btnRegister.setOnClickListener(v -> handleRegister());
-        
-        btnBackRegister.setOnClickListener(v -> {
-            finish();
-        });
-        
+        btnBackRegister.setOnClickListener(v -> finish());
         tvTermsLink.setOnClickListener(v -> {
             Intent intent = new Intent(RegisterActivity.this, AccountInfoActivity.class);
             intent.putExtra("screen", "terms");
             startActivity(intent);
         });
-        
         tvLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             finish();
-        });
-    }
-
-    private void setupCompletedListeners() {
-        tvTermsLink.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterActivity.this, AccountInfoActivity.class);
-            intent.putExtra("screen", "terms");
-            startActivity(intent);
         });
     }
 
@@ -103,57 +87,49 @@ public class RegisterActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        // Validation
         if (fullName.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập họ và tên", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (email.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập email", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (!isValidEmail(email)) {
             Toast.makeText(this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (phone.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (phone.length() < 10) {
             Toast.makeText(this, "Số điện thoại phải có ít nhất 10 chữ số", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (password.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập mật khẩu", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (password.length() < 6) {
             Toast.makeText(this, "Mật khẩu phải có ít nhất 6 ký tự", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (!password.equals(confirmPassword)) {
             Toast.makeText(this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (!cbTerms.isChecked()) {
-            Toast.makeText(this, "Vui lòng chấp nhận điều khoản & dịch vụ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng chấp nhận điều khoản và dịch vụ", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Attempt registration
         authManager.register(email, password, fullName, phone, new AuthManager.AuthCallback() {
             @Override
             public void onSuccess(User user) {
-                Toast.makeText(RegisterActivity.this, "Đăng kí thành công! Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this,
+                        "Đăng ký thành công! Vui lòng đăng nhập",
+                        Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                 finish();
             }

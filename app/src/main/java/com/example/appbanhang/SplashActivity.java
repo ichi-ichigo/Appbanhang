@@ -1,9 +1,9 @@
 package com.example.appbanhang;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,17 +26,28 @@ public class SplashActivity extends AppCompatActivity {
         CartManager.initialize(dbHelper, authManager);
         WishlistManager.initialize(dbHelper, authManager);
 
-        new Handler().postDelayed(() -> {
-            Intent intent;
-            // Thay đổi lớn: Check bằng Firebase isLoggedIn
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (authManager.isLoggedIn()) {
-                CartManager.getInstance().syncFromDatabase();
-                intent = new Intent(SplashActivity.this, MainActivity.class);
-            } else {
-                intent = new Intent(SplashActivity.this, LoginActivity.class);
+                CartManager.getInstance().syncCart(new CartManager.CartSyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        openScreen(MainActivity.class);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        openScreen(MainActivity.class);
+                    }
+                });
+                return;
             }
-            startActivity(intent);
-            finish();
+
+            openScreen(LoginActivity.class);
         }, 2000);
+    }
+
+    private void openScreen(Class<?> activityClass) {
+        startActivity(new Intent(SplashActivity.this, activityClass));
+        finish();
     }
 }

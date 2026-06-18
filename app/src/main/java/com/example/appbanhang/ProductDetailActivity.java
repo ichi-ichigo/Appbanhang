@@ -3,8 +3,8 @@ package com.example.appbanhang;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,26 +14,24 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.appbanhang.database.DatabaseHelper;
+import com.example.appbanhang.firebase.FirestoreRepository;
 import com.example.appbanhang.managers.AuthManager;
 import com.example.appbanhang.managers.CartManager;
 import com.example.appbanhang.managers.ImageManager;
 import com.example.appbanhang.managers.WishlistManager;
 import com.example.appbanhang.models.Product;
-import com.example.appbanhang.utils.DataProvider;
+import com.example.appbanhang.utils.ProductDisplayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
     private ImageView imgProductMain;
-    private LinearLayout thumbnailContainer;
     private TextView tvProductName, tvProductCategory, tvProductPrice, tvProductDescription;
-    private Button btnBack, btnBuyNow, btnFavorite;
-    private CartManager cartManager;
+    private ImageButton btnBack, btnFavorite;
+    private Button btnBuyNow;
     private WishlistManager wishlistManager;
-    private DatabaseHelper dbHelper;
-    private AuthManager authManager;
+    private FirestoreRepository firestoreRepository;
     private Product product;
 
     @Override
@@ -47,16 +45,14 @@ public class ProductDetailActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Initialize
         initializeViews();
         initializeManagers();
-        loadProductData();
         setupListeners();
+        loadProductData();
     }
 
     private void initializeViews() {
         imgProductMain = findViewById(R.id.img_product_main);
-        thumbnailContainer = findViewById(R.id.thumbnail_container);
         tvProductName = findViewById(R.id.txt_product_name);
         tvProductCategory = findViewById(R.id.txt_product_category);
         tvProductPrice = findViewById(R.id.txt_product_price);
@@ -67,45 +63,12 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void initializeManagers() {
-        dbHelper = new DatabaseHelper(this);
-        authManager = AuthManager.getInstance();
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        AuthManager authManager = AuthManager.getInstance();
         CartManager.initialize(dbHelper, authManager);
         WishlistManager.initialize(dbHelper, authManager);
-        cartManager = CartManager.getInstance();
         wishlistManager = WishlistManager.getInstance();
-    }
-
-    private void loadProductData() {
-        Intent intent = getIntent();
-        int productId = intent.getIntExtra("product_id", intent.getIntExtra("productId", 0));
-        product = DataProvider.getProductById(productId);
-
-        if (product == null && productId != 0) {
-            product = new Product(
-                    productId,
-                    getStringExtraOrDefault(intent, "productName", "Sản phẩm"),
-                    getStringExtraOrDefault(intent, "productCategory", ""),
-                    intent.getDoubleExtra("productPrice", 0),
-                    getStringExtraOrDefault(intent, "productImage", ""),
-                    getStringExtraOrDefault(intent, "productDescription", ""),
-                    intent.getDoubleExtra("productRating", 0),
-                    getStringExtraOrDefault(intent, "productBrand", "")
-            );
-        }
-
-        if (product == null) {
-            Toast.makeText(this, "Không tìm thấy sản phẩm", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        product.setFavorite(wishlistManager.isInWishlist(product.getId()));
-        tvProductName.setText(product.getName());
-        tvProductCategory.setText(product.getCategory());
-        tvProductPrice.setText(String.format("Rp. %.0f", product.getPrice()));
-        tvProductDescription.setText(product.getDescription());
-        updateFavoriteButton();
-        setupGallery();
+        firestoreRepository = FirestoreRepository.getInstance();
     }
 
     private void setupListeners() {
@@ -114,8 +77,44 @@ public class ProductDetailActivity extends AppCompatActivity {
         btnFavorite.setOnClickListener(v -> handleFavorite());
     }
 
+    private void loadProductData() {
+        Intent intent = getIntent();
+        int productId = intent.getIntExtra("product_id", intent.getIntExtra("productId", 0));
+
+        if (productId == 0) {
+            Toast.makeText(this, "Không tìm thấy mã sản phẩm", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        firestoreRepository.fetchSingleProductById(productId, new FirestoreRepository.ProductCallback() {
+            @Override
+            public void onSuccess(Product firebaseProduct) {
+                product = firebaseProduct;
+                bindProduct();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(ProductDetailActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+    }
+
+    private void bindProduct() {
+        product.setFavorite(wishlistManager.isInWishlist(product.getId()));
+        tvProductName.setText(safeText(product.getName(), "Sản phẩm"));
+        tvProductCategory.setText("Danh mục: " + ProductDisplayUtils.category(product.getCategory()));
+        tvProductPrice.setText(String.format(new Locale("vi", "VN"), "%,.0f VND", product.getPrice()));
+        tvProductDescription.setText(ProductDisplayUtils.description(product.getDescription()));
+        ImageManager.getInstance().loadImageWithAnimation(product.getImageUrl(), imgProductMain);
+        updateFavoriteButton();
+    }
+
     private void handleBuyNow() {
         if (product == null) {
+            Toast.makeText(this, "Sản phẩm đang tải, vui lòng thử lại", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -141,50 +140,15 @@ public class ProductDetailActivity extends AppCompatActivity {
         updateFavoriteButton();
     }
 
-    private void setupGallery() {
-        List<String> imageUrls = new ArrayList<>();
-        if (product.getImageUrls() != null) {
-            imageUrls.addAll(product.getImageUrls());
-        }
-        if (imageUrls.isEmpty() && product.getImageUrl() != null && !product.getImageUrl().isEmpty()) {
-            imageUrls.add(product.getImageUrl());
-        }
-
-        if (imageUrls.isEmpty()) {
-            imgProductMain.setImageResource(R.drawable.ic_launcher_foreground);
-            thumbnailContainer.removeAllViews();
-            return;
-        }
-
-        ImageManager.getInstance().loadImageWithAnimation(imageUrls.get(0), imgProductMain);
-        thumbnailContainer.removeAllViews();
-
-        for (String imageUrl : imageUrls) {
-            ImageView thumbnail = new ImageView(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dpToPx(70), dpToPx(70));
-            params.setMargins(0, 0, dpToPx(8), 0);
-            thumbnail.setLayoutParams(params);
-            thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            thumbnail.setContentDescription(getString(R.string.product_thumbnail));
-            thumbnail.setBackgroundColor(0xFFEFEFEF);
-            thumbnail.setPadding(dpToPx(2), dpToPx(2), dpToPx(2), dpToPx(2));
-            ImageManager.getInstance().loadThumbnail(imageUrl, thumbnail);
-            thumbnail.setOnClickListener(v ->
-                    ImageManager.getInstance().loadImageWithAnimation(imageUrl, imgProductMain));
-            thumbnailContainer.addView(thumbnail);
-        }
-    }
-
     private void updateFavoriteButton() {
-        btnFavorite.setText(product != null && product.isFavorite() ? "❤️" : "🤍");
+        boolean isFavorite = product != null && product.isFavorite();
+        btnFavorite.setSelected(isFavorite);
+        btnFavorite.setImageResource(isFavorite
+                ? R.drawable.ic_favorite_filled
+                : R.drawable.ic_favorite_outline);
     }
 
-    private String getStringExtraOrDefault(Intent intent, String key, String defaultValue) {
-        String value = intent.getStringExtra(key);
-        return value == null ? defaultValue : value;
-    }
-
-    private int dpToPx(int dp) {
-        return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
+    private String safeText(String value, String fallback) {
+        return value == null || value.trim().isEmpty() ? fallback : value;
     }
 }

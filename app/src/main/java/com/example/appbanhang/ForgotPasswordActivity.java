@@ -5,13 +5,15 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
-import com.example.appbanhang.database.DatabaseHelper;
 import com.example.appbanhang.managers.AuthManager;
 import com.example.appbanhang.models.User;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
-    private EditText etEmail, etNewPassword, etConfirmPassword;
+    private EditText etEmail;
     private AuthManager authManager;
 
     @Override
@@ -19,12 +21,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forgot_password);
 
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        authManager = AuthManager.getInstance();
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
+        authManager = AuthManager.getInstance();
         etEmail = findViewById(R.id.et_email);
-        etNewPassword = findViewById(R.id.et_new_password);
-        etConfirmPassword = findViewById(R.id.et_confirm_password);
 
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
         findViewById(R.id.btn_reset_password).setOnClickListener(v -> resetPassword());
@@ -38,11 +42,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             return;
         }
 
-        // Gọi hàm reset mật khẩu của Firebase (gửi email)
         authManager.resetPassword(email, new AuthManager.AuthCallback() {
             @Override
             public void onSuccess(User user) {
-                Toast.makeText(ForgotPasswordActivity.this, "Đã gửi link đặt lại mật khẩu vào Email của bạn!", Toast.LENGTH_LONG).show();
+                Toast.makeText(ForgotPasswordActivity.this,
+                        "Đã gửi liên kết đặt lại mật khẩu vào email của bạn.",
+                        Toast.LENGTH_LONG).show();
                 finish();
             }
 

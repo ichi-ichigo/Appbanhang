@@ -5,7 +5,40 @@
     android:orientation="vertical"
     android:background="@color/app_bg">
 
-    <!-- Header với Avatar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/button_icon_style"
+            android:contentDescription="@string/back"
+            android:padding="8dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_arrow_back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Tài khoản"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,18 +46,22 @@
         android:padding="16dp"
         android:gravity="center">
 
-        <Button
+        <ImageView
             android:id="@+id/btn_edit_profile"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="@drawable/ic_launcher_foreground"
-            android:layout_marginBottom="12dp" />
+            android:background="@drawable/bg_avatar_placeholder"
+            android:contentDescription="@string/user_avatar"
+            android:layout_marginBottom="12dp"
+            android:padding="3dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_user_avatar" />
 
         <TextView
             android:id="@+id/txt_account_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sultan Mahesa"
+            android:text="Người dùng"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
@@ -34,13 +71,12 @@
             android:id="@+id/txt_account_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Profil"
+            android:text="Chỉnh sửa hồ sơ"
             android:textSize="12sp"
             android:textColor="@color/primary" />
 
     </LinearLayout>
 
-    <!-- ScrollView cho nội dung -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -52,14 +88,12 @@
             android:orientation="vertical"
             android:padding="12dp">
 
-            <!-- Thống kê -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:orientation="horizontal"
                 android:layout_marginBottom="16dp">
 
-                <!-- Pengambilan -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -81,14 +115,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lượt Lấy"
+                        android:text="Đơn hàng"
                         android:textSize="12sp"
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="4dp" />
 
                 </LinearLayout>
 
-                <!-- Dikirimi -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -110,14 +143,13 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lượt Gửi"
+                        android:text="Đã giao"
                         android:textSize="12sp"
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="4dp" />
 
                 </LinearLayout>
 
-                <!-- Siap untuk Pickup -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -131,7 +163,7 @@
                         android:id="@+id/txt_ready_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1"
+                        android:text="0"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary" />
@@ -139,7 +171,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sẵn Sàng Lấy"
+                        android:text="Đang xử lý"
                         android:textSize="12sp"
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="4dp" />
@@ -148,7 +180,6 @@
 
             </LinearLayout>
 
-            <!-- Menu Chính -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -156,7 +187,6 @@
                 android:background="@drawable/bg_card"
                 android:layout_marginBottom="12dp">
 
-                <!-- Đơn Hàng Của Tôi -->
                 <LinearLayout
                     android:id="@+id/menu_my_orders"
                     android:layout_width="match_parent"
@@ -170,26 +200,21 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Đơn Hàng Của Tôi"
+                        android:text="Đơn hàng của tôi"
                         android:textSize="14sp"
                         android:textColor="@color/text_primary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="→"
+                        android:text=">"
                         android:textSize="18sp"
                         android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
-                <!-- Separator -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
 
-                <!-- Voucher -->
                 <LinearLayout
                     android:id="@+id/menu_voucher"
                     android:layout_width="match_parent"
@@ -203,22 +228,16 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Voucher"
+                        android:text="Mã giảm giá"
                         android:textSize="14sp"
                         android:textColor="@color/text_primary" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="→"
-                        android:textSize="18sp"
-                        android:textColor="@color/text_secondary" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textSize="18sp" android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Menu Thứ hai -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -226,7 +245,6 @@
                 android:background="@drawable/bg_card"
                 android:layout_marginBottom="12dp">
 
-                <!-- Địa Chỉ Giao Hàng -->
                 <LinearLayout
                     android:id="@+id/menu_shipping_address"
                     android:layout_width="match_parent"
@@ -236,30 +254,13 @@
                     android:paddingHorizontal="16dp"
                     android:background="?attr/selectableItemBackground">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Địa Chỉ Giao Hàng"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="→"
-                        android:textSize="18sp"
-                        android:textColor="@color/text_secondary" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Địa chỉ giao hàng" android:textSize="14sp" android:textColor="@color/text_primary" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textSize="18sp" android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
-                <!-- Separator -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
 
-                <!-- Câu Hỏi Thường Gặp -->
                 <LinearLayout
                     android:id="@+id/menu_faq"
                     android:layout_width="match_parent"
@@ -269,26 +270,13 @@
                     android:paddingHorizontal="16dp"
                     android:background="?attr/selectableItemBackground">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Câu Hỏi Thường Gặp"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="→"
-                        android:textSize="18sp"
-                        android:textColor="@color/text_secondary" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Câu hỏi thường gặp" android:textSize="14sp" android:textColor="@color/text_primary" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textSize="18sp" android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Menu Thứ ba -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -296,7 +284,6 @@
                 android:background="@drawable/bg_card"
                 android:layout_marginBottom="12dp">
 
-                <!-- Dịch Vụ Khách Hàng -->
                 <LinearLayout
                     android:id="@+id/menu_customer_service"
                     android:layout_width="match_parent"
@@ -306,30 +293,13 @@
                     android:paddingHorizontal="16dp"
                     android:background="?attr/selectableItemBackground">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Dịch Vụ Khách Hàng"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="→"
-                        android:textSize="18sp"
-                        android:textColor="@color/text_secondary" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Dịch vụ khách hàng" android:textSize="14sp" android:textColor="@color/text_primary" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textSize="18sp" android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
-                <!-- Separator -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/line" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/line" />
 
-                <!-- Cài Đặt -->
                 <LinearLayout
                     android:id="@+id/menu_settings"
                     android:layout_width="match_parent"
@@ -339,20 +309,8 @@
                     android:paddingHorizontal="16dp"
                     android:background="?attr/selectableItemBackground">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Cài Đặt"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="→"
-                        android:textSize="18sp"
-                        android:textColor="@color/text_secondary" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Cài đặt" android:textSize="14sp" android:textColor="@color/text_primary" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textSize="18sp" android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
@@ -363,8 +321,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/button_delete_style"
-                android:text="Đăng Xuất"
+                android:background="@drawable/button_buy_style"
+                android:backgroundTint="@null"
+                android:text="Đăng xuất"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
                 android:textAllCaps="false"

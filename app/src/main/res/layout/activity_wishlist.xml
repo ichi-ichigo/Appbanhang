@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:background="@color/app_bg">
 
-    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,32 +12,30 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="←"
-            android:textSize="24sp"
-            android:textColor="@color/text_primary"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_arrow_back"
+            android:scaleType="center"
+            android:padding="8dp"
             android:background="@drawable/button_icon_style" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Danh Sách Yêu Thích"
+            android:text="Danh sách yêu thích"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
             android:gravity="center" />
 
-        <View
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+        <View android:layout_width="40dp" android:layout_height="40dp" />
 
     </LinearLayout>
 
-    <!-- RecyclerView cho sản phẩm yêu thích -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_wishlist"
         android:layout_width="match_parent"
@@ -46,7 +43,6 @@
         android:layout_weight="1"
         android:padding="12dp" />
 
-    <!-- Empty State (hiển thị khi không có sản phẩm) -->
     <LinearLayout
         android:id="@+id/empty_state"
         android:layout_width="match_parent"
@@ -72,6 +68,7 @@
             android:textColor="@color/white"
             android:textAllCaps="false"
             android:background="@drawable/button_brand_style"
+            android:backgroundTint="@null"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>

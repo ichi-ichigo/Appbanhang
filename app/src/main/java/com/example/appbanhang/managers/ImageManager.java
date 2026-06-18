@@ -1,11 +1,13 @@
 package com.example.appbanhang.managers;
 
 import android.content.Context;
+import android.net.Uri;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.appbanhang.R;
+import com.example.appbanhang.firebase.FirebaseHelper;
 
 public class ImageManager {
     private static ImageManager instance;
@@ -26,14 +28,14 @@ public class ImageManager {
      */
     public void loadImage(String imageUrl, ImageView imageView) {
         if (imageUrl == null || imageUrl.isEmpty()) {
-            imageView.setImageResource(R.drawable.ic_launcher_foreground);
+            imageView.setImageResource(R.drawable.ic_product_placeholder);
             return;
         }
         
         Glide.with(imageView.getContext())
              .load(imageUrl)
-             .placeholder(R.drawable.ic_launcher_foreground)
-             .error(R.drawable.ic_launcher_foreground)
+             .placeholder(R.drawable.ic_product_placeholder)
+             .error(R.drawable.ic_product_placeholder)
              .centerCrop()
              .into(imageView);
     }
@@ -45,15 +47,15 @@ public class ImageManager {
      */
     public void loadImageWithAnimation(String imageUrl, ImageView imageView) {
         if (imageUrl == null || imageUrl.isEmpty()) {
-            imageView.setImageResource(R.drawable.ic_launcher_foreground);
+            imageView.setImageResource(R.drawable.ic_product_placeholder);
             return;
         }
         
         Glide.with(imageView.getContext())
              .load(imageUrl)
              .transition(DrawableTransitionOptions.withCrossFade())
-             .placeholder(R.drawable.ic_launcher_foreground)
-             .error(R.drawable.ic_launcher_foreground)
+             .placeholder(R.drawable.ic_product_placeholder)
+             .error(R.drawable.ic_product_placeholder)
              .centerCrop()
              .into(imageView);
     }
@@ -65,14 +67,14 @@ public class ImageManager {
      */
     public void loadThumbnail(String imageUrl, ImageView imageView) {
         if (imageUrl == null || imageUrl.isEmpty()) {
-            imageView.setImageResource(R.drawable.ic_launcher_foreground);
+            imageView.setImageResource(R.drawable.ic_product_placeholder);
             return;
         }
         
         Glide.with(imageView.getContext())
              .load(imageUrl)
-             .placeholder(R.drawable.ic_launcher_foreground)
-             .error(R.drawable.ic_launcher_foreground)
+             .placeholder(R.drawable.ic_product_placeholder)
+             .error(R.drawable.ic_product_placeholder)
              .fitCenter()
              .into(imageView);
     }
@@ -84,16 +86,66 @@ public class ImageManager {
      */
     public void loadBannerImage(String imageUrl, ImageView imageView) {
         if (imageUrl == null || imageUrl.isEmpty()) {
-            imageView.setImageResource(R.drawable.ic_launcher_foreground);
+            imageView.setImageResource(R.drawable.ic_product_placeholder);
+            return;
+        }
+
+        if (imageUrl.startsWith("gs://")) {
+            FirebaseHelper.getStorage()
+                    .getReferenceFromUrl(imageUrl)
+                    .getDownloadUrl()
+                    .addOnSuccessListener(uri ->
+                            Glide.with(imageView.getContext())
+                                    .load(uri)
+                                    .placeholder(R.drawable.ic_product_placeholder)
+                                    .error(R.drawable.ic_product_placeholder)
+                                    .centerCrop()
+                                    .into(imageView))
+                    .addOnFailureListener(error ->
+                            imageView.setImageResource(R.drawable.ic_product_placeholder));
             return;
         }
         
         Glide.with(imageView.getContext())
              .load(imageUrl)
-             .placeholder(R.drawable.ic_launcher_foreground)
-             .error(R.drawable.ic_launcher_foreground)
-             .fitCenter()
+             .placeholder(R.drawable.ic_product_placeholder)
+             .error(R.drawable.ic_product_placeholder)
+             .centerCrop()
              .into(imageView);
+    }
+
+    public void loadAvatar(String avatarSource, ImageView imageView) {
+        if (avatarSource == null || avatarSource.trim().isEmpty()) {
+            imageView.setImageResource(R.drawable.ic_user_avatar);
+            return;
+        }
+
+        if (avatarSource.startsWith("gs://")) {
+            FirebaseHelper.getStorage()
+                    .getReferenceFromUrl(avatarSource)
+                    .getDownloadUrl()
+                    .addOnSuccessListener(uri ->
+                            Glide.with(imageView.getContext())
+                                    .load(uri)
+                                    .placeholder(R.drawable.ic_user_avatar)
+                                    .error(R.drawable.ic_user_avatar)
+                                    .circleCrop()
+                                    .into(imageView))
+                    .addOnFailureListener(error ->
+                            imageView.setImageResource(R.drawable.ic_user_avatar));
+            return;
+        }
+
+        Object source = avatarSource.startsWith("content://") || avatarSource.startsWith("file://")
+                ? Uri.parse(avatarSource)
+                : avatarSource;
+
+        Glide.with(imageView.getContext())
+                .load(source)
+                .placeholder(R.drawable.ic_user_avatar)
+                .error(R.drawable.ic_user_avatar)
+                .circleCrop()
+                .into(imageView);
     }
 
     /**

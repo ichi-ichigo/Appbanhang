@@ -5,46 +5,69 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appbanhang.adapters.ProductAdapter;
 import com.example.appbanhang.database.DatabaseHelper;
+import com.example.appbanhang.firebase.FirestoreRepository;
 import com.example.appbanhang.managers.AuthManager;
 import com.example.appbanhang.managers.WishlistManager;
 import com.example.appbanhang.models.Product;
-import com.example.appbanhang.utils.DataProvider;
+import com.example.appbanhang.utils.ProductDisplayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
+    private static final int PRODUCTS_PER_PAGE = 8;
+
     private EditText etSearch;
-    private TextView txtResultCount, txtEmpty;
+    private TextView txtResultCount;
+    private TextView txtEmpty;
+    private TextView txtSearchPageInfo;
+    private Spinner spPriceSort;
     private RecyclerView recyclerProducts;
+    private View searchPagination;
+    private Button btnSearchPrevPage, btnSearchNextPage;
     private ProductAdapter productAdapter;
     private final List<Product> allProducts = new ArrayList<>();
+    private final List<Product> filteredProducts = new ArrayList<>();
     private final List<Product> visibleProducts = new ArrayList<>();
     private String activeFilter = "ALL";
+    private String priceSortMode = "DEFAULT";
+    private int currentSearchPage = 0;
     private WishlistManager wishlistManager;
+    private FirestoreRepository firestoreRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.search_root), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
         initializeManagers();
         initializeViews();
         setupProducts();
         setupListeners();
-        applyFilter();
     }
 
     private void initializeManagers() {
@@ -52,25 +75,28 @@ public class SearchActivity extends AppCompatActivity {
         AuthManager authManager = AuthManager.getInstance();
         WishlistManager.initialize(dbHelper, authManager);
         wishlistManager = WishlistManager.getInstance();
+        firestoreRepository = FirestoreRepository.getInstance();
     }
 
     private void initializeViews() {
         etSearch = findViewById(R.id.et_search);
         txtResultCount = findViewById(R.id.txt_result_count);
         txtEmpty = findViewById(R.id.txt_empty);
+        txtSearchPageInfo = findViewById(R.id.txt_search_page_info);
+        spPriceSort = findViewById(R.id.spinner_price_sort);
         recyclerProducts = findViewById(R.id.recycler_search_products);
+        searchPagination = findViewById(R.id.search_pagination);
+        btnSearchPrevPage = findViewById(R.id.btn_search_prev_page);
+        btnSearchNextPage = findViewById(R.id.btn_search_next_page);
+        searchPagination.setVisibility(View.GONE);
+        txtSearchPageInfo.setText("Trang 0/0");
+        setPageButtonState(btnSearchPrevPage, false);
+        setPageButtonState(btnSearchNextPage, false);
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
     }
 
     private void setupProducts() {
         allProducts.clear();
-        allProducts.addAll(DataProvider.getProducts());
-        new DatabaseHelper(this).seedProductsIfEmpty(allProducts);
-        wishlistManager.syncFromDatabase(allProducts);
-        for (Product product : allProducts) {
-            product.setFavorite(wishlistManager.isInWishlist(product.getId()));
-        }
-
         productAdapter = new ProductAdapter(visibleProducts, this);
         productAdapter.setOnProductClickListener(new ProductAdapter.OnProductClickListener() {
             @Override
@@ -87,14 +113,48 @@ public class SearchActivity extends AppCompatActivity {
                 } else {
                     wishlistManager.removeFromWishlistById(product.getId());
                 }
-                Toast.makeText(SearchActivity.this,
+                Toast.makeText(
+                        SearchActivity.this,
                         isFavorite ? "Da them vao yeu thich" : "Da bo yeu thich",
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         });
 
         recyclerProducts.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerProducts.setNestedScrollingEnabled(true);
+        recyclerProducts.setHasFixedSize(false);
         recyclerProducts.setAdapter(productAdapter);
+        txtResultCount.setText("Dang tai san pham...");
+
+        firestoreRepository.fetchProducts(new FirestoreRepository.ProductsCallback() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                allProducts.clear();
+                if (products != null) {
+                    allProducts.addAll(products);
+                }
+                wishlistManager.syncFromDatabase(allProducts);
+                for (Product product : allProducts) {
+                    product.setFavorite(wishlistManager.isInWishlist(product.getId()));
+                }
+                currentSearchPage = 0;
+                applyFilter();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                allProducts.clear();
+                filteredProducts.clear();
+                currentSearchPage = 0;
+                applyFilter();
+                Toast.makeText(
+                        SearchActivity.this,
+                        "Loi tai san pham tu Firebase: " + errorMessage,
+                        Toast.LENGTH_LONG
+                ).show();
+            }
+        });
     }
 
     private void setupListeners() {
@@ -105,6 +165,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                currentSearchPage = 0;
                 applyFilter();
             }
 
@@ -114,42 +175,144 @@ public class SearchActivity extends AppCompatActivity {
         });
 
         bindFilter(R.id.filter_all, "ALL");
-        bindFilter(R.id.filter_hot, "HOT DEAL");
         bindFilter(R.id.filter_nike, "NIKE");
         bindFilter(R.id.filter_adidas, "ADIDAS");
-        bindFilter(R.id.filter_running, "RUNNING");
-        findViewById(R.id.promo_sport).setOnClickListener(v -> {
-            activeFilter = "RUNNING";
-            applyFilter();
-        });
-        findViewById(R.id.promo_shoes).setOnClickListener(v -> {
-            activeFilter = "HOT DEAL";
-            applyFilter();
-        });
+        bindFilter(R.id.filter_puma, "PUMA");
+        bindFilter(R.id.filter_new_balance, "NEW_BALANCE");
+        bindFilter(R.id.filter_converse, "CONVERSE");
+        setupPriceSort();
+        setupPaginationButtons();
     }
 
     private void bindFilter(int buttonId, String filter) {
         Button button = findViewById(buttonId);
         button.setOnClickListener(v -> {
             activeFilter = filter;
+            currentSearchPage = 0;
             applyFilter();
         });
     }
 
     private void applyFilter() {
         String query = etSearch.getText().toString().trim().toLowerCase(Locale.ROOT);
-        visibleProducts.clear();
+        filteredProducts.clear();
 
         for (Product product : allProducts) {
             if (matchesSearch(product, query) && matchesFilter(product)) {
-                visibleProducts.add(product);
+                filteredProducts.add(product);
             }
         }
 
+        sortFilteredProducts();
+        updateSearchPage();
+
+        boolean empty = filteredProducts.isEmpty();
+        txtResultCount.setText("San pham phu hop: " + filteredProducts.size());
+        txtEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+        recyclerProducts.setVisibility(empty ? View.GONE : View.VISIBLE);
+        searchPagination.setVisibility(empty ? View.GONE : View.VISIBLE);
+    }
+
+    private void setupPaginationButtons() {
+        btnSearchPrevPage.setOnClickListener(v -> {
+            if (currentSearchPage > 0) {
+                currentSearchPage--;
+                updateSearchPage();
+                recyclerProducts.scrollToPosition(0);
+            }
+        });
+        btnSearchNextPage.setOnClickListener(v -> {
+            int totalPages = getPageCount(filteredProducts.size());
+            if (currentSearchPage < totalPages - 1) {
+                currentSearchPage++;
+                updateSearchPage();
+                recyclerProducts.scrollToPosition(0);
+            }
+        });
+    }
+
+    private void updateSearchPage() {
+        int totalProducts = filteredProducts.size();
+        int totalPages = getPageCount(totalProducts);
+
+        if (totalPages == 0) {
+            currentSearchPage = 0;
+        } else if (currentSearchPage >= totalPages) {
+            currentSearchPage = totalPages - 1;
+        }
+
+        int start = currentSearchPage * PRODUCTS_PER_PAGE;
+        int end = Math.min(start + PRODUCTS_PER_PAGE, totalProducts);
+
+        visibleProducts.clear();
+        if (start < end) {
+            visibleProducts.addAll(filteredProducts.subList(start, end));
+        }
+
         productAdapter.notifyDataSetChanged();
-        txtResultCount.setText("San pham phu hop: " + visibleProducts.size());
-        txtEmpty.setVisibility(visibleProducts.isEmpty() ? View.VISIBLE : View.GONE);
-        recyclerProducts.setVisibility(visibleProducts.isEmpty() ? View.GONE : View.VISIBLE);
+        updateSearchPaginationState(totalProducts, totalPages);
+    }
+
+    private int getPageCount(int totalProducts) {
+        if (totalProducts <= 0) {
+            return 0;
+        }
+        return (totalProducts + PRODUCTS_PER_PAGE - 1) / PRODUCTS_PER_PAGE;
+    }
+
+    private void updateSearchPaginationState(int totalProducts, int totalPages) {
+        int displayPage = totalProducts == 0 ? 0 : currentSearchPage + 1;
+        txtSearchPageInfo.setText("Trang " + displayPage + "/" + totalPages);
+        setPageButtonState(btnSearchPrevPage, currentSearchPage > 0);
+        setPageButtonState(btnSearchNextPage, totalProducts > 0 && currentSearchPage < totalPages - 1);
+    }
+
+    private void setPageButtonState(Button button, boolean enabled) {
+        button.setEnabled(enabled);
+        button.setAlpha(enabled ? 1f : 0.45f);
+    }
+
+    private void setupPriceSort() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"Mac dinh", "Gia thap-cao", "Gia cao-thap"}
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spPriceSort.setAdapter(adapter);
+        spPriceSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String nextSortMode;
+                if (position == 1) {
+                    nextSortMode = "LOW_HIGH";
+                } else if (position == 2) {
+                    nextSortMode = "HIGH_LOW";
+                } else {
+                    nextSortMode = "DEFAULT";
+                }
+
+                if (!nextSortMode.equals(priceSortMode)) {
+                    priceSortMode = nextSortMode;
+                    currentSearchPage = 0;
+                    applyFilter();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+    private void sortFilteredProducts() {
+        if ("LOW_HIGH".equals(priceSortMode)) {
+            filteredProducts.sort((first, second) ->
+                    Double.compare(first.getPrice(), second.getPrice()));
+        } else if ("HIGH_LOW".equals(priceSortMode)) {
+            filteredProducts.sort((first, second) ->
+                    Double.compare(second.getPrice(), first.getPrice()));
+        }
     }
 
     private boolean matchesSearch(Product product, String query) {
@@ -159,19 +322,23 @@ public class SearchActivity extends AppCompatActivity {
         return contains(product.getName(), query)
                 || contains(product.getBrand(), query)
                 || contains(product.getCategory(), query)
-                || contains(product.getPromotion(), query);
+                || contains(ProductDisplayUtils.category(product.getCategory()), query)
+                || contains(product.getPromotion(), query)
+                || contains(ProductDisplayUtils.promotion(product.getPromotion()), query);
     }
 
     private boolean matchesFilter(Product product) {
         switch (activeFilter) {
-            case "HOT DEAL":
-                return "HOT DEAL".equalsIgnoreCase(product.getPromotion());
             case "NIKE":
                 return "Nike".equalsIgnoreCase(product.getBrand());
             case "ADIDAS":
                 return "Adidas".equalsIgnoreCase(product.getBrand());
-            case "RUNNING":
-                return "Running".equalsIgnoreCase(product.getCategory());
+            case "PUMA":
+                return "Puma".equalsIgnoreCase(product.getBrand());
+            case "NEW_BALANCE":
+                return "New Balance".equalsIgnoreCase(product.getBrand());
+            case "CONVERSE":
+                return "Converse".equalsIgnoreCase(product.getBrand());
             case "ALL":
             default:
                 return true;

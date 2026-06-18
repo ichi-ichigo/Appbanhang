@@ -121,11 +121,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "description TEXT," +
                 "rating REAL," +
                 "brand TEXT," +
+                "stock INTEGER DEFAULT 0," +
                 "quantity INTEGER," +
                 "selected_size TEXT," +
                 "UNIQUE(user_id, product_id, selected_size)" +
                 ")";
         db.execSQL(CREATE_CART_ITEMS_TABLE);
+        ensureColumn(db, TABLE_CART_ITEMS, "stock", "INTEGER DEFAULT 0");
 
         String CREATE_BANNERS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_BANNERS + " (" +
                 "id INTEGER PRIMARY KEY," +
@@ -443,6 +445,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("description", product.getDescription());
         values.put("rating", product.getRating());
         values.put("brand", product.getBrand());
+        values.put("stock", product.getStock());
         values.put("quantity", item.getQuantity());
         values.put("selected_size", item.getSelectedSize());
 
@@ -468,6 +471,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         cursor.getDouble(cursor.getColumnIndexOrThrow("rating")),
                         cursor.getString(cursor.getColumnIndexOrThrow("brand"))
                 );
+                product.setStock(cursor.getInt(cursor.getColumnIndexOrThrow("stock")));
                 CartItem item = new CartItem(
                         product,
                         cursor.getInt(cursor.getColumnIndexOrThrow("quantity")),

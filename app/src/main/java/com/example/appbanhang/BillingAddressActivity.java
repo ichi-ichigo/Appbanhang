@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,7 +18,8 @@ public class BillingAddressActivity extends AppCompatActivity {
 
     private EditText etFullName, etAddress, etPostCode;
     private Spinner spProvince, spCountry, spShipping;
-    private Button btnContinue, btnBack;
+    private Button btnContinue;
+    private ImageButton btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +71,14 @@ public class BillingAddressActivity extends AppCompatActivity {
             Toast.makeText(this, "Vui lòng nhập họ và tên", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         if (etAddress.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập địa chỉ", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         if (etPostCode.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập mã bưu điện", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         return true;
     }
 

@@ -26,7 +26,7 @@
             android:id="@+id/txt_order_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pending"
+            android:text="Đang xử lý"
             android:textColor="@color/primary"
             android:textSize="13sp"
             android:textStyle="bold" />
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="Ngay dat"
+        android:text="Ngày đặt"
         android:textColor="@color/text_secondary"
         android:textSize="13sp" />
 
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Thanh toan"
+        android:text="Thanh toán"
         android:textColor="@color/text_secondary"
         android:textSize="13sp" />
 
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:gravity="end"
-        android:text="Rp. 0"
+        android:text="0 VND"
         android:textColor="@color/price"
         android:textSize="15sp"
         android:textStyle="bold" />

@@ -30,7 +30,7 @@
             android:id="@+id/banner_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Summer Collection"
+            android:text="Bộ sưu tập mùa hè"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/white" />
@@ -39,7 +39,7 @@
             android:id="@+id/banner_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hot Deal"
+            android:text="Ưu đãi hot"
             android:textSize="14sp"
             android:textColor="@color/white"
             android:layout_marginTop="8dp" />

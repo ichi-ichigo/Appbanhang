@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.appbanhang.R;
 import com.example.appbanhang.managers.ImageManager;
 import com.example.appbanhang.models.Product;
+import com.example.appbanhang.utils.ProductDisplayUtils;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
     
@@ -52,8 +54,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         
         // Set product data
         holder.txtProductName.setText(product.getName());
-        holder.txtProductCategory.setText(product.getCategory());
-        holder.txtProductPrice.setText(String.format("Rp. %.0f", product.getPrice()));
+        holder.txtProductCategory.setText(ProductDisplayUtils.category(product.getCategory()));
+        holder.txtProductPrice.setText(String.format(new Locale("vi", "VN"), "%,.0f VND", product.getPrice()));
         holder.txtRating.setText(String.valueOf(product.getRating()));
         
         // Load product image using Glide
@@ -62,10 +64,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         // Set badge/promotion label
         if (product.getPromotion() != null && !product.getPromotion().isEmpty()) {
             holder.badgeLabel.setVisibility(View.VISIBLE);
-            holder.badgeLabel.setText(product.getPromotion());
+            holder.badgeLabel.setText(ProductDisplayUtils.promotion(product.getPromotion()));
         } else if (product.isNew()) {
             holder.badgeLabel.setVisibility(View.VISIBLE);
-            holder.badgeLabel.setText("NEW");
+            holder.badgeLabel.setText("Mới");
         } else {
             holder.badgeLabel.setVisibility(View.GONE);
         }
@@ -94,12 +96,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return productList.size();
     }
 
-    private void updateFavoriteButton(Button button, boolean isFavorite) {
+    private void updateFavoriteButton(ImageButton button, boolean isFavorite) {
         if (isFavorite) {
-            button.setText("❤️");
+            button.setImageResource(R.drawable.ic_favorite_filled);
         } else {
-            button.setText("🤍");
+            button.setImageResource(R.drawable.ic_favorite_outline);
         }
+        button.setSelected(isFavorite);
     }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -108,7 +111,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         TextView txtProductCategory;
         TextView txtProductPrice;
         TextView txtRating;
-        Button btnFavorite;
+        ImageButton btnFavorite;
         TextView badgeLabel;
 
         public ProductViewHolder(@NonNull View itemView) {

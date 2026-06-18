@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:background="@color/app_bg">
 
-    <!-- Header với Progress Indicator -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,32 +17,30 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btn_back"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:text="←"
-                android:textSize="24sp"
-                android:textColor="@color/text_primary"
+                android:contentDescription="@string/back"
+                android:src="@drawable/ic_arrow_back"
+                android:scaleType="center"
+                android:padding="8dp"
                 android:background="@drawable/button_icon_style" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Thanh Toán"
+                android:text="Địa chỉ giao hàng"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 android:gravity="center" />
 
-            <View
-                android:layout_width="40dp"
-                android:layout_height="40dp" />
+            <View android:layout_width="40dp" android:layout_height="40dp" />
 
         </LinearLayout>
 
-        <!-- Progress Step -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,47 +48,16 @@
             android:gravity="center_vertical"
             android:layout_marginTop="12dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="📍"
-                android:textSize="20sp"
-                android:gravity="center" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/line" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="💳"
-                android:textSize="20sp"
-                android:gravity="center" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="@color/line" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="✓"
-                android:textSize="20sp"
-                android:gravity="center" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Địa chỉ" android:textSize="12sp" android:gravity="center" android:textColor="@color/primary" android:textStyle="bold" />
+            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="@color/line" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Thanh toán" android:textSize="12sp" android:gravity="center" android:textColor="@color/text_secondary" />
+            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="@color/line" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Hoàn tất" android:textSize="12sp" android:gravity="center" android:textColor="@color/text_secondary" />
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <!-- ScrollView cho form -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -103,28 +69,25 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Địa chỉ Thanh Toán -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Địa Chỉ Thanh Toán"
+                android:text="Thông tin nhận hàng"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 android:layout_marginBottom="8dp" />
 
-            <!-- Họ và tên -->
             <EditText
                 android:id="@+id/et_full_name"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Họ và Tên"
-                android:inputType="text"
+                android:hint="Họ và tên"
+                android:inputType="textPersonName"
                 android:padding="12dp"
                 android:background="@drawable/edittext_style"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Địa chỉ -->
             <EditText
                 android:id="@+id/et_address"
                 android:layout_width="match_parent"
@@ -136,7 +99,6 @@
                 android:background="@drawable/edittext_style"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Tỉnh Thành -->
             <Spinner
                 android:id="@+id/spinner_province"
                 android:layout_width="match_parent"
@@ -144,7 +106,6 @@
                 android:background="@drawable/edittext_style"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Mã Bưu Điện -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -156,7 +117,7 @@
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:hint="Mã Bưu Điện"
+                    android:hint="Mã bưu điện"
                     android:inputType="number"
                     android:padding="12dp"
                     android:background="@drawable/edittext_style"
@@ -171,11 +132,10 @@
 
             </LinearLayout>
 
-            <!-- Quốc gia -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quốc Gia"
+                android:text="Quốc gia"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -188,11 +148,10 @@
                 android:background="@drawable/edittext_style"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Tùy chọn Vận Chuyển -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tùy Chọn Vận Chuyển"
+                android:text="Tùy chọn vận chuyển"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -205,12 +164,11 @@
                 android:background="@drawable/edittext_style"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Checkbox Tiếp Nhận Thông Báo -->
             <CheckBox
                 android:id="@+id/checkbox_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nhận chi tiết thông báo khi đơn hàng được vận chuyển"
+                android:text="Nhận thông báo khi đơn hàng được vận chuyển"
                 android:textSize="12sp"
                 android:textColor="@color/text_secondary"
                 android:layout_marginBottom="16dp" />
@@ -219,7 +177,6 @@
 
     </ScrollView>
 
-    <!-- Nút Tiếp Tục -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -232,12 +189,13 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:text="Tiếp Tục"
+            android:text="Tiếp tục"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:textAllCaps="false"
-            android:background="@drawable/button_buy_style" />
+            android:background="@drawable/button_buy_style"
+            android:backgroundTint="@null" />
 
     </LinearLayout>
 

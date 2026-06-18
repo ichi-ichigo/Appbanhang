@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="vi" ng-app="adminApp">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Quản trị Smarteshop</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body ng-controller="ProductAdminController as vm">
+  <div class="app-shell">
+    <button class="mobile-menu-button" type="button" ng-click="vm.toggleMobileSidebar()" aria-label="Mở menu quản trị">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+    </button>
+
+    <div class="sidebar-backdrop" ng-class="{ 'show': vm.mobileSidebarOpen }" ng-click="vm.closeMobileSidebar()"></div>
+
+    <aside class="app-sidebar" ng-class="{ 'collapsed': vm.sidebarCollapsed, 'mobile-open': vm.mobileSidebarOpen }">
+      <div class="brand-block">
+        <div class="brand-logo">S</div>
+        <div class="brand-copy">
+          <div class="brand-title">Smarteshop</div>
+          <div class="brand-subtitle">Quản trị bán hàng</div>
+        </div>
+        <button class="sidebar-toggle" type="button" ng-click="vm.toggleSidebar()" aria-label="Thu gọn sidebar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-menu" aria-label="Menu quản trị">
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'dashboard' }" href="#" ng-click="vm.selectMenu('dashboard')">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9zm10 7h6V4h-6v16zM4 20h6v-4H4v4z"></path></svg>
+          <span class="menu-label">Dashboard</span>
+        </a>
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'products' }" href="#" ng-click="vm.selectMenu('products')">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"></path><path d="M3 8v8l9 5 9-5V8"></path><path d="M12 13v8"></path></svg>
+          <span class="menu-label">Quản lý sản phẩm</span>
+        </a>
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'approval' }" href="#" ng-click="vm.selectMenu('approval')">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12l2 2 4-5"></path><path d="M20 6l-8-3-8 3v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"></path></svg>
+          <span class="menu-label">Xác nhận sản phẩm</span>
+        </a>
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'vouchers' }" href="#" ng-click="vm.selectMenu('vouchers')">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7"></path><path d="M2 7h20v5H2z"></path><path d="M12 22V7"></path><path d="M12 7H7.5A2.5 2.5 0 1 1 10 4.5c0 1.5 2 2.5 2 2.5z"></path><path d="M12 7h4.5A2.5 2.5 0 1 0 14 4.5c0 1.5-2 2.5-2 2.5z"></path></svg>
+          <span class="menu-label">Quản lý voucher</span>
+        </a>
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'banners' }" href="#" ng-click="vm.selectMenu('banners')">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"></path><path d="M8 13l2.5-3 2.5 3 2-2.5L20 16"></path><path d="M8 8h.01"></path></svg>
+          <span class="menu-label">Quản lý banners</span>
+        </a>
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'users' }" href="#" ng-click="vm.selectMenu('users')">
+          <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11a4 4 0 1 0-8 0"></path><path d="M5 21a7 7 0 0 1 14 0"></path><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg>
+          <span class="menu-label">Quản lý user</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="app-main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Firebase Admin</div>
+          <h1>{{ vm.pageTitle() }}</h1>
+          <p class="page-subtitle">{{ vm.pageSubtitle() }}</p>
+        </div>
+        <button class="btn btn-primary shadow-sm" type="button" ng-click="vm.refreshCurrent()">
+          Làm mới
+        </button>
+      </header>
+
+      <div class="alert alert-danger" ng-if="vm.error">{{ vm.error }}</div>
+      <div class="alert alert-success" ng-if="vm.message">{{ vm.message }}</div>
+
+      <section class="dashboard-band" ng-if="vm.activeMenu === 'dashboard'">
+        <div class="row">
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="metric-card">
+              <div class="metric-label">Tổng sản phẩm</div>
+              <div class="metric-value">{{ vm.products.length || 0 }}</div>
+              <div class="metric-note">Collection products</div>
+            </div>
+          </div>
+          <div class="col-md-4 mb-3 mb-md-0">
+            <div class="metric-card">
+              <div class="metric-label">Tồn kho</div>
+              <div class="metric-value">{{ vm.totalStock() }}</div>
+              <div class="metric-note">Tổng stock hiện có</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="metric-card">
+              <div class="metric-label">Doanh thu</div>
+              <div class="metric-value">{{ vm.totalRevenue() | number:0 }} VND</div>
+              <div class="metric-note">Tổng totalAmount từ orders</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="row" ng-if="vm.activeMenu === 'products'">
+        <div class="col-xl-4 mb-4">
+          <div class="main-card">
+            <div class="card-heading">
+              <div>
+                <h2>{{ vm.editingId ? 'Sửa sản phẩm #' + vm.editingId : 'Thêm sản phẩm' }}</h2>
+                <p>Nhập thông tin rồi lưu lên Firestore.</p>
+              </div>
+            </div>
+
+            <form ng-submit="vm.saveProduct()" novalidate>
+              <div class="form-group">
+                <label>Tên sản phẩm</label>
+                <input class="form-control" ng-model="vm.form.name" placeholder="Nike Air Zoom" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Danh mục</label>
+                  <input class="form-control" ng-model="vm.form.category" placeholder="Chạy bộ">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Thương hiệu</label>
+                  <input class="form-control" ng-model="vm.form.brand" placeholder="Nike">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-7">
+                  <label>Giá</label>
+                  <input class="form-control" type="number" min="0" ng-model="vm.form.price" placeholder="350000">
+                </div>
+                <div class="form-group col-md-5">
+                  <label>Tồn kho</label>
+                  <input class="form-control" type="number" min="0" ng-model="vm.form.stock" placeholder="20">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Link ảnh</label>
+                <input class="form-control" ng-model="vm.form.imageUrl" placeholder="https://...">
+              </div>
+              <div class="preview-box" ng-if="vm.form.imageUrl">
+                <img ng-src="{{ vm.form.imageUrl }}" alt="Xem trước ảnh">
+              </div>
+              <div class="form-group">
+                <label>Mô tả</label>
+                <textarea class="form-control" rows="4" ng-model="vm.form.description" placeholder="Mô tả sản phẩm"></textarea>
+              </div>
+              <div class="d-flex">
+                <button class="btn btn-primary flex-fill mr-2" type="submit" ng-disabled="vm.saving">{{ vm.saving ? 'Đang lưu...' : 'Lưu sản phẩm' }}</button>
+                <button class="btn btn-light border" type="button" ng-click="vm.resetForm()">Làm mới</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-xl-8">
+          <div class="main-card">
+            <div class="card-heading table-heading">
+              <div>
+                <h2>Danh sách sản phẩm</h2>
+                <p>Thêm, sửa, xóa trực tiếp trên Firebase.</p>
+              </div>
+              <div class="search-box">
+                <input class="form-control" ng-model="vm.keyword" placeholder="Tìm tên, thương hiệu, danh mục...">
+              </div>
+            </div>
+            <div class="loading-row" ng-if="vm.loading">Đang tải sản phẩm...</div>
+            <div class="empty-row" ng-if="!vm.loading && vm.filteredProducts().length === 0">Chưa có sản phẩm phù hợp.</div>
+            <div class="table-responsive" ng-if="!vm.loading && vm.filteredProducts().length > 0">
+              <table class="table table-hover product-table">
+                <thead><tr><th>Ảnh</th><th>Sản phẩm</th><th>Giá</th><th>Tồn</th><th class="text-right">Thao tác</th></tr></thead>
+                <tbody>
+                  <tr ng-repeat="product in vm.filteredProducts() track by product._docId || product.id">
+                    <td><img class="product-thumb" ng-src="{{ product.imageUrl || product.thumbnailUrl }}" alt="{{ product.name }}"></td>
+                    <td><div class="product-name">{{ product.name }}</div><div class="product-meta">{{ product.category || 'Chưa phân loại' }} · {{ product.brand || 'Chưa có thương hiệu' }}</div></td>
+                    <td class="font-weight-bold text-primary">{{ product.price | number:0 }} VND</td>
+                    <td><span class="badge badge-pill" ng-class="product.stock > 0 ? 'badge-success' : 'badge-secondary'">{{ product.stock || 0 }}</span></td>
+                    <td class="text-right action-cell"><button class="btn btn-sm btn-outline-primary" type="button" ng-click="vm.editProduct(product)">Sửa</button><button class="btn btn-sm btn-outline-danger" type="button" ng-click="vm.deleteProduct(product)">Xóa</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="main-card" ng-if="vm.activeMenu === 'approval'">
+        <div class="card-heading table-heading">
+          <div>
+            <h2>Đơn hàng cần xác nhận</h2>
+            <p>Dữ liệu lấy từ collection orders.</p>
+          </div>
+          <div class="search-box">
+            <input class="form-control" ng-model="vm.orderKeyword" placeholder="Tìm mã đơn, user, trạng thái...">
+          </div>
+        </div>
+        <div class="loading-row" ng-if="vm.ordersLoading">Đang tải đơn hàng...</div>
+        <div class="empty-row" ng-if="!vm.ordersLoading && vm.filteredOrders().length === 0">Chưa có đơn hàng trên Firebase.</div>
+        <div class="table-responsive" ng-if="!vm.ordersLoading && vm.filteredOrders().length > 0">
+          <table class="table table-hover product-table">
+            <thead><tr><th>Mã đơn</th><th>User</th><th>Tổng tiền</th><th>Thanh toán</th><th>Trạng thái</th><th>Ngày đặt</th><th class="text-right">Duyệt</th></tr></thead>
+            <tbody>
+              <tr ng-repeat="order in vm.filteredOrders() track by order._docId">
+                <td><div class="product-name">#{{ order.orderId || order._docId }}</div><div class="product-meta">{{ order.items.length || 0 }} sản phẩm</div></td>
+                <td>{{ order.userId || order.userEmail || 'Chưa có' }}</td>
+                <td class="font-weight-bold text-primary">{{ (order.totalAmount || order.total || order.amount || 0) | number:0 }} VND</td>
+                <td>{{ order.paymentMethod || 'Chưa có' }}</td>
+                <td><span class="status-pill">{{ order.orderStatus || 'Đang xử lý' }}</span></td>
+                <td>{{ vm.formatDate(order.orderDate || order.createdAt) }}</td>
+                <td class="text-right action-cell">
+                  <button class="btn btn-sm btn-outline-success" type="button" ng-click="vm.updateOrderStatus(order, 'Đã xác nhận')">Xác nhận</button>
+                  <button class="btn btn-sm btn-outline-primary" type="button" ng-click="vm.updateOrderStatus(order, 'Đang giao')">Giao hàng</button>
+                  <button class="btn btn-sm btn-outline-success" type="button" ng-click="vm.updateOrderStatus(order, 'Đã giao')">Đã giao</button>
+                  <button class="btn btn-sm btn-outline-danger" type="button" ng-click="vm.updateOrderStatus(order, 'Đã hủy')">Hủy</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="row" ng-if="vm.activeMenu === 'vouchers'">
+        <div class="col-xl-4 mb-4">
+          <div class="main-card">
+            <div class="card-heading">
+              <div>
+                <h2>{{ vm.editingVoucherId ? 'Sửa voucher' : 'Tạo voucher' }}</h2>
+                <p>Lưu trực tiếp vào collection vouchers.</p>
+              </div>
+            </div>
+            <form ng-submit="vm.saveVoucher()" novalidate>
+              <div class="form-group"><label>Mã voucher</label><input class="form-control text-uppercase" ng-model="vm.voucherForm.code" placeholder="SALE20" ng-disabled="vm.editingVoucherId" required></div>
+              <div class="form-group"><label>Tên voucher</label><input class="form-control" ng-model="vm.voucherForm.title" placeholder="Giảm 20% cuối tuần" required></div>
+              <div class="form-row">
+                <div class="form-group col-md-6"><label>Loại giảm</label><select class="form-control" ng-model="vm.voucherForm.type"><option value="percent">Phần trăm</option><option value="fixed">Số tiền</option></select></div>
+                <div class="form-group col-md-6"><label>Giá trị</label><input class="form-control" type="number" min="0" ng-model="vm.voucherForm.value"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6"><label>Đơn tối thiểu</label><input class="form-control" type="number" min="0" ng-model="vm.voucherForm.minOrder"></div>
+                <div class="form-group col-md-6"><label>Giảm tối đa</label><input class="form-control" type="number" min="0" ng-model="vm.voucherForm.maxDiscount"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6"><label>Ngày bắt đầu</label><input class="form-control" ng-model="vm.voucherForm.startDate" placeholder="2026-06-16"></div>
+                <div class="form-group col-md-6"><label>Ngày kết thúc</label><input class="form-control" ng-model="vm.voucherForm.endDate" placeholder="2026-06-30"></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6"><label>Giới hạn lượt dùng</label><input class="form-control" type="number" min="0" ng-model="vm.voucherForm.usageLimit"></div>
+                <div class="form-group col-md-6"><label>Đã dùng</label><input class="form-control" type="number" min="0" ng-model="vm.voucherForm.usedCount"></div>
+              </div>
+              <div class="form-group form-check"><input id="voucherActive" class="form-check-input" type="checkbox" ng-model="vm.voucherForm.isActive"><label class="form-check-label" for="voucherActive">Đang kích hoạt</label></div>
+              <div class="form-group"><label>Mô tả</label><textarea class="form-control" rows="3" ng-model="vm.voucherForm.description"></textarea></div>
+              <div class="d-flex"><button class="btn btn-primary flex-fill mr-2" type="submit" ng-disabled="vm.voucherSaving">{{ vm.voucherSaving ? 'Đang lưu...' : 'Lưu voucher' }}</button><button class="btn btn-light border" type="button" ng-click="vm.resetVoucherForm()">Làm mới</button></div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-xl-8">
+          <div class="main-card">
+            <div class="card-heading table-heading">
+              <div><h2>Danh sách voucher</h2><p>Collection vouchers trên Firebase.</p></div>
+              <div class="search-box"><input class="form-control" ng-model="vm.voucherKeyword" placeholder="Tìm mã, tên voucher..."></div>
+            </div>
+            <div class="loading-row" ng-if="vm.vouchersLoading">Đang tải voucher...</div>
+            <div class="empty-row" ng-if="!vm.vouchersLoading && vm.filteredVouchers().length === 0">Chưa có voucher.</div>
+            <div class="table-responsive" ng-if="!vm.vouchersLoading && vm.filteredVouchers().length > 0">
+              <table class="table table-hover product-table">
+                <thead><tr><th>Mã</th><th>Giảm</th><th>Điều kiện</th><th>Thời hạn</th><th>Trạng thái</th><th class="text-right">Thao tác</th></tr></thead>
+                <tbody>
+                  <tr ng-repeat="voucher in vm.filteredVouchers() track by voucher._docId">
+                    <td><div class="product-name">{{ voucher.code || voucher._docId }}</div><div class="product-meta">{{ voucher.title }}</div></td>
+                    <td>{{ voucher.type === 'fixed' ? (voucher.value | number:0) + ' VND' : voucher.value + '%' }}</td>
+                    <td>Đơn từ {{ (voucher.minOrder || 0) | number:0 }} VND</td>
+                    <td>{{ voucher.startDate || '...' }} - {{ voucher.endDate || '...' }}</td>
+                    <td><span class="badge badge-pill" ng-class="voucher.isActive !== false ? 'badge-success' : 'badge-secondary'">{{ voucher.isActive !== false ? 'Active' : 'Tắt' }}</span></td>
+                    <td class="text-right action-cell"><button class="btn btn-sm btn-outline-primary" type="button" ng-click="vm.editVoucher(voucher)">Sửa</button><button class="btn btn-sm btn-outline-danger" type="button" ng-click="vm.deleteVoucher(voucher)">Xóa</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="row" ng-if="vm.activeMenu === 'banners'">
+        <div class="col-xl-4 mb-4">
+          <div class="main-card">
+            <div class="card-heading">
+              <div>
+                <h2>{{ vm.editingBannerId ? 'Sửa banner' : 'Tạo banner' }}</h2>
+                <p>Lưu quảng cáo trang chủ vào collection banners.</p>
+              </div>
+            </div>
+            <form ng-submit="vm.saveBanner()" novalidate>
+              <div class="form-group">
+                <label>Tiêu đề</label>
+                <input class="form-control" ng-model="vm.bannerForm.title" placeholder="Bộ sưu tập mùa hè" required>
+              </div>
+              <div class="form-group">
+                <label>Phụ đề</label>
+                <input class="form-control" ng-model="vm.bannerForm.subtitle" placeholder="Giảm giá đến 50%">
+              </div>
+              <div class="form-group">
+                <label>Link ảnh banner</label>
+                <input class="form-control" ng-model="vm.bannerForm.imageUrl" placeholder="https://..." required>
+              </div>
+              <div class="preview-box" ng-if="vm.bannerForm.imageUrl">
+                <img ng-src="{{ vm.bannerForm.imageUrl }}" alt="Xem trước banner">
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label>Thứ tự</label>
+                  <input class="form-control" type="number" min="0" ng-model="vm.bannerForm.displayOrder">
+                </div>
+                <div class="form-group col-md-6">
+                  <label>Loại</label>
+                  <input class="form-control" ng-model="vm.bannerForm.type" placeholder="PROMO">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Action URL</label>
+                <input class="form-control" ng-model="vm.bannerForm.actionUrl" placeholder="product/1 hoặc https://...">
+              </div>
+              <div class="form-group">
+                <label>Màu nền/overlay</label>
+                <input class="form-control" ng-model="vm.bannerForm.backgroundColor" placeholder="#111827">
+              </div>
+              <div class="form-group form-check">
+                <input id="bannerActive" class="form-check-input" type="checkbox" ng-model="vm.bannerForm.isActive">
+                <label class="form-check-label" for="bannerActive">Đang hiển thị</label>
+              </div>
+              <div class="d-flex">
+                <button class="btn btn-primary flex-fill mr-2" type="submit" ng-disabled="vm.bannerSaving">{{ vm.bannerSaving ? 'Đang lưu...' : 'Lưu banner' }}</button>
+                <button class="btn btn-light border" type="button" ng-click="vm.resetBannerForm()">Làm mới</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-xl-8">
+          <div class="main-card">
+            <div class="card-heading table-heading">
+              <div><h2>Danh sách banners</h2><p>Trang chủ app đang đọc các banner active từ Firebase.</p></div>
+              <div class="search-box"><input class="form-control" ng-model="vm.bannerKeyword" placeholder="Tìm tiêu đề, loại, link..."></div>
+            </div>
+            <div class="loading-row" ng-if="vm.bannersLoading">Đang tải banners...</div>
+            <div class="empty-row" ng-if="!vm.bannersLoading && vm.filteredBanners().length === 0">Chưa có banner.</div>
+            <div class="table-responsive" ng-if="!vm.bannersLoading && vm.filteredBanners().length > 0">
+              <table class="table table-hover product-table">
+                <thead><tr><th>Ảnh</th><th>Banner</th><th>Thứ tự</th><th>Loại</th><th>Trạng thái</th><th class="text-right">Thao tác</th></tr></thead>
+                <tbody>
+                  <tr ng-repeat="banner in vm.filteredBanners() track by banner._docId">
+                    <td><img class="product-thumb" ng-src="{{ banner.imageUrl }}" alt="{{ banner.title }}"></td>
+                    <td><div class="product-name">{{ banner.title }}</div><div class="product-meta">{{ banner.subtitle || banner.actionUrl || 'Chưa có mô tả' }}</div></td>
+                    <td>{{ banner.displayOrder || 0 }}</td>
+                    <td>{{ banner.type || 'PROMO' }}</td>
+                    <td><span class="badge badge-pill" ng-class="banner.isActive !== false ? 'badge-success' : 'badge-secondary'">{{ banner.isActive !== false ? 'Đang hiển thị' : 'Ẩn' }}</span></td>
+                    <td class="text-right action-cell"><button class="btn btn-sm btn-outline-primary" type="button" ng-click="vm.editBanner(banner)">Sửa</button><button class="btn btn-sm btn-outline-danger" type="button" ng-click="vm.deleteBanner(banner)">Xóa</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="main-card" ng-if="vm.activeMenu === 'users'">
+        <div class="card-heading table-heading">
+          <div><h2>Danh sách user</h2><p>Dữ liệu lấy từ collection users.</p></div>
+          <div class="search-box"><input class="form-control" ng-model="vm.userKeyword" placeholder="Tìm tên, email, SĐT..."></div>
+        </div>
+        <div class="loading-row" ng-if="vm.usersLoading">Đang tải user...</div>
+        <div class="empty-row" ng-if="!vm.usersLoading && vm.filteredUsers().length === 0">Chưa có user trên Firebase.</div>
+        <div class="table-responsive" ng-if="!vm.usersLoading && vm.filteredUsers().length > 0">
+          <table class="table table-hover product-table">
+            <thead><tr><th>User</th><th>Email</th><th>Số điện thoại</th><th>Địa chỉ</th><th>Trạng thái</th><th>Doc ID</th><th class="text-right">Thao tác</th></tr></thead>
+            <tbody>
+              <tr ng-repeat="user in vm.filteredUsers() track by user._docId">
+                <td><div class="product-name">{{ user.fullName || 'Chưa có tên' }}</div><div class="product-meta">ID: {{ user.id || 'Chưa có' }}</div></td>
+                <td>{{ user.email || 'Chưa có' }}</td>
+                <td>{{ user.phoneNumber || 'Chưa có' }}</td>
+                <td>{{ user.address || user.city || user.province || 'Chưa có' }}</td>
+                <td>
+                  <span class="badge badge-pill" ng-class="(user.isLocked || user.accountStatus === 'locked') ? 'badge-danger' : 'badge-success'">
+                    {{ (user.isLocked || user.accountStatus === 'locked') ? 'Đã khóa' : 'Hoạt động' }}
+                  </span>
+                </td>
+                <td><code>{{ user._docId }}</code></td>
+                <td class="text-right action-cell">
+                  <button class="btn btn-sm" ng-class="(user.isLocked || user.accountStatus === 'locked') ? 'btn-outline-success' : 'btn-outline-warning'" type="button" ng-click="vm.toggleUserLock(user)">
+                    {{ (user.isLocked || user.accountStatus === 'locked') ? 'Mở khóa' : 'Khóa' }}
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger" type="button" ng-click="vm.deleteUser(user)">Xóa</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

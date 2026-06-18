@@ -8,24 +8,35 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.appbanhang.database.DatabaseHelper;
+import com.example.appbanhang.firebase.FirestoreRepository;
 import com.example.appbanhang.managers.AuthManager;
 import com.example.appbanhang.managers.CartManager;
 import com.example.appbanhang.managers.ImageManager;
 import com.example.appbanhang.models.Product;
-import com.example.appbanhang.utils.DataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class AddToCartActivity extends AppCompatActivity {
     private ImageView imgProduct;
     private LinearLayout thumbnailContainer;
-    private TextView txtProductName, txtProductPrice, txtQuantity;
-    private Button btnMinus, btnPlus, btnAddToCart;
+    private TextView txtProductName;
+    private TextView txtProductPrice;
+    private TextView txtQuantity;
+    private Button btnMinus;
+    private Button btnPlus;
+    private Button btnAddToCart;
     private final List<Button> sizeButtons = new ArrayList<>();
     private Product product;
+    private FirestoreRepository firestoreRepository;
+    private CartManager cartManager;
     private int quantity = 1;
     private String selectedSize = "41";
 
@@ -34,17 +45,38 @@ public class AddToCartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_to_cart);
 
-        initializeManagers();
+        setupSafeArea();
         initializeViews();
+        initializeManagers();
         loadProduct();
         setupListeners();
+    }
+
+    private void setupSafeArea() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.add_to_cart_root), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
     }
 
     private void initializeManagers() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         AuthManager authManager = AuthManager.getInstance();
         CartManager.initialize(dbHelper, authManager);
-        CartManager.getInstance().syncFromDatabase();
+        cartManager = CartManager.getInstance();
+        cartManager.syncCart(new CartManager.CartSyncCallback() {
+            @Override
+            public void onSuccess() {
+                refreshCartState();
+            }
+
+            @Override
+            public void onError(String message) {
+                refreshCartState();
+            }
+        });
+        firestoreRepository = FirestoreRepository.getInstance();
     }
 
     private void initializeViews() {
@@ -56,6 +88,9 @@ public class AddToCartActivity extends AppCompatActivity {
         btnMinus = findViewById(R.id.btn_minus);
         btnPlus = findViewById(R.id.btn_plus);
         btnAddToCart = findViewById(R.id.btn_add_to_cart);
+        btnMinus.setText("-");
+        btnPlus.setText("+");
+        btnAddToCart.setText("Them vao gio hang");
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
 
         sizeButtons.add(findViewById(R.id.btn_size_39));
@@ -67,19 +102,34 @@ public class AddToCartActivity extends AppCompatActivity {
 
     private void loadProduct() {
         int productId = getIntent().getIntExtra("product_id", 0);
-        product = DataProvider.getProductById(productId);
-        if (product == null) {
-            Toast.makeText(this, "Khong tim thay san pham", Toast.LENGTH_SHORT).show();
+        if (productId == 0) {
+            Toast.makeText(this, "Khong tim thay ma san pham", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
+        firestoreRepository.fetchSingleProductById(productId, new FirestoreRepository.ProductCallback() {
+            @Override
+            public void onSuccess(Product firebaseProduct) {
+                product = firebaseProduct;
+                bindProduct();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(AddToCartActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+    }
+
+    private void bindProduct() {
         txtProductName.setText(product.getName());
-        txtProductPrice.setText(String.format("Rp. %.0f", product.getPrice()));
+        txtProductPrice.setText(String.format(new Locale("vi", "VN"), "%,.0f VND", product.getPrice()));
         ImageManager.getInstance().loadImageWithAnimation(product.getImageUrl(), imgProduct);
         setupGallery();
-        updateQuantity();
         updateSizeButtons();
+        refreshCartState();
     }
 
     private void setupListeners() {
@@ -87,17 +137,39 @@ public class AddToCartActivity extends AppCompatActivity {
             if (quantity > 1) {
                 quantity--;
                 updateQuantity();
+                updateActionState();
             }
         });
+
         btnPlus.setOnClickListener(v -> {
+            int remainingStock = getRemainingStock();
+            if (remainingStock <= 0) {
+                Toast.makeText(this, "San pham da het hang", Toast.LENGTH_SHORT).show();
+                updateActionState();
+                return;
+            }
+            if (quantity >= remainingStock) {
+                Toast.makeText(this, "Chi con " + remainingStock + " san pham trong kho", Toast.LENGTH_SHORT).show();
+                updateActionState();
+                return;
+            }
+
             quantity++;
             updateQuantity();
+            updateActionState();
         });
+
         btnAddToCart.setOnClickListener(v -> {
             if (product == null) {
                 return;
             }
-            CartManager.getInstance().addToCart(product, quantity, selectedSize);
+            if (getRemainingStock() <= 0) {
+                Toast.makeText(this, "San pham da het hang", Toast.LENGTH_SHORT).show();
+                updateActionState();
+                return;
+            }
+
+            cartManager.addToCart(product, quantity, selectedSize);
             Toast.makeText(this, "Da them vao gio hang", Toast.LENGTH_SHORT).show();
             finish();
         });
@@ -126,7 +198,8 @@ public class AddToCartActivity extends AppCompatActivity {
             thumbnail.setScaleType(ImageView.ScaleType.CENTER_CROP);
             thumbnail.setBackgroundColor(0xFFE0E0E0);
             ImageManager.getInstance().loadThumbnail(imageUrl, thumbnail);
-            thumbnail.setOnClickListener(v -> ImageManager.getInstance().loadImageWithAnimation(imageUrl, imgProduct));
+            thumbnail.setOnClickListener(v ->
+                    ImageManager.getInstance().loadImageWithAnimation(imageUrl, imgProduct));
             thumbnailContainer.addView(thumbnail);
         }
     }
@@ -135,10 +208,47 @@ public class AddToCartActivity extends AppCompatActivity {
         txtQuantity.setText(String.valueOf(quantity));
     }
 
+    private int getRemainingStock() {
+        if (product == null || cartManager == null) {
+            return 0;
+        }
+        return cartManager.getRemainingStock(product);
+    }
+
+    private void refreshCartState() {
+        if (product == null) {
+            return;
+        }
+
+        int remainingStock = getRemainingStock();
+        if (remainingStock > 0 && quantity > remainingStock) {
+            quantity = remainingStock;
+        }
+        if (remainingStock <= 0) {
+            quantity = 1;
+        }
+
+        updateQuantity();
+        updateActionState();
+    }
+
+    private void updateActionState() {
+        int remainingStock = getRemainingStock();
+        boolean canAdd = remainingStock > 0;
+
+        btnAddToCart.setEnabled(canAdd);
+        btnAddToCart.setAlpha(canAdd ? 1f : 0.6f);
+        btnPlus.setEnabled(canAdd && quantity < remainingStock);
+        btnPlus.setAlpha(btnPlus.isEnabled() ? 1f : 0.6f);
+        btnMinus.setEnabled(quantity > 1);
+        btnMinus.setAlpha(btnMinus.isEnabled() ? 1f : 0.6f);
+    }
+
     private void updateSizeButtons() {
         for (Button button : sizeButtons) {
             boolean selected = selectedSize.equals(button.getText().toString());
-            button.setAlpha(selected ? 1.0f : 0.55f);
+            button.setSelected(selected);
+            button.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
         }
     }
 

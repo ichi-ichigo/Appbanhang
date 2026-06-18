@@ -7,115 +7,119 @@
     android:padding="12dp"
     android:layout_marginBottom="8dp">
 
-    <!-- Ảnh sản phẩm -->
     <ImageView
         android:id="@+id/img_product"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:contentDescription="@string/product_image"
-        android:src="@drawable/ic_launcher_foreground"
+        android:src="@drawable/ic_product_placeholder"
         android:scaleType="centerCrop"
         android:background="@drawable/bg_card_soft"
         android:layout_marginEnd="12dp" />
 
-    <!-- Thông tin sản phẩm -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="80dp"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:gravity="center_vertical"
-        android:layout_marginEnd="8dp">
+        android:orientation="vertical">
 
-        <!-- Tên sản phẩm -->
         <TextView
             android:id="@+id/txt_product_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nike Air Max"
+            android:text="Tên sản phẩm"
             android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:layout_marginBottom="4dp" />
 
-        <!-- Loại sản phẩm -->
         <TextView
             android:id="@+id/txt_product_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Size: 42"
+            android:text="Kích cỡ: 41"
             android:textSize="11sp"
             android:textColor="@color/text_secondary"
             android:layout_marginBottom="6dp" />
 
-        <!-- Giá tiền -->
         <TextView
             android:id="@+id/txt_product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rp. 120.000"
+            android:text="0 VND"
             android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="@color/price" />
 
     </LinearLayout>
 
-    <!-- Số lượng & Xóa -->
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_vertical|end">
+        android:gravity="center">
 
-        <!-- Số lượng -->
         <LinearLayout
-            android:layout_width="60dp"
-            android:layout_height="28dp"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
             android:orientation="horizontal"
-            android:background="@drawable/bg_card_soft"
-            android:layout_marginBottom="8dp">
+            android:gravity="center">
 
             <Button
                 android:id="@+id/btn_minus"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/button_quantity_style"
+                android:backgroundTint="@null"
+                android:includeFontPadding="false"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
                 android:text="-"
-                android:textSize="14sp"
-                android:textColor="@color/text_primary"
-                android:background="@drawable/button_outline_style" />
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txt_quantity"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="1"
-                android:textSize="12sp"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@color/text_primary" />
+                android:text="1"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btn_plus"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/button_quantity_style"
+                android:backgroundTint="@null"
+                android:includeFontPadding="false"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
                 android:text="+"
-                android:textSize="14sp"
-                android:textColor="@color/text_primary"
-                android:background="@drawable/button_outline_style" />
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!-- Nút Xóa -->
         <Button
             android:id="@+id/btn_delete"
-            android:layout_width="60dp"
-            android:layout_height="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginTop="8dp"
             android:text="Xóa"
-            android:textSize="10sp"
-            android:textColor="@color/white"
+            android:textSize="11sp"
             android:textAllCaps="false"
+            android:textColor="@color/white"
             android:background="@drawable/button_delete_style" />
 
     </LinearLayout>

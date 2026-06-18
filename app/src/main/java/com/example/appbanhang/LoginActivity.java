@@ -20,12 +20,18 @@ import com.example.appbanhang.managers.CartManager;
 import com.example.appbanhang.managers.WishlistManager;
 import com.example.appbanhang.models.User;
 
+import java.util.Locale;
+
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etEmail, etPassword;
-    private Button btnLogin, btnLoginGoogle, btnLoginFacebook;
+    private EditText etEmail;
+    private EditText etPassword;
+    private Button btnLogin;
+    private Button btnLoginGoogle;
+    private Button btnLoginFacebook;
     private CheckBox cbRememberMe;
-    private TextView tvForgotPassword, tvSignUp;
+    private TextView tvForgotPassword;
+    private TextView tvSignUp;
     private AuthManager authManager;
     private DatabaseHelper dbHelper;
 
@@ -34,19 +40,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Apply window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Initialize
         initializeDatabase();
         initializeViews();
         initializeManager();
         setupListeners();
-        setupCompletedListeners();
     }
 
     private void initializeDatabase() {
@@ -72,64 +75,46 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setupListeners() {
         btnLogin.setOnClickListener(v -> handleLogin());
-        
-        btnLoginGoogle.setOnClickListener(v -> {
-            handleProviderLogin("Google");
-        });
-        
-        btnLoginFacebook.setOnClickListener(v -> {
-            handleProviderLogin("Facebook");
-        });
-        
-        tvForgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-            startActivity(intent);
-        });
-        
-        tvSignUp.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        });
-    }
-
-    private void setupCompletedListeners() {
         btnLoginGoogle.setOnClickListener(v -> handleProviderLogin("Google"));
         btnLoginFacebook.setOnClickListener(v -> handleProviderLogin("Facebook"));
-        tvForgotPassword.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-            startActivity(intent);
-        });
+        tvForgotPassword.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class)));
+        tvSignUp.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
     }
 
     private void handleLogin() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        // Validation
         if (email.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui long nhap email", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (password.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập mật khẩu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui long nhap mat khau", Toast.LENGTH_SHORT).show();
             return;
         }
-
         if (!isValidEmail(email)) {
-            Toast.makeText(this, "Email không hợp lệ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Email khong hop le", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Attempt login
         authManager.login(email, password, new AuthManager.AuthCallback() {
             @Override
             public void onSuccess(User user) {
                 saveRememberedLogin(email);
-                CartManager.getInstance().syncFromDatabase(); // Giữ nguyên, sửa Cart sau
-                Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
+                CartManager.getInstance().syncCart(new CartManager.CartSyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        completeLogin();
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        completeLogin();
+                    }
+                });
             }
 
             @Override
@@ -140,8 +125,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleProviderLogin(String provider) {
-        // Tạm thời thông báo chưa hỗ trợ để app không bị lỗi
-        Toast.makeText(this, "Tính năng đăng nhập bằng " + provider + " đang được cập nhật sang Firebase!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,
+                "Dang nhap bang " + provider + " dang duoc cap nhat.",
+                Toast.LENGTH_SHORT).show();
     }
 
     private boolean isValidEmail(String email) {
@@ -151,10 +137,16 @@ public class LoginActivity extends AppCompatActivity {
     private void saveRememberedLogin(String email) {
         SharedPreferences.Editor editor = getSharedPreferences(SplashActivity.PREFS_NAME, MODE_PRIVATE).edit();
         if (cbRememberMe.isChecked()) {
-            editor.putString(SplashActivity.KEY_REMEMBERED_EMAIL, email.trim().toLowerCase());
+            editor.putString(SplashActivity.KEY_REMEMBERED_EMAIL, email.trim().toLowerCase(Locale.ROOT));
         } else {
             editor.remove(SplashActivity.KEY_REMEMBERED_EMAIL);
         }
         editor.apply();
+    }
+
+    private void completeLogin() {
+        Toast.makeText(LoginActivity.this, "Dang nhap thanh cong", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
     }
 }

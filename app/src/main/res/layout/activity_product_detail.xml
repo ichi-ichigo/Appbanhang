@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/app_bg">
 
-    <!-- Header với nút quay lại -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,31 +13,38 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="←"
-            android:textSize="24sp"
-            android:textColor="@color/text_primary"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_arrow_back"
+            android:scaleType="center"
+            android:padding="8dp"
             android:background="@drawable/button_icon_style" />
 
-        <View
+        <TextView
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Chi tiết sản phẩm"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_favorite"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="❤️"
-            android:textSize="24sp"
+            android:contentDescription="@string/favorite"
+            android:src="@drawable/ic_favorite_outline"
+            android:scaleType="center"
+            android:padding="8dp"
             android:background="@drawable/button_favorite_style" />
 
     </LinearLayout>
 
-    <!-- ScrollView cho nội dung -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -49,175 +56,165 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Ảnh sản phẩm chính -->
             <ImageView
                 android:id="@+id/img_product_main"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="300dp"
                 android:contentDescription="@string/product_image"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/ic_product_placeholder"
                 android:scaleType="centerCrop"
                 android:background="@drawable/bg_card"
                 android:padding="2dp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/txt_product_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tên sản phẩm"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:id="@+id/txt_product_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Danh mục"
+                android:textSize="14sp"
+                android:textColor="@color/text_secondary"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Thumbnail ảnh -->
+            <TextView
+                android:id="@+id/txt_product_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0 VND"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/price"
+                android:layout_marginBottom="18dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kích cỡ có sẵn"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="10dp" />
+
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_marginBottom="16dp">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:scrollbars="none">
 
                 <LinearLayout
-                    android:id="@+id/thumbnail_container"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/product_thumbnail"
-                        android:src="@drawable/ic_launcher_foreground"
-                        android:scaleType="centerCrop"
-                        android:layout_marginEnd="8dp" />
+                <Button
+                    android:layout_width="56dp"
+                    android:layout_height="44dp"
+                    android:text="39"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_size_style"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="0dp"
+                    android:layout_marginEnd="8dp" />
 
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/product_thumbnail"
-                        android:src="@drawable/ic_launcher_foreground"
-                        android:scaleType="centerCrop"
-                        android:layout_marginEnd="8dp" />
+                <Button
+                    android:layout_width="56dp"
+                    android:layout_height="44dp"
+                    android:text="40"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_size_style"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="0dp"
+                    android:layout_marginEnd="8dp" />
 
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/product_thumbnail"
-                        android:src="@drawable/ic_launcher_foreground"
-                        android:scaleType="centerCrop"
-                        android:layout_marginEnd="8dp" />
+                <Button
+                    android:layout_width="56dp"
+                    android:layout_height="44dp"
+                    android:text="41"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_size_style"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="0dp"
+                    android:layout_marginEnd="8dp" />
 
-                    <ImageView
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        android:contentDescription="@string/product_thumbnail"
-                        android:src="@drawable/ic_launcher_foreground"
-                        android:scaleType="centerCrop" />
+                <Button
+                    android:layout_width="56dp"
+                    android:layout_height="44dp"
+                    android:text="42"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_size_style"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="0dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:layout_width="56dp"
+                    android:layout_height="44dp"
+                    android:text="43"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_size_style"
+                    android:backgroundTint="@null"
+                    app:backgroundTint="@null"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="0dp" />
 
                 </LinearLayout>
 
             </HorizontalScrollView>
 
-            <!-- Tên sản phẩm -->
-            <TextView
-                android:id="@+id/txt_product_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nike Air VaporMax Evo"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Loại sản phẩm -->
-            <TextView
-                android:id="@+id/txt_product_category"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sepatu Laki laki"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Giá tiền -->
-            <TextView
-                android:id="@+id/txt_product_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rp. 120.000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/price"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Lựa chọn kích cỡ -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ukuran Tersedia"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:text="39"
-                    android:textSize="12sp"
-                    android:background="@drawable/button_size_style"
-                    android:layout_marginEnd="8dp" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:text="40"
-                    android:textSize="12sp"
-                    android:background="@drawable/button_size_style"
-                    android:layout_marginEnd="8dp" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:text="41"
-                    android:textSize="12sp"
-                    android:background="@drawable/button_size_style"
-                    android:layout_marginEnd="8dp" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:text="42"
-                    android:textSize="12sp"
-                    android:background="@drawable/button_size_style"
-                    android:layout_marginEnd="8dp" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:text="43"
-                    android:textSize="12sp"
-                    android:background="@drawable/button_size_style" />
-
-            </LinearLayout>
-
-            <!-- Mô tả sản phẩm -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mô Tả"
-                android:textSize="14sp"
+                android:text="Mô tả"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 android:layout_marginBottom="8dp" />
 
             <TextView
                 android:id="@+id/txt_product_description"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tạo bởi sáng tạo của Nike. Nike Air VaporMax 2021 lại mang lại những điều bất ngờ nhất cùng với các chất liệu công nghệ cao và phối màu tươi mới."
-                android:textSize="12sp"
+                android:text="Mô tả sản phẩm"
+                android:textSize="14sp"
+                android:lineSpacingExtra="4dp"
                 android:textColor="@color/text_secondary"
                 android:layout_marginBottom="16dp" />
 
@@ -225,7 +222,6 @@
 
     </ScrollView>
 
-    <!-- Nút Mua Ngay -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -236,14 +232,16 @@
         <Button
             android:id="@+id/btn_buy_now"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:text="Beli Sekarang"
+            android:text="Thêm vào giỏ hàng"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:textAllCaps="false"
-            android:background="@drawable/button_buy_style" />
+            android:background="@drawable/button_buy_style"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null" />
 
     </LinearLayout>
 

@@ -17,11 +17,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/product_image"
-            android:src="@drawable/ic_launcher_foreground"
+            android:src="@drawable/ic_product_placeholder"
             android:scaleType="centerCrop"
             android:background="@drawable/bg_card_soft" />
 
-        <!-- Badge promotion (NEW, HOT DEAL, TRENDING) -->
+        <!-- Badge promotion -->
         <TextView
             android:id="@+id/badge_label"
             android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
             android:paddingEnd="8dp"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:text="NEW"
+            android:text="Mới"
             android:textColor="@color/white"
             android:textSize="11sp"
             android:textStyle="bold"
@@ -40,14 +40,16 @@
             android:visibility="gone" />
 
         <!-- Badge yêu thích -->
-        <Button
+        <ImageButton
             android:id="@+id/btn_favorite"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_gravity="top|end"
             android:layout_margin="8dp"
-            android:text="🤍"
-            android:textSize="20sp"
+            android:contentDescription="@string/favorite"
+            android:src="@drawable/ic_favorite_outline"
+            android:scaleType="center"
+            android:padding="7dp"
             android:background="@drawable/button_favorite_style" />
 
     </FrameLayout>
@@ -71,7 +73,7 @@
         android:id="@+id/txt_product_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sepatu Pria"
+        android:text="Danh mục"
         android:textSize="11sp"
         android:textColor="@color/text_secondary"
         android:paddingHorizontal="8dp"
@@ -91,7 +93,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Rp. 120.000"
+            android:text="0 VND"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textColor="@color/price" />
@@ -103,11 +105,11 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="⭐"
-                android:textSize="12sp" />
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:contentDescription="@string/rating"
+                android:src="@drawable/ic_rating_star" />
 
             <TextView
                 android:id="@+id/txt_rating"

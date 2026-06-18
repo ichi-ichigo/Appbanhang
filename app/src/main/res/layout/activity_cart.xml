@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/app_bg">
+    android:background="@color/app_bg"
+    android:orientation="vertical">
 
-    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+        android:padding="16dp">
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:text="←"
-            android:textSize="24sp"
-            android:textColor="@color/text_primary"
-            android:background="@drawable/button_icon_style" />
+            android:background="@drawable/button_icon_style"
+            android:contentDescription="@string/back"
+            android:padding="8dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_arrow_back" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Giỏ Hàng"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:gravity="center"
+            android:text="Giỏ hàng"
             android:textColor="@color/text_primary"
-            android:gravity="center" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <View
             android:layout_width="40dp"
@@ -38,7 +39,6 @@
 
     </LinearLayout>
 
-    <!-- RecyclerView cho sản phẩm trong giỏ -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_cart_items"
         android:layout_width="match_parent"
@@ -46,147 +46,178 @@
         android:layout_weight="1"
         android:padding="12dp" />
 
-    <!-- Separator -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/line" />
 
-    <!-- Tóm tắt giá -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Mã Promo -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/edittext_style"
             android:gravity="center_vertical"
-            android:paddingHorizontal="12dp"
-            android:layout_marginBottom="12dp">
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp">
 
             <EditText
                 android:id="@+id/et_promo_code"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:hint="Nhập Mã Promo"
-                android:textSize="14sp"
                 android:background="@null"
-                android:inputType="text" />
+                android:hint="Nhập mã giảm giá"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btn_apply_promo"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:text="Áp dụng"
-                android:textSize="12sp"
-                android:textColor="@color/white"
-                android:textAllCaps="false"
                 android:background="@drawable/button_brand_style"
-                android:paddingHorizontal="12dp" />
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:paddingHorizontal="12dp"
+                android:text="Áp dụng"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
-        <!-- Tổng phụ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_choose_voucher"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_chip"
+                android:backgroundTint="@null"
+                app:backgroundTint="@null"
+                android:minWidth="0dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="Chọn voucher"
+                android:textAllCaps="false"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txt_voucher_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Đang tải voucher..."
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Tổng Phụ"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:text="Tạm tính"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/txt_subtotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp. 132.000"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:text="0 VND"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
-        <!-- Biaya Vận Chuyển -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Biaya Vận Chuyển"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:text="Phí vận chuyển"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/txt_shipping_fee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp. 12.000"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary" />
+                android:text="0 VND"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
-        <!-- Separator -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/line"
-            android:layout_marginVertical="8dp" />
+            android:layout_marginVertical="8dp"
+            android:background="@color/line" />
 
-        <!-- Tổng Cộng -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Tổng Cộng"
+                android:text="Tổng cộng"
+                android:textColor="@color/text_primary"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txt_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp. 144.000"
+                android:text="0 VND"
+                android:textColor="@color/price"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/price" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!-- Nút Checkout -->
         <Button
             android:id="@+id/btn_checkout"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:text="Thanh Toán"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
+            android:background="@drawable/button_buy_style"
+            android:backgroundTint="@null"
+            app:backgroundTint="@null"
+            android:text="Thanh toán"
             android:textAllCaps="false"
-            android:background="@drawable/button_buy_style" />
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

@@ -5,12 +5,20 @@
     <color name="app_bg">#F4F7F8</color>
     <color name="surface">#FFFFFF</color>
     <color name="surface_alt">#EEF3F4</color>
-    <color name="primary">#00AFC4</color>
-    <color name="primary_dark">#007C8C</color>
+    <color name="primary">#1565D8</color>
+    <color name="primary_dark">#0D47A1</color>
     <color name="text_primary">#171A1C</color>
     <color name="text_secondary">#6E7A80</color>
     <color name="line">#E3EAED</color>
     <color name="danger">#EF5350</color>
     <color name="price">#E94B5F</color>
+    <color name="orange">#F97316</color>
+    <color name="orange_dark">#C2410C</color>
+    <color name="orange_soft">#FFEDD5</color>
+    <color name="orange_line">#FDBA74</color>
     <color name="brand_black">#15191C</color>
+    <color name="admin_blue">#1565D8</color>
+    <color name="admin_blue_dark">#0D47A1</color>
+    <color name="admin_blue_soft">#EAF3FF</color>
+    <color name="admin_blue_line">#BBD7FF</color>
 </resources>

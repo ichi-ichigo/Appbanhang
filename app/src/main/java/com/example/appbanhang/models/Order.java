@@ -11,7 +11,7 @@ public class Order {
     private double subtotal;
     private double shippingFee;
     private double totalAmount;
-    private String orderStatus; // Pending, Confirmed, Shipped, Delivered, Cancelled
+    private String orderStatus;
     private String paymentMethod;
     private String deliveryAddress;
     private String promoCode;
@@ -24,8 +24,8 @@ public class Order {
         this.userId = userId;
         this.items = new ArrayList<>();
         this.subtotal = 0;
-        this.shippingFee = 12000; // Default shipping fee
-        this.orderStatus = "Pending";
+        this.shippingFee = 12000;
+        this.orderStatus = "Đang xử lý";
         this.orderDate = new Date();
         this.discount = 0;
     }

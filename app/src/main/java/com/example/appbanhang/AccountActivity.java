@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,14 +16,32 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.appbanhang.database.DatabaseHelper;
+import com.example.appbanhang.firebase.FirebaseHelper;
 import com.example.appbanhang.managers.AuthManager;
+import com.example.appbanhang.managers.ImageManager;
 import com.example.appbanhang.models.User;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.text.Normalizer;
+import java.util.Locale;
 
 public class AccountActivity extends AppCompatActivity {
 
-    private Button btnEditProfile, btnLogout;
-    private LinearLayout menuMyOrders, menuVoucher, menuShippingAddress, menuFaq, menuCustomerService, menuSettings;
-    private TextView tvAccountName, tvAccountEmail, tvOrdersCount, tvDeliveredCount, tvReadyCount;
+    private ImageView btnEditProfile;
+    private Button btnLogout;
+    private ImageButton btnBack;
+    private LinearLayout menuMyOrders;
+    private LinearLayout menuVoucher;
+    private LinearLayout menuShippingAddress;
+    private LinearLayout menuFaq;
+    private LinearLayout menuCustomerService;
+    private LinearLayout menuSettings;
+    private TextView tvAccountName;
+    private TextView tvAccountEmail;
+    private TextView tvOrdersCount;
+    private TextView tvDeliveredCount;
+    private TextView tvReadyCount;
     private AuthManager authManager;
     private DatabaseHelper dbHelper;
 
@@ -53,6 +73,7 @@ public class AccountActivity extends AppCompatActivity {
     private void initializeViews() {
         btnEditProfile = findViewById(R.id.btn_edit_profile);
         btnLogout = findViewById(R.id.btn_logout);
+        btnBack = findViewById(R.id.btn_back);
         menuMyOrders = findViewById(R.id.menu_my_orders);
         menuVoucher = findViewById(R.id.menu_voucher);
         menuShippingAddress = findViewById(R.id.menu_shipping_address);
@@ -78,17 +99,25 @@ public class AccountActivity extends AppCompatActivity {
             return;
         }
 
-        User currentUser = authManager.getCurrentUser();
-        tvAccountName.setText(currentUser.getFullName());
-        tvAccountEmail.setText(currentUser.getEmail());
+        authManager.ensureCurrentUser(new AuthManager.AuthCallback() {
+            @Override
+            public void onSuccess(User currentUser) {
+                tvAccountName.setText(currentUser.getFullName());
+                tvAccountEmail.setText(currentUser.getEmail());
+                ImageManager.getInstance().loadAvatar(currentUser.getAvatar(), btnEditProfile);
+                loadOrderStats(currentUser);
+            }
 
-        int orderCount = currentUser.getId() > 0 ? dbHelper.getOrderCount(currentUser.getId()) : 0;
-        tvOrdersCount.setText(String.valueOf(orderCount));
-        tvDeliveredCount.setText("0");
-        tvReadyCount.setText(String.valueOf(orderCount));
+            @Override
+            public void onError(String message) {
+                Toast.makeText(AccountActivity.this, message, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     private void setupListeners() {
+        btnBack.setOnClickListener(v -> finish());
         btnEditProfile.setOnClickListener(v ->
                 startActivity(new Intent(AccountActivity.this, EditProfileActivity.class)));
 
@@ -99,8 +128,6 @@ public class AccountActivity extends AppCompatActivity {
         menuFaq.setOnClickListener(v -> openInfoScreen("faq"));
         menuCustomerService.setOnClickListener(v -> openInfoScreen("support"));
         menuSettings.setOnClickListener(v -> openInfoScreen("settings"));
-        btnEditProfile.setOnClickListener(v ->
-                startActivity(new Intent(AccountActivity.this, EditProfileActivity.class)));
         btnLogout.setOnClickListener(v -> handleLogout());
     }
 
@@ -108,6 +135,72 @@ public class AccountActivity extends AppCompatActivity {
         Intent intent = new Intent(AccountActivity.this, AccountInfoActivity.class);
         intent.putExtra("screen", screen);
         startActivity(intent);
+    }
+
+    private void loadOrderStats(User currentUser) {
+        FirebaseUser firebaseUser = FirebaseHelper.getAuth().getCurrentUser();
+        if (firebaseUser == null) {
+            showLocalOrderStats(currentUser);
+            return;
+        }
+
+        tvOrdersCount.setText("...");
+        tvDeliveredCount.setText("...");
+        tvReadyCount.setText("...");
+
+        FirebaseHelper.getFirestore()
+                .collection("orders")
+                .whereEqualTo("userUid", firebaseUser.getUid())
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int total = querySnapshot.size();
+                    int delivered = 0;
+                    int processing = 0;
+
+                    for (DocumentSnapshot document : querySnapshot.getDocuments()) {
+                        String status = getOrderStatus(document);
+                        if (isDelivered(status)) {
+                            delivered++;
+                        } else if (!isCancelled(status)) {
+                            processing++;
+                        }
+                    }
+
+                    tvOrdersCount.setText(String.valueOf(total));
+                    tvDeliveredCount.setText(String.valueOf(delivered));
+                    tvReadyCount.setText(String.valueOf(processing));
+                })
+                .addOnFailureListener(error -> showLocalOrderStats(currentUser));
+    }
+
+    private void showLocalOrderStats(User currentUser) {
+        int orderCount = currentUser != null && currentUser.getId() > 0
+                ? dbHelper.getOrderCount(currentUser.getId())
+                : 0;
+        tvOrdersCount.setText(String.valueOf(orderCount));
+        tvDeliveredCount.setText("0");
+        tvReadyCount.setText(String.valueOf(orderCount));
+    }
+
+    private String getOrderStatus(DocumentSnapshot document) {
+        String status = document.getString("orderStatus");
+        return status == null || status.trim().isEmpty() ? "Dang xu ly" : status.trim();
+    }
+
+    private boolean isDelivered(String status) {
+        String normalized = normalizeStatus(status);
+        return normalized.contains("da giao") || normalized.contains("hoan thanh");
+    }
+
+    private boolean isCancelled(String status) {
+        return normalizeStatus(status).contains("huy");
+    }
+
+    private String normalizeStatus(String status) {
+        String value = status == null ? "" : status.trim().toLowerCase(Locale.ROOT);
+        return Normalizer.normalize(value, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .replace('đ', 'd');
     }
 
     private void handleLogout() {

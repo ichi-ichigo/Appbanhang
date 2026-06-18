@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.appbanhang.R;
 import com.example.appbanhang.managers.ImageManager;
 import com.example.appbanhang.models.Product;
+import com.example.appbanhang.utils.ProductDisplayUtils;
 
 import java.util.List;
+import java.util.Locale;
 
 public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.WishlistViewHolder> {
     
@@ -24,6 +26,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
     private OnWishlistListener onWishlistListener;
 
     public interface OnWishlistListener {
+        void onProductClick(Product product);
         void onBuyClick(Product product);
         void onRemoveClick(Product product);
     }
@@ -50,10 +53,16 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.Wishli
         
         // Set product data
         holder.txtProductName.setText(product.getName());
-        holder.txtProductCategory.setText(product.getCategory());
-        holder.txtProductPrice.setText(String.format("Rp. %.0f", product.getPrice()));
+        holder.txtProductCategory.setText(ProductDisplayUtils.category(product.getCategory()));
+        holder.txtProductPrice.setText(String.format(new Locale("vi", "VN"), "%,.0f VND", product.getPrice()));
         
         ImageManager.getInstance().loadThumbnail(product.getImageUrl(), holder.imgProduct);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (onWishlistListener != null) {
+                onWishlistListener.onProductClick(product);
+            }
+        });
         
         // Buy button
         holder.btnBuy.setOnClickListener(v -> {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -16,11 +17,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appbanhang.adapters.WishlistAdapter;
 import com.example.appbanhang.database.DatabaseHelper;
+import com.example.appbanhang.firebase.FirestoreRepository;
 import com.example.appbanhang.managers.AuthManager;
 import com.example.appbanhang.managers.CartManager;
 import com.example.appbanhang.managers.WishlistManager;
 import com.example.appbanhang.models.Product;
-import com.example.appbanhang.utils.DataProvider;
 
 import java.util.List;
 
@@ -28,12 +29,12 @@ public class WishlistActivity extends AppCompatActivity {
 
     private RecyclerView recyclerWishlist;
     private WishlistAdapter wishlistAdapter;
-    private Button btnBack, btnContinueShopping;
+    private ImageButton btnBack;
+    private Button btnContinueShopping;
     private LinearLayout emptyState;
     private CartManager cartManager;
     private WishlistManager wishlistManager;
-    private AuthManager authManager;
-    private DatabaseHelper dbHelper;
+    private FirestoreRepository firestoreRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class WishlistActivity extends AppCompatActivity {
         initializeManagers();
         setupRecyclerView();
         setupListeners();
+        loadWishlistFromFirebase();
     }
 
     private void initializeViews() {
@@ -60,27 +62,32 @@ public class WishlistActivity extends AppCompatActivity {
     }
 
     private void initializeManagers() {
-        dbHelper = new DatabaseHelper(this);
-        authManager = AuthManager.getInstance();
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        AuthManager authManager = AuthManager.getInstance();
         WishlistManager.initialize(dbHelper, authManager);
         CartManager.initialize(dbHelper, authManager);
         cartManager = CartManager.getInstance();
         wishlistManager = WishlistManager.getInstance();
-        wishlistManager.syncFromDatabase(DataProvider.getProducts());
+        firestoreRepository = FirestoreRepository.getInstance();
     }
 
     private void setupRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerWishlist.setLayoutManager(layoutManager);
+        recyclerWishlist.setLayoutManager(new LinearLayoutManager(this));
 
         List<Product> wishlistItems = wishlistManager.getWishlistItems();
         wishlistAdapter = new WishlistAdapter(wishlistItems, this);
         wishlistAdapter.setOnWishlistListener(new WishlistAdapter.OnWishlistListener() {
             @Override
-            public void onBuyClick(Product product) {
-                cartManager.addToCart(product, 1, "M");
-                Intent intent = new Intent(WishlistActivity.this, CartActivity.class);
+            public void onProductClick(Product product) {
+                Intent intent = new Intent(WishlistActivity.this, ProductDetailActivity.class);
+                intent.putExtra("product_id", product.getId());
                 startActivity(intent);
+            }
+
+            @Override
+            public void onBuyClick(Product product) {
+                cartManager.addToCart(product, 1, "41");
+                startActivity(new Intent(WishlistActivity.this, CartActivity.class));
             }
 
             @Override
@@ -92,8 +99,26 @@ public class WishlistActivity extends AppCompatActivity {
             }
         });
         recyclerWishlist.setAdapter(wishlistAdapter);
-
         updateEmptyState();
+    }
+
+    private void loadWishlistFromFirebase() {
+        firestoreRepository.fetchProducts(new FirestoreRepository.ProductsCallback() {
+            @Override
+            public void onSuccess(List<Product> products) {
+                wishlistManager.syncFromDatabase(products);
+                wishlistAdapter.notifyDataSetChanged();
+                updateEmptyState();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Toast.makeText(WishlistActivity.this,
+                        "Lỗi tải sản phẩm yêu thích: " + errorMessage,
+                        Toast.LENGTH_LONG).show();
+                updateEmptyState();
+            }
+        });
     }
 
     private void setupListeners() {

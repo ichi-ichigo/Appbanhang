@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/app_bg">
 
-    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,7 +13,6 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
-        <!-- Lời chào -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -23,32 +22,30 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Xin chào, Sultan !"
+                android:text="Xin chào"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textColor="@color/text_primary" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chào mừng trở lại"
                 android:textSize="12sp"
-                android:textColor="#999999"
+                android:textColor="@color/text_secondary"
                 android:layout_marginTop="4dp" />
 
         </LinearLayout>
 
-        <!-- Avatar -->
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:contentDescription="@string/user_avatar"
-            android:src="@drawable/ic_launcher_foreground"
-            android:scaleType="centerCrop" />
+            android:src="@drawable/ic_user_avatar"
+            android:scaleType="centerInside" />
 
     </LinearLayout>
 
-    <!-- ScrollView cho nội dung -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -60,11 +57,10 @@
             android:orientation="vertical"
             android:padding="12dp">
 
-            <!-- Banner quảng cáo chính -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="140dp"
-                android:background="#00BCD4"
+                android:background="@color/primary"
                 android:orientation="horizontal"
                 android:padding="16dp"
                 android:gravity="center_vertical"
@@ -79,7 +75,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Biaya Sepatu Rebook"
+                        android:text="Bộ sưu tập giày mới"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF" />
@@ -87,18 +83,19 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="với discount 15%"
+                        android:text="Giảm giá đến 15%"
                         android:textSize="14sp"
                         android:textColor="#FFFFFF"
                         android:layout_marginTop="4dp" />
 
                     <Button
                         android:id="@+id/btn_beli_sepatu"
-                        android:layout_width="100dp"
+                        android:layout_width="120dp"
                         android:layout_height="36dp"
-                        android:text="Beli Sekarang"
+                        android:text="Mua ngay"
                         android:textSize="12sp"
-                        android:textColor="#FFFFFF"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primary"
                         android:background="#FFFFFF"
                         android:layout_marginTop="8dp" />
 
@@ -108,19 +105,18 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:contentDescription="@string/shoe_image"
-                    android:src="@drawable/ic_launcher_foreground"
+                    android:src="@drawable/ic_product_placeholder"
                     android:layout_marginStart="16dp" />
 
             </LinearLayout>
 
-            <!-- Thương hiệu (Brands) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thương Hiệu"
+                android:text="Thương hiệu"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="@color/text_primary"
                 android:layout_marginBottom="12dp" />
 
             <HorizontalScrollView
@@ -134,43 +130,15 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <Button
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:text="Nike"
-                        android:textSize="12sp"
-                        android:background="@drawable/button_brand_style"
-                        android:layout_marginEnd="8dp" />
-
-                    <Button
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:text="Puma"
-                        android:textSize="12sp"
-                        android:background="@drawable/button_brand_style"
-                        android:layout_marginEnd="8dp" />
-
-                    <Button
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:text="Adidas"
-                        android:textSize="12sp"
-                        android:background="@drawable/button_brand_style"
-                        android:layout_marginEnd="8dp" />
-
-                    <Button
-                        android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:text="Nike"
-                        android:textSize="12sp"
-                        android:background="@drawable/button_brand_style"
-                        android:layout_marginEnd="8dp" />
+                    <Button android:layout_width="80dp" android:layout_height="40dp" android:text="Nike" android:textSize="12sp" android:textColor="@color/text_primary" android:textAllCaps="false" android:background="@drawable/bg_chip" android:backgroundTint="@null" app:backgroundTint="@null" android:layout_marginEnd="8dp" />
+                    <Button android:layout_width="80dp" android:layout_height="40dp" android:text="Puma" android:textSize="12sp" android:textColor="@color/text_primary" android:textAllCaps="false" android:background="@drawable/bg_chip" android:backgroundTint="@null" app:backgroundTint="@null" android:layout_marginEnd="8dp" />
+                    <Button android:layout_width="80dp" android:layout_height="40dp" android:text="Adidas" android:textSize="12sp" android:textColor="@color/text_primary" android:textAllCaps="false" android:background="@drawable/bg_chip" android:backgroundTint="@null" app:backgroundTint="@null" android:layout_marginEnd="8dp" />
+                    <Button android:layout_width="90dp" android:layout_height="40dp" android:text="Converse" android:textSize="12sp" android:textColor="@color/text_primary" android:textAllCaps="false" android:background="@drawable/bg_chip" android:backgroundTint="@null" app:backgroundTint="@null" />
 
                 </LinearLayout>
 
             </HorizontalScrollView>
 
-            <!-- RecyclerView cho sản phẩm (2 cột) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_products"
                 android:layout_width="match_parent"
@@ -181,60 +149,20 @@
 
     </ScrollView>
 
-    <!-- Bottom Navigation -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:weightSum="5"
-        android:background="#FFFFFF"
+        android:background="@drawable/bg_card"
         android:elevation="8dp">
 
-        <Button
-            android:id="@+id/btn_home"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="🏠"
-            android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
-
-        <Button
-            android:id="@+id/btn_search"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="🔍"
-            android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
-
-        <Button
-            android:id="@+id/btn_cart"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="🛒"
-            android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
-
-        <Button
-            android:id="@+id/btn_wishlist"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="❤️"
-            android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
-
-        <Button
-            android:id="@+id/btn_account"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="👤"
-            android:textSize="20sp"
-            android:background="?attr/selectableItemBackground" />
+        <ImageButton android:id="@+id/btn_home" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:contentDescription="@string/nav_home" android:src="@drawable/ic_nav_home" android:scaleType="center" android:padding="8dp" android:background="@drawable/button_icon_style" />
+        <ImageButton android:id="@+id/btn_search" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:contentDescription="@string/nav_search" android:src="@drawable/ic_nav_search" android:scaleType="center" android:padding="8dp" android:background="@drawable/button_icon_style" />
+        <ImageButton android:id="@+id/btn_cart" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:contentDescription="@string/nav_cart" android:src="@drawable/ic_nav_cart" android:scaleType="center" android:padding="8dp" android:background="@drawable/button_icon_style" />
+        <ImageButton android:id="@+id/btn_wishlist" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:contentDescription="@string/nav_wishlist" android:src="@drawable/ic_nav_wishlist" android:scaleType="center" android:padding="8dp" android:background="@drawable/button_icon_style" />
+        <ImageButton android:id="@+id/btn_account" android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:contentDescription="@string/nav_account" android:src="@drawable/ic_nav_account" android:scaleType="center" android:padding="8dp" android:background="@drawable/button_icon_style" />
 
     </LinearLayout>
 

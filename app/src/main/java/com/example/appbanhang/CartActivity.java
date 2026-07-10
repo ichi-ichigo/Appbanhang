@@ -70,6 +70,7 @@ public class CartActivity extends AppCompatActivity {
         loadVouchers();
     }
 
+    // Anh xa view.
     private void initializeViews() {
         recyclerCart = findViewById(R.id.recycler_cart_items);
         tvSubtotal = findViewById(R.id.txt_subtotal);
@@ -83,6 +84,7 @@ public class CartActivity extends AppCompatActivity {
         btnChooseVoucher = findViewById(R.id.btn_choose_voucher);
     }
 
+    // Khoi tao manager.
     private void initializeManagers() {
         dbHelper = new DatabaseHelper(this);
         authManager = AuthManager.getInstance();
@@ -92,6 +94,7 @@ public class CartActivity extends AppCompatActivity {
         syncCartItems();
     }
 
+    // Dong bo gio hang.
     private void syncCartItems() {
         cartManager.syncCart(new CartManager.CartSyncCallback() {
             @Override
@@ -106,6 +109,7 @@ public class CartActivity extends AppCompatActivity {
         });
     }
 
+    // Lam moi giao dien gio.
     private void refreshCartUi() {
         if (cartAdapter != null) {
             cartAdapter.notifyDataSetChanged();
@@ -114,6 +118,7 @@ public class CartActivity extends AppCompatActivity {
         refreshVoucherStatus();
     }
 
+    // Cai dat danh sach gio.
     private void setupRecyclerView() {
         recyclerCart.setLayoutManager(new LinearLayoutManager(this));
 
@@ -137,6 +142,7 @@ public class CartActivity extends AppCompatActivity {
         recyclerCart.setAdapter(cartAdapter);
     }
 
+    // Cap nhat tong tien.
     private void updateTotals() {
         double subtotal = cartManager.getTotalPrice();
         double shipping = cartManager.isEmpty() ? 0 : cartManager.getShippingFee();
@@ -147,6 +153,7 @@ public class CartActivity extends AppCompatActivity {
         tvTotal.setText(formatCurrency(total));
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
         btnApplyPromo.setOnClickListener(v -> applyPromoCode());
@@ -160,6 +167,7 @@ public class CartActivity extends AppCompatActivity {
         });
     }
 
+    // Tai voucher.
     private void loadVouchers() {
         vouchersLoading = true;
         btnChooseVoucher.setEnabled(false);
@@ -188,9 +196,10 @@ public class CartActivity extends AppCompatActivity {
         });
     }
 
+    // Hien chon voucher.
     private void showVoucherPicker() {
         if (vouchersLoading) {
-            Toast.makeText(this, "Đang tải voucher từ Firebase", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Đang tải voucher ", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -218,6 +227,7 @@ public class CartActivity extends AppCompatActivity {
                 .show();
     }
 
+    // Ap ma giam gia.
     private void applyPromoCode() {
         String code = etPromoCode.getText().toString().trim().toUpperCase(Locale.ROOT);
         if (code.isEmpty()) {
@@ -234,6 +244,7 @@ public class CartActivity extends AppCompatActivity {
         applyVoucher(voucher, true, true);
     }
 
+    // Ap lai voucher.
     private void reapplyCurrentVoucher(boolean showToastWhenInvalid) {
         String appliedCode = cartManager.getAppliedPromoCode();
         if (appliedCode == null || appliedCode.trim().isEmpty()) {
@@ -254,6 +265,7 @@ public class CartActivity extends AppCompatActivity {
         applyVoucher(voucher, false, showToastWhenInvalid);
     }
 
+    // Ap voucher.
     private void applyVoucher(Voucher voucher, boolean showSuccessToast, boolean showInvalidToast) {
         String validationError = validateVoucher(voucher);
         if (validationError != null) {
@@ -272,6 +284,7 @@ public class CartActivity extends AppCompatActivity {
         }
     }
 
+    // Go voucher.
     private void removeAppliedVoucher(String reason, boolean showToast) {
         cartManager.clearPromoCode();
         etPromoCode.setText("");
@@ -282,6 +295,7 @@ public class CartActivity extends AppCompatActivity {
         }
     }
 
+    // Kiem tra voucher.
     private String validateVoucher(Voucher voucher) {
         if (voucher == null) {
             return "Voucher không hợp lệ";
@@ -305,6 +319,7 @@ public class CartActivity extends AppCompatActivity {
         return null;
     }
 
+    // Kiem tra ngay voucher.
     private String validateVoucherDate(Voucher voucher) {
         Date today = stripTime(new Date());
         Date startDate = parseVoucherDate(voucher.getStartDate());
@@ -319,6 +334,7 @@ public class CartActivity extends AppCompatActivity {
         return null;
     }
 
+    // Tinh tien giam.
     private double calculateDiscount(Voucher voucher) {
         double subtotal = cartManager.getTotalPrice();
         double discount;
@@ -334,6 +350,7 @@ public class CartActivity extends AppCompatActivity {
         return Math.min(Math.max(discount, 0), subtotal);
     }
 
+    // Tim voucher theo ma.
     private Voucher findVoucherByCode(String code) {
         for (Voucher voucher : vouchers) {
             if (voucher.getCode() != null && voucher.getCode().equalsIgnoreCase(code)) {
@@ -343,6 +360,7 @@ public class CartActivity extends AppCompatActivity {
         return null;
     }
 
+    // Lay voucher dung duoc.
     private List<Voucher> getActiveVouchers() {
         List<Voucher> activeVouchers = new ArrayList<>();
         for (Voucher voucher : vouchers) {
@@ -353,6 +371,7 @@ public class CartActivity extends AppCompatActivity {
         return activeVouchers;
     }
 
+    // Cap nhat trang thai voucher.
     private void refreshVoucherStatus() {
         String appliedCode = cartManager.getAppliedPromoCode();
         if (appliedCode != null && !appliedCode.trim().isEmpty()) {
@@ -374,6 +393,7 @@ public class CartActivity extends AppCompatActivity {
         }
     }
 
+    // Tao tom tat voucher.
     private String buildVoucherSummary(Voucher voucher) {
         String valueLabel;
         if ("fixed".equalsIgnoreCase(voucher.getType())) {
@@ -391,14 +411,17 @@ public class CartActivity extends AppCompatActivity {
         return valueLabel;
     }
 
+    // Dinh dang tien.
     private String formatCurrency(double amount) {
         return String.format(new Locale("vi", "VN"), "%,.0f VND", amount);
     }
 
+    // Xu ly chuoi rong.
     private String safeText(String value) {
         return value == null ? "" : value.trim();
     }
 
+    // Doc ngay voucher.
     private Date parseVoucherDate(String value) {
         if (value == null || value.trim().isEmpty()) {
             return null;
@@ -412,6 +435,7 @@ public class CartActivity extends AppCompatActivity {
         }
     }
 
+    // Bo gio trong ngay.
     private Date stripTime(Date date) {
         if (date == null) {
             return null;

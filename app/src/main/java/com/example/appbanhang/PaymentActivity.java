@@ -2,8 +2,10 @@ package com.example.appbanhang;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,9 +33,12 @@ import java.util.Map;
 
 public class PaymentActivity extends AppCompatActivity {
 
-    private RadioButton rbOnlineBanking;
-    private RadioButton rbCard;
-    private RadioButton rbPaypal;
+    private RadioButton rbOnlinePayment;
+    private RadioButton rbCashOnDelivery;
+    private LinearLayout paymentOnline;
+    private LinearLayout paymentCashOnDelivery;
+    private LinearLayout paymentQrContainer;
+    private TextView txtQrInfo;
     private TextView tvSubtotal;
     private TextView tvShipping;
     private TextView tvTotal;
@@ -60,18 +65,23 @@ public class PaymentActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    // Anh xa view.
     private void initializeViews() {
-        rbOnlineBanking = findViewById(R.id.radio_online_banking);
-        rbCard = findViewById(R.id.radio_card);
-        rbPaypal = findViewById(R.id.radio_paypal);
+        rbOnlinePayment = findViewById(R.id.radio_online_payment);
+        rbCashOnDelivery = findViewById(R.id.radio_cash_on_delivery);
+        paymentOnline = findViewById(R.id.payment_online);
+        paymentCashOnDelivery = findViewById(R.id.payment_cash_on_delivery);
+        paymentQrContainer = findViewById(R.id.payment_qr_container);
+        txtQrInfo = findViewById(R.id.txt_qr_info);
         tvSubtotal = findViewById(R.id.txt_subtotal);
         tvShipping = findViewById(R.id.txt_shipping);
         tvTotal = findViewById(R.id.txt_total_payment);
         btnPay = findViewById(R.id.btn_place_order);
         btnBack = findViewById(R.id.btn_back);
-        selectPaymentMethod(rbOnlineBanking);
+        selectPaymentMethod(false);
     }
 
+    // Khoi tao manager.
     private void initializeManagers() {
         dbHelper = new DatabaseHelper(this);
         authManager = AuthManager.getInstance();
@@ -90,6 +100,7 @@ public class PaymentActivity extends AppCompatActivity {
         });
     }
 
+    // Hien tong tien.
     private void displayTotal() {
         double subtotal = cartManager.getTotalPrice();
         double shipping = cartManager.isEmpty() ? 0 : cartManager.getShippingFee();
@@ -97,31 +108,32 @@ public class PaymentActivity extends AppCompatActivity {
         tvSubtotal.setText(String.format(new Locale("vi", "VN"), "%,.0f VND", subtotal));
         tvShipping.setText(String.format(new Locale("vi", "VN"), "%,.0f VND", shipping));
         tvTotal.setText(String.format(new Locale("vi", "VN"), "%,.0f VND", total));
+        updateQrInfo(total);
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         btnPay.setOnClickListener(v -> handlePayment());
         btnBack.setOnClickListener(v -> finish());
-        rbOnlineBanking.setOnClickListener(v -> selectPaymentMethod(rbOnlineBanking));
-        rbCard.setOnClickListener(v -> selectPaymentMethod(rbCard));
-        rbPaypal.setOnClickListener(v -> selectPaymentMethod(rbPaypal));
+        rbOnlinePayment.setOnClickListener(v -> selectPaymentMethod(true));
+        rbCashOnDelivery.setOnClickListener(v -> selectPaymentMethod(false));
+        paymentOnline.setOnClickListener(v -> selectPaymentMethod(true));
+        paymentCashOnDelivery.setOnClickListener(v -> selectPaymentMethod(false));
     }
 
+    // Xu ly thanh toan.
     private void handlePayment() {
         if (cartManager.isEmpty()) {
-            Toast.makeText(this, "Giỏ hàng trống", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Gio hang trong", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        String paymentMethod = "Thẻ tín dụng";
-        if (rbOnlineBanking.isChecked()) {
-            paymentMethod = "Ngân hàng trực tuyến";
-        } else if (rbPaypal.isChecked()) {
-            paymentMethod = "PayPal";
-        }
+        String paymentMethod = rbOnlinePayment.isChecked()
+                ? "Thanh toan bang ma QR"
+                : "Thanh toan khi nhan hang";
 
-        Toast.makeText(this, "Xử lý thanh toán qua " + paymentMethod, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Dang xu ly " + paymentMethod, Toast.LENGTH_SHORT).show();
 
         User currentUser = authManager.getCurrentUser();
         int userId = currentUser == null ? 0 : currentUser.getId();
@@ -135,7 +147,7 @@ public class PaymentActivity extends AppCompatActivity {
                 userId,
                 total,
                 paymentMethod,
-                "Đang xử lý",
+                "Dang xu ly",
                 deliveryAddress == null ? "" : deliveryAddress
         );
 
@@ -152,6 +164,7 @@ public class PaymentActivity extends AppCompatActivity {
         );
     }
 
+    // Luu don len Firestore.
     private void saveOrderToFirestore(long localOrderId,
                                       User currentUser,
                                       double subtotal,
@@ -178,7 +191,7 @@ public class PaymentActivity extends AppCompatActivity {
         order.put("totalAmount", total);
         order.put("paymentMethod", paymentMethod);
         order.put("deliveryAddress", deliveryAddress);
-        order.put("orderStatus", "Đang xử lý");
+        order.put("orderStatus", "Dang xu ly");
         order.put("items", buildOrderItems());
         order.put("orderDate", FieldValue.serverTimestamp());
         order.put("createdAt", FieldValue.serverTimestamp());
@@ -191,10 +204,11 @@ public class PaymentActivity extends AppCompatActivity {
                 .addOnSuccessListener(unused -> incrementVoucherUsageAndFinish(promoCode))
                 .addOnFailureListener(error ->
                         Toast.makeText(this,
-                                "Lỗi lưu đơn hàng Firebase: " + error.getMessage(),
+                                "Loi luu don hang Firebase: " + error.getMessage(),
                                 Toast.LENGTH_LONG).show());
     }
 
+    // Tang luot dung voucher.
     private void incrementVoucherUsageAndFinish(String promoCode) {
         if (promoCode == null || promoCode.trim().isEmpty()) {
             finishPayment();
@@ -208,12 +222,13 @@ public class PaymentActivity extends AppCompatActivity {
                 .addOnSuccessListener(unused -> finishPayment())
                 .addOnFailureListener(error -> {
                     Toast.makeText(this,
-                            "Đơn hàng đã lưu nhưng chưa cập nhật lượt dùng voucher",
+                            "Don hang da luu nhung chua cap nhat luot dung voucher",
                             Toast.LENGTH_SHORT).show();
                     finishPayment();
                 });
     }
 
+    // Tao danh sach san pham don.
     private List<Map<String, Object>> buildOrderItems() {
         List<Map<String, Object>> items = new ArrayList<>();
         for (CartItem cartItem : cartManager.getCartItems()) {
@@ -233,15 +248,38 @@ public class PaymentActivity extends AppCompatActivity {
         return items;
     }
 
+    // Ket thuc thanh toan.
     private void finishPayment() {
         cartManager.clearCart();
         startActivity(new Intent(PaymentActivity.this, OrderSuccessActivity.class));
         finish();
     }
 
-    private void selectPaymentMethod(RadioButton selected) {
-        rbOnlineBanking.setChecked(selected == rbOnlineBanking);
-        rbCard.setChecked(selected == rbCard);
-        rbPaypal.setChecked(selected == rbPaypal);
+    // Chon cach thanh toan.
+    private void selectPaymentMethod(boolean onlinePayment) {
+        rbOnlinePayment.setChecked(onlinePayment);
+        rbCashOnDelivery.setChecked(!onlinePayment);
+        paymentQrContainer.setVisibility(onlinePayment ? View.VISIBLE : View.GONE);
+        btnPay.setText(onlinePayment ? "Xac nhan da chuyen khoan" : "Dat hang");
+        updateQrInfo(getCurrentTotal());
+    }
+
+    // Lay tong tien hien tai.
+    private double getCurrentTotal() {
+        if (cartManager == null) {
+            return 0;
+        }
+        double shipping = cartManager.isEmpty() ? 0 : cartManager.getShippingFee();
+        return cartManager.getTotalPrice() + shipping - cartManager.getDiscount();
+    }
+
+    // Cap nhat thong tin QR.
+    private void updateQrInfo(double total) {
+        if (txtQrInfo == null || rbOnlinePayment == null || !rbOnlinePayment.isChecked()) {
+            return;
+        }
+
+        String amountText = String.format(new Locale("vi", "VN"), "%,.0f VND", total);
+        txtQrInfo.setText("Quet ma QR cua shop de chuyen khoan " + amountText + ". Bam xac nhan sau khi chuyen khoan.");
     }
 }

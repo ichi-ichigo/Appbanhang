@@ -55,83 +55,11 @@
             android:scrollbars="none">
 
             <LinearLayout
+                android:id="@+id/brand_filter_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/filter_all"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip"
-                    android:backgroundTint="@null"
-                    android:text="Tat ca"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/filter_nike"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip"
-                    android:backgroundTint="@null"
-                    android:text="Nike"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/filter_adidas"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip"
-                    android:backgroundTint="@null"
-                    android:text="Adidas"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/filter_puma"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip"
-                    android:backgroundTint="@null"
-                    android:text="Puma"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/filter_new_balance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/bg_chip"
-                    android:backgroundTint="@null"
-                    android:text="New Balance"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/filter_converse"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_chip"
-                    android:backgroundTint="@null"
-                    android:text="Converse"
-                    android:textAllCaps="false"
-                    android:textColor="@color/text_primary"
-                    app:backgroundTint="@null" />
-
-            </LinearLayout>
+                android:orientation="horizontal" />
 
         </HorizontalScrollView>
 

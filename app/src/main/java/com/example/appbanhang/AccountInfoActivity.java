@@ -44,6 +44,7 @@ public class AccountInfoActivity extends AppCompatActivity {
         }
     }
 
+    // Tai voucher.
     private void loadVouchers() {
         content.setText("Dang tai ma giam gia tu Firebase...");
         FirestoreRepository.getInstance().fetchVouchers(new FirestoreRepository.VouchersCallback() {
@@ -89,6 +90,7 @@ public class AccountInfoActivity extends AppCompatActivity {
         });
     }
 
+    // Tao tom tat voucher.
     private String buildVoucherSummary(Voucher voucher) {
         String valueLabel;
         if ("fixed".equalsIgnoreCase(voucher.getType())) {
@@ -106,10 +108,12 @@ public class AccountInfoActivity extends AppCompatActivity {
         return valueLabel;
     }
 
+    // Doi dp sang px.
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }
 
+    // Lay tieu de man.
     private String getTitleForScreen(String screen) {
         if ("voucher".equals(screen)) return "Ma giam gia";
         if ("address".equals(screen)) return "Dia chi giao hang";
@@ -120,6 +124,7 @@ public class AccountInfoActivity extends AppCompatActivity {
         return "Thong tin";
     }
 
+    // Lay noi dung man.
     private String getContentForScreen(String screen) {
         if ("address".equals(screen)) {
             return "Dia chi giao hang se duoc nhap tai buoc thanh toan. Ban co the cap nhat dia chi moi moi khi dat hang.";
@@ -142,10 +147,12 @@ public class AccountInfoActivity extends AppCompatActivity {
         return "Thong tin Smarteshop";
     }
 
+    // Xu ly chuoi rong.
     private String safeText(String value, String fallback) {
         return value == null || value.trim().isEmpty() ? fallback : value.trim();
     }
 
+    // Dinh dang tien.
     private String formatCurrency(double amount) {
         return String.format(new Locale("vi", "VN"), "%,.0f VND", amount);
     }

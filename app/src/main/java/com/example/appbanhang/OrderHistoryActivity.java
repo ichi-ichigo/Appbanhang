@@ -28,12 +28,15 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class OrderHistoryActivity extends AppCompatActivity {
     private LinearLayout orderContainer;
     private TextView txtEmptyOrders;
+    private TextView txtOrderLoading;
     private DatabaseHelper dbHelper;
     private AuthManager authManager;
+    private int expandedOrderId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         authManager = AuthManager.getInstance();
         orderContainer = findViewById(R.id.order_container);
         txtEmptyOrders = findViewById(R.id.txt_empty_orders);
+        txtOrderLoading = findViewById(R.id.txt_order_loading);
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
     }
 
@@ -60,6 +64,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         loadOrders();
     }
 
+    // Tai don hang.
     private void loadOrders() {
         FirebaseUser firebaseUser = FirebaseHelper.getAuth().getCurrentUser();
         if (firebaseUser == null) {
@@ -68,6 +73,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         }
 
         txtEmptyOrders.setVisibility(View.GONE);
+        txtOrderLoading.setVisibility(View.VISIBLE);
         orderContainer.removeAllViews();
 
         FirebaseHelper.getFirestore()
@@ -94,13 +100,16 @@ public class OrderHistoryActivity extends AppCompatActivity {
                 });
     }
 
+    // Lay don hang local.
     private List<Order> getLocalOrders() {
         User user = authManager.getCurrentUser();
         int userId = user == null ? 0 : user.getId();
         return dbHelper.getOrders(userId);
     }
 
+    // Hien danh sach don.
     private void displayOrders(List<Order> orders) {
+        txtOrderLoading.setVisibility(View.GONE);
         txtEmptyOrders.setVisibility(orders.isEmpty() ? View.VISIBLE : View.GONE);
         orderContainer.removeAllViews();
 
@@ -111,6 +120,8 @@ public class OrderHistoryActivity extends AppCompatActivity {
             View row = inflater.inflate(R.layout.item_order, orderContainer, false);
             TextView statusView = row.findViewById(R.id.txt_order_status);
             String status = safeText(order.getOrderStatus(), "Dang xu ly");
+            LinearLayout detailContainer = row.findViewById(R.id.order_detail_container);
+            boolean expanded = expandedOrderId == order.getOrderId();
 
             ((TextView) row.findViewById(R.id.txt_order_id)).setText("#" + order.getOrderId());
             statusView.setText(status);
@@ -121,10 +132,21 @@ public class OrderHistoryActivity extends AppCompatActivity {
                     "Thanh toan: " + safeText(order.getPaymentMethod(), "Chua co"));
             ((TextView) row.findViewById(R.id.txt_order_total)).setText(
                     String.format(new Locale("vi", "VN"), "%,.0f VND", order.getTotalAmount()));
+            ((TextView) row.findViewById(R.id.txt_order_timeline)).setText(buildTimeline(status));
+            ((TextView) row.findViewById(R.id.txt_order_address)).setText(
+                    "Dia chi: " + safeText(order.getDeliveryAddress(), "Chua co"));
+            ((TextView) row.findViewById(R.id.txt_order_money_detail)).setText(buildMoneyDetail(order));
+            ((TextView) row.findViewById(R.id.txt_order_items)).setText(buildItemsText(order));
+            detailContainer.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            row.setOnClickListener(v -> {
+                expandedOrderId = expandedOrderId == order.getOrderId() ? -1 : order.getOrderId();
+                displayOrders(orders);
+            });
             orderContainer.addView(row);
         }
     }
 
+    // Doi Firestore sang Order.
     private Order toOrder(DocumentSnapshot document) {
         int userId = getInt(document, "userId");
         Order order = new Order(userId);
@@ -135,12 +157,118 @@ public class OrderHistoryActivity extends AppCompatActivity {
         order.setPaymentMethod(safeText(document.getString("paymentMethod"), "Chua co"));
         order.setDeliveryAddress(safeText(document.getString("deliveryAddress"), ""));
         order.setPromoCode(safeText(document.getString("promoCode"), ""));
+        order.setSubtotal(getDouble(document, "subtotal"));
+        order.setShippingFee(getDouble(document, "shippingFee"));
         order.setDiscount(getDouble(document, "discount"));
         order.setTotalAmount(totalAmount);
         order.setOrderDate(getDate(document, "orderDate", "createdAt", "updatedAt"));
+        order.setItemSummaries(getItemSummaries(document));
         return order;
     }
 
+    // Lay tom tat san pham.
+    private List<String> getItemSummaries(DocumentSnapshot document) {
+        List<String> summaries = new ArrayList<>();
+        Object rawItems = document.get("items");
+        if (!(rawItems instanceof List<?>)) {
+            return summaries;
+        }
+
+        for (Object rawItem : (List<?>) rawItems) {
+            if (!(rawItem instanceof Map<?, ?>)) {
+                continue;
+            }
+            Map<?, ?> item = (Map<?, ?>) rawItem;
+            String name = safeText(getString(item, "productName", "name"), "San pham");
+            String size = safeText(getString(item, "selectedSize", "size"), "");
+            int quantity = (int) getNumber(item, "quantity");
+            double price = getNumber(item, "price");
+            double total = getNumber(item, "totalPrice", "total");
+            if (total <= 0) {
+                total = price * Math.max(quantity, 1);
+            }
+
+            StringBuilder line = new StringBuilder();
+            line.append("- ").append(name);
+            if (!size.isEmpty()) {
+                line.append(" (Size ").append(size).append(")");
+            }
+            line.append(" x").append(Math.max(quantity, 1));
+            line.append(" - ").append(String.format(new Locale("vi", "VN"), "%,.0f VND", total));
+            summaries.add(line.toString());
+        }
+        return summaries;
+    }
+
+    // Tao chi tiet tien.
+    private String buildMoneyDetail(Order order) {
+        Locale locale = new Locale("vi", "VN");
+        return "Tam tinh: " + String.format(locale, "%,.0f VND", order.getSubtotal())
+                + "\nPhi ship: " + String.format(locale, "%,.0f VND", order.getShippingFee())
+                + "\nGiam gia: " + String.format(locale, "%,.0f VND", order.getDiscount())
+                + "\nMa giam gia: " + safeText(order.getPromoCode(), "Khong co");
+    }
+
+    // Tao text san pham.
+    private String buildItemsText(Order order) {
+        if (order.getItemSummaries().isEmpty()) {
+            return "San pham trong don: Chua co du lieu chi tiet";
+        }
+        StringBuilder builder = new StringBuilder("San pham trong don:");
+        for (String summary : order.getItemSummaries()) {
+            builder.append('\n').append(summary);
+        }
+        return builder.toString();
+    }
+
+    // Tao trang thai giao hang.
+    private String buildTimeline(String status) {
+        String normalized = normalizeStatus(status);
+        if (normalized.contains("huy")) {
+            return "Dat hang -> Da huy";
+        }
+        if (normalized.contains("da giao") || normalized.contains("hoan thanh")) {
+            return "Dat hang -> Xac nhan -> Dang giao -> Da giao";
+        }
+        if (normalized.contains("dang giao")) {
+            return "Dat hang -> Xac nhan -> Dang giao";
+        }
+        if (normalized.contains("xac nhan")) {
+            return "Dat hang -> Xac nhan";
+        }
+        return "Dat hang -> Cho xac nhan";
+    }
+
+    // Lay chuoi tu map.
+    private String getString(Map<?, ?> map, String... keys) {
+        for (String key : keys) {
+            Object value = map.get(key);
+            if (value != null) {
+                return String.valueOf(value);
+            }
+        }
+        return "";
+    }
+
+    // Lay so tu map.
+    private double getNumber(Map<?, ?> map, String... keys) {
+        for (String key : keys) {
+            Object value = map.get(key);
+            if (value instanceof Number) {
+                return ((Number) value).doubleValue();
+            }
+            if (value instanceof String) {
+                try {
+                    return Double.parseDouble(((String) value).trim());
+                } catch (NumberFormatException ignored) {
+                    return 0;
+                }
+            }
+        }
+        return 0;
+    }
+
+    // Lay ngay tu Firestore.
     private Date getDate(DocumentSnapshot document, String... fields) {
         for (String field : fields) {
             Date date = document.getDate(field);
@@ -155,6 +283,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         return new Date();
     }
 
+    // Lay so nguyen.
     private int getInt(DocumentSnapshot document, String field) {
         Object value = document.get(field);
         if (value instanceof Number) {
@@ -170,6 +299,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         return 0;
     }
 
+    // Lay so thuc.
     private double getDouble(DocumentSnapshot document, String... fields) {
         for (String field : fields) {
             Object value = document.get(field);
@@ -187,6 +317,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         return 0;
     }
 
+    // Lay mau trang thai.
     private int getStatusColor(String status) {
         String normalized = normalizeStatus(status);
         if (normalized.contains("da giao") || normalized.contains("hoan thanh")) {
@@ -198,6 +329,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         return ContextCompat.getColor(this, R.color.primary);
     }
 
+    // Chuan hoa trang thai.
     private String normalizeStatus(String status) {
         String value = status == null ? "" : status.trim().toLowerCase(Locale.ROOT);
         return Normalizer.normalize(value, Normalizer.Form.NFD)
@@ -205,15 +337,18 @@ public class OrderHistoryActivity extends AppCompatActivity {
                 .replace('đ', 'd');
     }
 
+    // Xu ly chuoi rong.
     private String safeText(String value, String fallback) {
         return value == null || value.trim().isEmpty() ? fallback : value.trim();
     }
 
+    // Tao id don du phong.
     private int buildFallbackOrderId(String documentId) {
         int hash = documentId == null ? 0 : documentId.hashCode();
         return hash == Integer.MIN_VALUE ? Integer.MAX_VALUE : Math.abs(hash);
     }
 
+    // Doi dp sang px.
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }

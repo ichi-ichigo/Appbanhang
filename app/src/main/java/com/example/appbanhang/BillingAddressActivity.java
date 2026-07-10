@@ -37,6 +37,7 @@ public class BillingAddressActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    // Anh xa view.
     private void initializeViews() {
         etFullName = findViewById(R.id.et_full_name);
         etAddress = findViewById(R.id.et_address);
@@ -48,12 +49,14 @@ public class BillingAddressActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btn_back);
     }
 
+    // Cai dat danh sach chon.
     private void setupSpinners() {
         setSpinnerItems(spProvince, new String[]{"Hà Nội", "TP. Hồ Chí Minh", "Đà Nẵng", "Cần Thơ"});
         setSpinnerItems(spCountry, new String[]{"Việt Nam", "Indonesia", "Malaysia"});
         setSpinnerItems(spShipping, new String[]{"Tiêu chuẩn", "Nhanh", "Hỏa tốc"});
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         btnContinue.setOnClickListener(v -> {
             if (validateInput()) {
@@ -66,6 +69,7 @@ public class BillingAddressActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
     }
 
+    // Kiem tra du lieu nhap.
     private boolean validateInput() {
         if (etFullName.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập họ và tên", Toast.LENGTH_SHORT).show();
@@ -82,6 +86,7 @@ public class BillingAddressActivity extends AppCompatActivity {
         return true;
     }
 
+    // Do du lieu vao spinner.
     private void setSpinnerItems(Spinner spinner, String[] items) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,

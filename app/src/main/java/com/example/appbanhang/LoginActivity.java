@@ -52,10 +52,12 @@ public class LoginActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    // Tao database.
     private void initializeDatabase() {
         dbHelper = new DatabaseHelper(this);
     }
 
+    // Anh xa view.
     private void initializeViews() {
         etEmail = findViewById(R.id.etLoginEmail);
         etPassword = findViewById(R.id.etLoginPassword);
@@ -67,12 +69,14 @@ public class LoginActivity extends AppCompatActivity {
         tvSignUp = findViewById(R.id.tvSignUp);
     }
 
+    // Khoi tao manager.
     private void initializeManager() {
         authManager = AuthManager.getInstance();
         CartManager.initialize(dbHelper, authManager);
         WishlistManager.initialize(dbHelper, authManager);
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         btnLogin.setOnClickListener(v -> handleLogin());
         btnLoginGoogle.setOnClickListener(v -> handleProviderLogin("Google"));
@@ -83,6 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
     }
 
+    // Xu ly dang nhap.
     private void handleLogin() {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
@@ -124,16 +129,19 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    // Dang nhap bang nha cung cap.
     private void handleProviderLogin(String provider) {
         Toast.makeText(this,
                 "Dang nhap bang " + provider + " dang duoc cap nhat.",
                 Toast.LENGTH_SHORT).show();
     }
 
+    // Kiem tra email.
     private boolean isValidEmail(String email) {
         return email.contains("@") && email.contains(".");
     }
 
+    // Luu email dang nhap.
     private void saveRememberedLogin(String email) {
         SharedPreferences.Editor editor = getSharedPreferences(SplashActivity.PREFS_NAME, MODE_PRIVATE).edit();
         if (cbRememberMe.isChecked()) {
@@ -144,6 +152,7 @@ public class LoginActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    // Hoan tat dang nhap.
     private void completeLogin() {
         Toast.makeText(LoginActivity.this, "Dang nhap thanh cong", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(LoginActivity.this, MainActivity.class));

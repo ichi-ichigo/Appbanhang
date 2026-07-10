@@ -18,6 +18,7 @@ public class Order {
     private double discount;
     private Date orderDate;
     private Date deliveryDate;
+    private List<String> itemSummaries;
 
     // Constructor
     public Order(int userId) {
@@ -28,6 +29,7 @@ public class Order {
         this.orderStatus = "Đang xử lý";
         this.orderDate = new Date();
         this.discount = 0;
+        this.itemSummaries = new ArrayList<>();
     }
 
     // Getters & Setters
@@ -67,6 +69,10 @@ public class Order {
 
     public double getSubtotal() {
         return subtotal;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
     }
 
     public void updateSubtotal() {
@@ -153,5 +159,13 @@ public class Order {
 
     public void setDeliveryDate(Date deliveryDate) {
         this.deliveryDate = deliveryDate;
+    }
+
+    public List<String> getItemSummaries() {
+        return itemSummaries;
+    }
+
+    public void setItemSummaries(List<String> itemSummaries) {
+        this.itemSummaries = itemSummaries == null ? new ArrayList<>() : itemSummaries;
     }
 }

@@ -45,10 +45,12 @@ public class RegisterActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    // Tao database.
     private void initializeDatabase() {
         dbHelper = new DatabaseHelper(this);
     }
 
+    // Anh xa view.
     private void initializeViews() {
         etFullName = findViewById(R.id.etRegisterFullName);
         etEmail = findViewById(R.id.etRegisterEmail);
@@ -62,10 +64,12 @@ public class RegisterActivity extends AppCompatActivity {
         tvLogin = findViewById(R.id.tvLogin);
     }
 
+    // Khoi tao manager.
     private void initializeManager() {
         authManager = AuthManager.getInstance();
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         btnRegister.setOnClickListener(v -> handleRegister());
         btnBackRegister.setOnClickListener(v -> finish());
@@ -80,6 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    // Xu ly dang ky.
     private void handleRegister() {
         String fullName = etFullName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
@@ -141,6 +146,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    // Kiem tra email.
     private boolean isValidEmail(String email) {
         return email.contains("@") && email.contains(".");
     }

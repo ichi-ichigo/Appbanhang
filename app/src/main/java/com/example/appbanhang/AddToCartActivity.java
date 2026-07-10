@@ -52,6 +52,7 @@ public class AddToCartActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    // Cai dat vung an toan.
     private void setupSafeArea() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.add_to_cart_root), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -60,6 +61,7 @@ public class AddToCartActivity extends AppCompatActivity {
         });
     }
 
+    // Khoi tao manager.
     private void initializeManagers() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         AuthManager authManager = AuthManager.getInstance();
@@ -79,6 +81,7 @@ public class AddToCartActivity extends AppCompatActivity {
         firestoreRepository = FirestoreRepository.getInstance();
     }
 
+    // Anh xa view.
     private void initializeViews() {
         imgProduct = findViewById(R.id.img_product);
         thumbnailContainer = findViewById(R.id.thumbnail_container);
@@ -100,6 +103,7 @@ public class AddToCartActivity extends AppCompatActivity {
         sizeButtons.add(findViewById(R.id.btn_size_43));
     }
 
+    // Tai san pham.
     private void loadProduct() {
         int productId = getIntent().getIntExtra("product_id", 0);
         if (productId == 0) {
@@ -123,6 +127,7 @@ public class AddToCartActivity extends AppCompatActivity {
         });
     }
 
+    // Hien thong tin san pham.
     private void bindProduct() {
         txtProductName.setText(product.getName());
         txtProductPrice.setText(String.format(new Locale("vi", "VN"), "%,.0f VND", product.getPrice()));
@@ -132,6 +137,7 @@ public class AddToCartActivity extends AppCompatActivity {
         refreshCartState();
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         btnMinus.setOnClickListener(v -> {
             if (quantity > 1) {
@@ -182,6 +188,7 @@ public class AddToCartActivity extends AppCompatActivity {
         }
     }
 
+    // Cai dat anh san pham.
     private void setupGallery() {
         thumbnailContainer.removeAllViews();
         List<String> urls = product.getImageUrls();
@@ -204,10 +211,12 @@ public class AddToCartActivity extends AppCompatActivity {
         }
     }
 
+    // Cap nhat so luong.
     private void updateQuantity() {
         txtQuantity.setText(String.valueOf(quantity));
     }
 
+    // Tinh hang con lai.
     private int getRemainingStock() {
         if (product == null || cartManager == null) {
             return 0;
@@ -215,6 +224,7 @@ public class AddToCartActivity extends AppCompatActivity {
         return cartManager.getRemainingStock(product);
     }
 
+    // Cap nhat trang thai gio.
     private void refreshCartState() {
         if (product == null) {
             return;
@@ -232,6 +242,7 @@ public class AddToCartActivity extends AppCompatActivity {
         updateActionState();
     }
 
+    // Cap nhat nut them gio.
     private void updateActionState() {
         int remainingStock = getRemainingStock();
         boolean canAdd = remainingStock > 0;
@@ -244,6 +255,7 @@ public class AddToCartActivity extends AppCompatActivity {
         btnMinus.setAlpha(btnMinus.isEnabled() ? 1f : 0.6f);
     }
 
+    // Cap nhat nut size.
     private void updateSizeButtons() {
         for (Button button : sizeButtons) {
             boolean selected = selectedSize.equals(button.getText().toString());
@@ -252,6 +264,7 @@ public class AddToCartActivity extends AppCompatActivity {
         }
     }
 
+    // Doi dp sang px.
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }

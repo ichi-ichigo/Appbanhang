@@ -70,6 +70,7 @@ public class AccountActivity extends AppCompatActivity {
         }
     }
 
+    // Anh xa view.
     private void initializeViews() {
         btnEditProfile = findViewById(R.id.btn_edit_profile);
         btnLogout = findViewById(R.id.btn_logout);
@@ -87,11 +88,13 @@ public class AccountActivity extends AppCompatActivity {
         tvReadyCount = findViewById(R.id.txt_ready_count);
     }
 
+    // Khoi tao manager.
     private void initializeManagers() {
         dbHelper = new DatabaseHelper(this);
         authManager = AuthManager.getInstance();
     }
 
+    // Hien thong tin user.
     private void displayUserInfo() {
         if (!authManager.isLoggedIn()) {
             Toast.makeText(this, "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
@@ -116,6 +119,7 @@ public class AccountActivity extends AppCompatActivity {
         });
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
         btnEditProfile.setOnClickListener(v ->
@@ -131,12 +135,14 @@ public class AccountActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(v -> handleLogout());
     }
 
+    // Mo man thong tin.
     private void openInfoScreen(String screen) {
         Intent intent = new Intent(AccountActivity.this, AccountInfoActivity.class);
         intent.putExtra("screen", screen);
         startActivity(intent);
     }
 
+    // Tai thong ke don hang.
     private void loadOrderStats(User currentUser) {
         FirebaseUser firebaseUser = FirebaseHelper.getAuth().getCurrentUser();
         if (firebaseUser == null) {
@@ -173,6 +179,7 @@ public class AccountActivity extends AppCompatActivity {
                 .addOnFailureListener(error -> showLocalOrderStats(currentUser));
     }
 
+    // Hien thong ke offline.
     private void showLocalOrderStats(User currentUser) {
         int orderCount = currentUser != null && currentUser.getId() > 0
                 ? dbHelper.getOrderCount(currentUser.getId())
@@ -182,20 +189,24 @@ public class AccountActivity extends AppCompatActivity {
         tvReadyCount.setText(String.valueOf(orderCount));
     }
 
+    // Lay trang thai don.
     private String getOrderStatus(DocumentSnapshot document) {
         String status = document.getString("orderStatus");
         return status == null || status.trim().isEmpty() ? "Dang xu ly" : status.trim();
     }
 
+    // Kiem tra da giao.
     private boolean isDelivered(String status) {
         String normalized = normalizeStatus(status);
         return normalized.contains("da giao") || normalized.contains("hoan thanh");
     }
 
+    // Kiem tra da huy.
     private boolean isCancelled(String status) {
         return normalizeStatus(status).contains("huy");
     }
 
+    // Chuan hoa trang thai.
     private String normalizeStatus(String status) {
         String value = status == null ? "" : status.trim().toLowerCase(Locale.ROOT);
         return Normalizer.normalize(value, Normalizer.Form.NFD)
@@ -203,6 +214,7 @@ public class AccountActivity extends AppCompatActivity {
                 .replace('đ', 'd');
     }
 
+    // Xu ly dang xuat.
     private void handleLogout() {
         SharedPreferences.Editor editor = getSharedPreferences(SplashActivity.PREFS_NAME, MODE_PRIVATE).edit();
         editor.remove(SplashActivity.KEY_REMEMBERED_EMAIL);

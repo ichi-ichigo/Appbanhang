@@ -9,11 +9,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,8 +31,10 @@ import com.example.appbanhang.models.Product;
 import com.example.appbanhang.utils.ProductDisplayUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class SearchActivity extends AppCompatActivity {
     private static final int PRODUCTS_PER_PAGE = 8;
@@ -42,6 +46,7 @@ public class SearchActivity extends AppCompatActivity {
     private Spinner spPriceSort;
     private RecyclerView recyclerProducts;
     private View searchPagination;
+    private LinearLayout brandFilterContainer;
     private Button btnSearchPrevPage, btnSearchNextPage;
     private ProductAdapter productAdapter;
     private final List<Product> allProducts = new ArrayList<>();
@@ -70,6 +75,7 @@ public class SearchActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    // Khoi tao manager.
     private void initializeManagers() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         AuthManager authManager = AuthManager.getInstance();
@@ -78,6 +84,7 @@ public class SearchActivity extends AppCompatActivity {
         firestoreRepository = FirestoreRepository.getInstance();
     }
 
+    // Anh xa view.
     private void initializeViews() {
         etSearch = findViewById(R.id.et_search);
         txtResultCount = findViewById(R.id.txt_result_count);
@@ -86,6 +93,7 @@ public class SearchActivity extends AppCompatActivity {
         spPriceSort = findViewById(R.id.spinner_price_sort);
         recyclerProducts = findViewById(R.id.recycler_search_products);
         searchPagination = findViewById(R.id.search_pagination);
+        brandFilterContainer = findViewById(R.id.brand_filter_container);
         btnSearchPrevPage = findViewById(R.id.btn_search_prev_page);
         btnSearchNextPage = findViewById(R.id.btn_search_next_page);
         searchPagination.setVisibility(View.GONE);
@@ -95,6 +103,7 @@ public class SearchActivity extends AppCompatActivity {
         findViewById(R.id.btn_back).setOnClickListener(v -> finish());
     }
 
+    // Tai san pham.
     private void setupProducts() {
         allProducts.clear();
         productAdapter = new ProductAdapter(visibleProducts, this);
@@ -138,6 +147,7 @@ public class SearchActivity extends AppCompatActivity {
                 for (Product product : allProducts) {
                     product.setFavorite(wishlistManager.isInWishlist(product.getId()));
                 }
+                setupBrandFilters();
                 currentSearchPage = 0;
                 applyFilter();
             }
@@ -146,6 +156,7 @@ public class SearchActivity extends AppCompatActivity {
             public void onError(String errorMessage) {
                 allProducts.clear();
                 filteredProducts.clear();
+                setupBrandFilters();
                 currentSearchPage = 0;
                 applyFilter();
                 Toast.makeText(
@@ -157,6 +168,7 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -174,25 +186,86 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        bindFilter(R.id.filter_all, "ALL");
-        bindFilter(R.id.filter_nike, "NIKE");
-        bindFilter(R.id.filter_adidas, "ADIDAS");
-        bindFilter(R.id.filter_puma, "PUMA");
-        bindFilter(R.id.filter_new_balance, "NEW_BALANCE");
-        bindFilter(R.id.filter_converse, "CONVERSE");
+        setupBrandFilters();
         setupPriceSort();
         setupPaginationButtons();
     }
 
-    private void bindFilter(int buttonId, String filter) {
-        Button button = findViewById(buttonId);
+    // Tao loc thuong hieu.
+    private void setupBrandFilters() {
+        if (brandFilterContainer == null) {
+            return;
+        }
+
+        Set<String> brands = new LinkedHashSet<>();
+        for (Product product : allProducts) {
+            String brand = normalizeBrand(product.getBrand());
+            if (!brand.isEmpty()) {
+                brands.add(brand);
+            }
+        }
+        if (!"ALL".equals(activeFilter) && !containsBrand(brands, activeFilter)) {
+            activeFilter = "ALL";
+        }
+
+        brandFilterContainer.removeAllViews();
+        addBrandFilterButton("Tat ca", "ALL");
+        for (String brand : brands) {
+            addBrandFilterButton(brand, brand);
+        }
+        updateBrandFilterButtons();
+    }
+
+    // Them nut loc hang.
+    private void addBrandFilterButton(String label, String filter) {
+        Button button = new Button(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                dpToPx(40)
+        );
+        params.setMargins(0, 0, dpToPx(8), 0);
+        button.setLayoutParams(params);
+        button.setMinWidth(0);
+        button.setMinHeight(0);
+        button.setPadding(dpToPx(14), 0, dpToPx(14), 0);
+        button.setText(label);
+        button.setTag(filter);
+        button.setAllCaps(false);
+        button.setTextSize(13);
         button.setOnClickListener(v -> {
             activeFilter = filter;
             currentSearchPage = 0;
+            updateBrandFilterButtons();
             applyFilter();
         });
+        brandFilterContainer.addView(button);
     }
 
+    // Cap nhat nut loc hang.
+    private void updateBrandFilterButtons() {
+        if (brandFilterContainer == null) {
+            return;
+        }
+
+        for (int i = 0; i < brandFilterContainer.getChildCount(); i++) {
+            View child = brandFilterContainer.getChildAt(i);
+            if (!(child instanceof Button)) {
+                continue;
+            }
+
+            Button button = (Button) child;
+            Object filter = button.getTag();
+            boolean selected = filter instanceof String && isSameFilter(activeFilter, (String) filter);
+
+            button.setBackgroundResource(selected ? R.drawable.button_brand_style : R.drawable.bg_chip);
+            button.setTextColor(ContextCompat.getColor(
+                    this,
+                    selected ? android.R.color.white : R.color.text_primary
+            ));
+        }
+    }
+
+    // Ap dung bo loc.
     private void applyFilter() {
         String query = etSearch.getText().toString().trim().toLowerCase(Locale.ROOT);
         filteredProducts.clear();
@@ -213,6 +286,7 @@ public class SearchActivity extends AppCompatActivity {
         searchPagination.setVisibility(empty ? View.GONE : View.VISIBLE);
     }
 
+    // Cai dat nut phan trang.
     private void setupPaginationButtons() {
         btnSearchPrevPage.setOnClickListener(v -> {
             if (currentSearchPage > 0) {
@@ -231,6 +305,7 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    // Cap nhat trang tim kiem.
     private void updateSearchPage() {
         int totalProducts = filteredProducts.size();
         int totalPages = getPageCount(totalProducts);
@@ -253,6 +328,7 @@ public class SearchActivity extends AppCompatActivity {
         updateSearchPaginationState(totalProducts, totalPages);
     }
 
+    // Tinh tong so trang.
     private int getPageCount(int totalProducts) {
         if (totalProducts <= 0) {
             return 0;
@@ -260,6 +336,7 @@ public class SearchActivity extends AppCompatActivity {
         return (totalProducts + PRODUCTS_PER_PAGE - 1) / PRODUCTS_PER_PAGE;
     }
 
+    // Cap nhat phan trang.
     private void updateSearchPaginationState(int totalProducts, int totalPages) {
         int displayPage = totalProducts == 0 ? 0 : currentSearchPage + 1;
         txtSearchPageInfo.setText("Trang " + displayPage + "/" + totalPages);
@@ -267,11 +344,13 @@ public class SearchActivity extends AppCompatActivity {
         setPageButtonState(btnSearchNextPage, totalProducts > 0 && currentSearchPage < totalPages - 1);
     }
 
+    // Bat/tat nut trang.
     private void setPageButtonState(Button button, boolean enabled) {
         button.setEnabled(enabled);
         button.setAlpha(enabled ? 1f : 0.45f);
     }
 
+    // Cai dat sap xep gia.
     private void setupPriceSort() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
@@ -305,6 +384,7 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
+    // Sap xep san pham loc.
     private void sortFilteredProducts() {
         if ("LOW_HIGH".equals(priceSortMode)) {
             filteredProducts.sort((first, second) ->
@@ -315,6 +395,7 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    // Kiem tra khop tu khoa.
     private boolean matchesSearch(Product product, String query) {
         if (query.isEmpty()) {
             return true;
@@ -327,25 +408,38 @@ public class SearchActivity extends AppCompatActivity {
                 || contains(ProductDisplayUtils.promotion(product.getPromotion()), query);
     }
 
+    // Kiem tra khop bo loc.
     private boolean matchesFilter(Product product) {
-        switch (activeFilter) {
-            case "NIKE":
-                return "Nike".equalsIgnoreCase(product.getBrand());
-            case "ADIDAS":
-                return "Adidas".equalsIgnoreCase(product.getBrand());
-            case "PUMA":
-                return "Puma".equalsIgnoreCase(product.getBrand());
-            case "NEW_BALANCE":
-                return "New Balance".equalsIgnoreCase(product.getBrand());
-            case "CONVERSE":
-                return "Converse".equalsIgnoreCase(product.getBrand());
-            case "ALL":
-            default:
-                return true;
-        }
+        return "ALL".equals(activeFilter) || isSameFilter(activeFilter, product.getBrand());
     }
 
+    // Kiem tra co chua chuoi.
     private boolean contains(String value, String query) {
         return value != null && value.toLowerCase(Locale.ROOT).contains(query);
+    }
+
+    // Chuan hoa ten hang.
+    private String normalizeBrand(String brand) {
+        return brand == null ? "" : brand.trim();
+    }
+
+    // So sanh bo loc.
+    private boolean isSameFilter(String first, String second) {
+        return normalizeBrand(first).equalsIgnoreCase(normalizeBrand(second));
+    }
+
+    // Kiem tra hang da co.
+    private boolean containsBrand(Set<String> brands, String brand) {
+        for (String item : brands) {
+            if (isSameFilter(item, brand)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Doi dp sang px.
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 }

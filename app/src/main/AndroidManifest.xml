@@ -52,10 +52,6 @@
             android:exported="true" />
 
         <activity
-            android:name=".AdminProductActivity"
-            android:exported="true" />
-
-        <activity
             android:name=".AddToCartActivity"
             android:exported="true" />
         

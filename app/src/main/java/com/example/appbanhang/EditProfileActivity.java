@@ -66,6 +66,7 @@ public class EditProfileActivity extends AppCompatActivity {
         findViewById(R.id.btn_save_profile).setOnClickListener(v -> saveProfile());
     }
 
+    // Hien thong tin user.
     private void bindUser() {
         authManager.ensureCurrentUser(new AuthManager.AuthCallback() {
             @Override
@@ -85,10 +86,12 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    // Chon anh dai dien.
     private void openAvatarPicker() {
         avatarPickerLauncher.launch(new String[]{"image/*"});
     }
 
+    // Giu quyen doc anh.
     private void persistAvatarPermission(Uri uri) {
         try {
             getContentResolver().takePersistableUriPermission(
@@ -100,6 +103,7 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
+    // Luu ho so user.
     private void saveProfile() {
         String fullName = etFullName.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
@@ -127,6 +131,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    // Doi dp sang px.
     private int dpToPx(int dp) {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }

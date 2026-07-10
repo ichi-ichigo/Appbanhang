@@ -29,10 +29,12 @@ public class OrderSuccessActivity extends AppCompatActivity {
         setupListeners();
     }
 
+    // Anh xa view.
     private void initializeViews() {
         btnContinueShopping = findViewById(R.id.btn_continue_shopping);
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         btnContinueShopping.setOnClickListener(v -> {
             Intent intent = new Intent(OrderSuccessActivity.this, MainActivity.class);

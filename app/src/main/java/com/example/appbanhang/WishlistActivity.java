@@ -19,7 +19,6 @@ import com.example.appbanhang.adapters.WishlistAdapter;
 import com.example.appbanhang.database.DatabaseHelper;
 import com.example.appbanhang.firebase.FirestoreRepository;
 import com.example.appbanhang.managers.AuthManager;
-import com.example.appbanhang.managers.CartManager;
 import com.example.appbanhang.managers.WishlistManager;
 import com.example.appbanhang.models.Product;
 
@@ -32,7 +31,6 @@ public class WishlistActivity extends AppCompatActivity {
     private ImageButton btnBack;
     private Button btnContinueShopping;
     private LinearLayout emptyState;
-    private CartManager cartManager;
     private WishlistManager wishlistManager;
     private FirestoreRepository firestoreRepository;
 
@@ -54,6 +52,7 @@ public class WishlistActivity extends AppCompatActivity {
         loadWishlistFromFirebase();
     }
 
+    // Anh xa view.
     private void initializeViews() {
         recyclerWishlist = findViewById(R.id.recycler_wishlist);
         btnBack = findViewById(R.id.btn_back);
@@ -61,16 +60,16 @@ public class WishlistActivity extends AppCompatActivity {
         emptyState = findViewById(R.id.empty_state);
     }
 
+    // Khoi tao manager.
     private void initializeManagers() {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         AuthManager authManager = AuthManager.getInstance();
         WishlistManager.initialize(dbHelper, authManager);
-        CartManager.initialize(dbHelper, authManager);
-        cartManager = CartManager.getInstance();
         wishlistManager = WishlistManager.getInstance();
         firestoreRepository = FirestoreRepository.getInstance();
     }
 
+    // Cai dat danh sach.
     private void setupRecyclerView() {
         recyclerWishlist.setLayoutManager(new LinearLayoutManager(this));
 
@@ -86,8 +85,9 @@ public class WishlistActivity extends AppCompatActivity {
 
             @Override
             public void onBuyClick(Product product) {
-                cartManager.addToCart(product, 1, "41");
-                startActivity(new Intent(WishlistActivity.this, CartActivity.class));
+                Intent intent = new Intent(WishlistActivity.this, AddToCartActivity.class);
+                intent.putExtra("product_id", product.getId());
+                startActivity(intent);
             }
 
             @Override
@@ -102,6 +102,7 @@ public class WishlistActivity extends AppCompatActivity {
         updateEmptyState();
     }
 
+    // Tai san pham yeu thich.
     private void loadWishlistFromFirebase() {
         firestoreRepository.fetchProducts(new FirestoreRepository.ProductsCallback() {
             @Override
@@ -121,11 +122,13 @@ public class WishlistActivity extends AppCompatActivity {
         });
     }
 
+    // Gan su kien nut.
     private void setupListeners() {
         btnBack.setOnClickListener(v -> finish());
         btnContinueShopping.setOnClickListener(v -> finish());
     }
 
+    // Cap nhat trang thai rong.
     private void updateEmptyState() {
         boolean isEmpty = wishlistManager.getWishlistItems().isEmpty();
         recyclerWishlist.setVisibility(isEmpty ? View.GONE : View.VISIBLE);

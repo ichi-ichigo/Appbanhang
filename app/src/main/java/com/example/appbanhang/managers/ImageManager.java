@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.appbanhang.R;
 import com.example.appbanhang.firebase.FirebaseHelper;
 
@@ -50,11 +49,10 @@ public class ImageManager {
             imageView.setImageResource(R.drawable.ic_product_placeholder);
             return;
         }
-        
+
+        imageView.setImageDrawable(null);
         Glide.with(imageView.getContext())
              .load(imageUrl)
-             .transition(DrawableTransitionOptions.withCrossFade())
-             .placeholder(R.drawable.ic_product_placeholder)
              .error(R.drawable.ic_product_placeholder)
              .centerCrop()
              .into(imageView);

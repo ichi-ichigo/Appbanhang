@@ -17,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/product_image"
-            android:src="@drawable/ic_product_placeholder"
             android:scaleType="centerCrop"
             android:background="@drawable/bg_card_soft" />
 
@@ -58,8 +57,8 @@
     <TextView
         android:id="@+id/txt_product_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Nike Air Max"
+            android:layout_height="wrap_content"
+            android:text="Nike Air Max"
         android:textSize="13sp"
         android:textStyle="bold"
             android:textColor="@color/text_primary"
@@ -76,6 +75,8 @@
         android:text="Danh mục"
         android:textSize="11sp"
         android:textColor="@color/text_secondary"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:paddingHorizontal="8dp"
         android:layout_marginBottom="6dp" />
 
@@ -96,7 +97,9 @@
             android:text="0 VND"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@color/price" />
+            android:textColor="@color/price"
+            android:ellipsize="end"
+            android:maxLines="1" />
 
         <!-- Rating -->
         <LinearLayout

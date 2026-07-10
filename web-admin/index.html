@@ -28,27 +28,27 @@
       </div>
 
       <nav class="sidebar-menu" aria-label="Menu quản trị">
-        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'dashboard' }" href="#" ng-click="vm.selectMenu('dashboard')">
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'dashboard' }" href="#" ng-click="vm.selectMenu('dashboard', $event)">
           <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9zm10 7h6V4h-6v16zM4 20h6v-4H4v4z"></path></svg>
           <span class="menu-label">Dashboard</span>
         </a>
-        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'products' }" href="#" ng-click="vm.selectMenu('products')">
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'products' }" href="#" ng-click="vm.selectMenu('products', $event)">
           <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"></path><path d="M3 8v8l9 5 9-5V8"></path><path d="M12 13v8"></path></svg>
           <span class="menu-label">Quản lý sản phẩm</span>
         </a>
-        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'approval' }" href="#" ng-click="vm.selectMenu('approval')">
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'approval' }" href="#" ng-click="vm.selectMenu('approval', $event)">
           <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12l2 2 4-5"></path><path d="M20 6l-8-3-8 3v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"></path></svg>
-          <span class="menu-label">Xác nhận sản phẩm</span>
+          <span class="menu-label">Quản lý đơn hàng</span>
         </a>
-        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'vouchers' }" href="#" ng-click="vm.selectMenu('vouchers')">
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'vouchers' }" href="#" ng-click="vm.selectMenu('vouchers', $event)">
           <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7"></path><path d="M2 7h20v5H2z"></path><path d="M12 22V7"></path><path d="M12 7H7.5A2.5 2.5 0 1 1 10 4.5c0 1.5 2 2.5 2 2.5z"></path><path d="M12 7h4.5A2.5 2.5 0 1 0 14 4.5c0 1.5-2 2.5-2 2.5z"></path></svg>
           <span class="menu-label">Quản lý voucher</span>
         </a>
-        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'banners' }" href="#" ng-click="vm.selectMenu('banners')">
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'banners' }" href="#" ng-click="vm.selectMenu('banners', $event)">
           <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4z"></path><path d="M8 13l2.5-3 2.5 3 2-2.5L20 16"></path><path d="M8 8h.01"></path></svg>
           <span class="menu-label">Quản lý banners</span>
         </a>
-        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'users' }" href="#" ng-click="vm.selectMenu('users')">
+        <a class="menu-item" ng-class="{ 'active': vm.activeMenu === 'users' }" href="#" ng-click="vm.selectMenu('users', $event)">
           <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11a4 4 0 1 0-8 0"></path><path d="M5 21a7 7 0 0 1 14 0"></path><path d="M19 8v6"></path><path d="M22 11h-6"></path></svg>
           <span class="menu-label">Quản lý user</span>
         </a>
@@ -62,36 +62,137 @@
           <h1>{{ vm.pageTitle() }}</h1>
           <p class="page-subtitle">{{ vm.pageSubtitle() }}</p>
         </div>
-        <button class="btn btn-primary shadow-sm" type="button" ng-click="vm.refreshCurrent()">
-          Làm mới
-        </button>
+        <div class="topbar-actions">
+          <button class="btn btn-light border shadow-sm" type="button" ng-click="vm.exportCurrentExcel()">
+            Xuất Excel
+          </button>
+          <button class="btn btn-primary shadow-sm" type="button" ng-click="vm.refreshCurrent()">
+            Làm mới
+          </button>
+        </div>
       </header>
 
       <div class="alert alert-danger" ng-if="vm.error">{{ vm.error }}</div>
       <div class="alert alert-success" ng-if="vm.message">{{ vm.message }}</div>
 
       <section class="dashboard-band" ng-if="vm.activeMenu === 'dashboard'">
-        <div class="row">
-          <div class="col-md-4 mb-3 mb-md-0">
-            <div class="metric-card">
-              <div class="metric-label">Tổng sản phẩm</div>
-              <div class="metric-value">{{ vm.products.length || 0 }}</div>
-              <div class="metric-note">Collection products</div>
+        <div class="dashboard-hero">
+          <div>
+            <div class="eyebrow">Tổng quan hôm nay</div>
+            <h2>Hiệu suất cửa hàng</h2>
+            <p>Theo dõi doanh thu, tồn kho và đơn hàng từ dữ liệu Firestore.</p>
+          </div>
+          <div class="hero-revenue">
+            <span>Tổng doanh thu</span>
+            <strong>{{ vm.totalRevenue() | number:0 }} VND</strong>
+          </div>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-card accent-blue">
+            <div class="metric-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"></path><path d="M3 8v8l9 5 9-5V8"></path><path d="M12 13v8"></path></svg>
+            </div>
+            <div class="metric-label">Sản phẩm</div>
+            <div class="metric-value">{{ vm.products.length || 0 }}</div>
+            <div class="metric-note">Đang có trong collection products</div>
+          </div>
+          <div class="metric-card accent-green">
+            <div class="metric-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V8"></path><path d="M10 20V4"></path><path d="M16 20v-9"></path><path d="M22 20H2"></path></svg>
+            </div>
+            <div class="metric-label">Tồn kho</div>
+            <div class="metric-value">{{ vm.totalStock() }}</div>
+            <div class="metric-note">Tổng số lượng sản phẩm còn lại</div>
+          </div>
+          <div class="metric-card accent-orange">
+            <div class="metric-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V3"></path><path d="M16 7V3"></path><path d="M4 11h16"></path><path d="M5 5h14v16H5z"></path></svg>
+            </div>
+            <div class="metric-label">Đơn đang xử lý</div>
+            <div class="metric-value">{{ vm.pendingOrders() }}</div>
+            <div class="metric-note">{{ vm.orders.length || 0 }} đơn hàng tổng cộng</div>
+          </div>
+          <div class="metric-card accent-purple">
+            <div class="metric-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <div class="metric-label">Giá trị TB/đơn</div>
+            <div class="metric-value compact">{{ vm.averageOrderValue() | number:0 }} VND</div>
+            <div class="metric-note">{{ vm.completedOrders() }} đơn đã hoàn thành</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="main-card revenue-card">
+            <div class="card-heading table-heading">
+              <div>
+                <h2>Biểu đồ doanh thu</h2>
+                <p>Doanh thu 7 ngày gần nhất từ collection orders.</p>
+              </div>
+              <span class="chart-total">{{ vm.revenueMax() | number:0 }} VND cao nhất/ngày</span>
+            </div>
+            <div class="chart-empty" ng-if="vm.revenueMax() === 0">Chưa có doanh thu trong 7 ngày gần nhất.</div>
+            <div class="revenue-chart" ng-if="vm.revenueMax() > 0">
+              <div class="chart-bar-group" ng-repeat="point in vm.revenueSeries() track by point.key">
+                <div class="bar-value">{{ point.value | number:0 }}</div>
+                <div class="bar-track">
+                  <div class="bar-fill" ng-style="vm.chartBarStyle(point.value)"></div>
+                </div>
+                <div class="bar-label">{{ point.label }}</div>
+              </div>
             </div>
           </div>
-          <div class="col-md-4 mb-3 mb-md-0">
-            <div class="metric-card">
-              <div class="metric-label">Tồn kho</div>
-              <div class="metric-value">{{ vm.totalStock() }}</div>
-              <div class="metric-note">Tổng stock hiện có</div>
+
+          <div class="main-card status-card">
+            <div class="card-heading">
+              <div>
+                <h2>Trạng thái đơn</h2>
+                <p>Tóm tắt tiến độ xử lý đơn hàng.</p>
+              </div>
+            </div>
+            <div class="status-list">
+              <div class="status-row">
+                <span>Đang xử lý</span>
+                <strong>{{ vm.statusSummary().pending }}</strong>
+              </div>
+              <div class="status-row">
+                <span>Đã hoàn thành</span>
+                <strong>{{ vm.statusSummary().completed }}</strong>
+              </div>
+              <div class="status-row">
+                <span>Đã hủy</span>
+                <strong>{{ vm.statusSummary().cancelled }}</strong>
+              </div>
+              <div class="status-row muted">
+                <span>Tổng đơn</span>
+                <strong>{{ vm.statusSummary().total }}</strong>
+              </div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="metric-card">
-              <div class="metric-label">Doanh thu</div>
-              <div class="metric-value">{{ vm.totalRevenue() | number:0 }} VND</div>
-              <div class="metric-note">Tổng totalAmount từ orders</div>
+        </div>
+
+        <div class="main-card recent-orders-card">
+          <div class="card-heading table-heading">
+            <div>
+              <h2>Đơn hàng gần đây</h2>
+              <p>5 đơn mới nhất đang có trong Firestore.</p>
             </div>
+          </div>
+          <div class="empty-row compact-empty" ng-if="vm.recentOrders().length === 0">Chưa có đơn hàng.</div>
+          <div class="table-responsive" ng-if="vm.recentOrders().length > 0">
+            <table class="table table-hover product-table">
+              <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Ngày đặt</th><th>Trạng thái</th><th class="text-right">Doanh thu</th></tr></thead>
+              <tbody>
+                <tr ng-repeat="order in vm.recentOrders() track by order._docId">
+                  <td><div class="product-name">#{{ order.orderId || order._docId }}</div></td>
+                  <td>{{ order.userEmail || order.userId || 'Chưa có' }}</td>
+                  <td>{{ vm.formatDate(order.orderDate || order.createdAt) }}</td>
+                  <td><span class="status-pill">{{ order.orderStatus || 'Đang xử lý' }}</span></td>
+                  <td class="text-right font-weight-bold text-primary">{{ vm.orderAmount(order) | number:0 }} VND</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -197,22 +298,78 @@
           <table class="table table-hover product-table">
             <thead><tr><th>Mã đơn</th><th>User</th><th>Tổng tiền</th><th>Thanh toán</th><th>Trạng thái</th><th>Ngày đặt</th><th class="text-right">Duyệt</th></tr></thead>
             <tbody>
-              <tr ng-repeat="order in vm.filteredOrders() track by order._docId">
-                <td><div class="product-name">#{{ order.orderId || order._docId }}</div><div class="product-meta">{{ order.items.length || 0 }} sản phẩm</div></td>
-                <td>{{ order.userId || order.userEmail || 'Chưa có' }}</td>
-                <td class="font-weight-bold text-primary">{{ (order.totalAmount || order.total || order.amount || 0) | number:0 }} VND</td>
+              <tr class="order-row" ng-repeat="order in vm.filteredOrders() track by order._docId" ng-class="{ 'selected': vm.selectedOrder && vm.selectedOrder._docId === order._docId }" ng-click="vm.selectOrder(order)">
+                <td><div class="product-name">#{{ order.orderId || order._docId }}</div><div class="product-meta">{{ vm.orderItemCount(order) }} sản phẩm</div></td>
+                <td>{{ vm.orderCustomer(order) }}</td>
+                <td class="font-weight-bold text-primary">{{ vm.orderAmount(order) | number:0 }} VND</td>
                 <td>{{ order.paymentMethod || 'Chưa có' }}</td>
                 <td><span class="status-pill">{{ order.orderStatus || 'Đang xử lý' }}</span></td>
                 <td>{{ vm.formatDate(order.orderDate || order.createdAt) }}</td>
                 <td class="text-right action-cell">
-                  <button class="btn btn-sm btn-outline-success" type="button" ng-click="vm.updateOrderStatus(order, 'Đã xác nhận')">Xác nhận</button>
-                  <button class="btn btn-sm btn-outline-primary" type="button" ng-click="vm.updateOrderStatus(order, 'Đang giao')">Giao hàng</button>
-                  <button class="btn btn-sm btn-outline-success" type="button" ng-click="vm.updateOrderStatus(order, 'Đã giao')">Đã giao</button>
-                  <button class="btn btn-sm btn-outline-danger" type="button" ng-click="vm.updateOrderStatus(order, 'Đã hủy')">Hủy</button>
+                  <button class="btn btn-sm btn-outline-success" type="button" ng-click="vm.stopAction($event); vm.updateOrderStatus(order, 'Đã xác nhận')">Xác nhận</button>
+                  <button class="btn btn-sm btn-outline-primary" type="button" ng-click="vm.stopAction($event); vm.updateOrderStatus(order, 'Đang giao')">Giao hàng</button>
+                  <button class="btn btn-sm btn-outline-success" type="button" ng-click="vm.stopAction($event); vm.updateOrderStatus(order, 'Đã giao')">Đã giao</button>
+                  <button class="btn btn-sm btn-outline-danger" type="button" ng-click="vm.stopAction($event); vm.updateOrderStatus(order, 'Đã hủy')">Hủy</button>
                 </td>
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="order-detail-card" ng-if="vm.selectedOrder">
+          <div class="order-detail-header">
+            <div>
+              <div class="eyebrow">Chi tiết đơn hàng</div>
+              <h3>#{{ vm.selectedOrder.orderId || vm.selectedOrder._docId }}</h3>
+            </div>
+            <button class="btn btn-sm btn-light border" type="button" ng-click="vm.closeOrderDetail()">Đóng</button>
+          </div>
+
+          <div class="order-detail-grid">
+            <div class="detail-item">
+              <span>Khách hàng</span>
+              <strong>{{ vm.orderCustomer(vm.selectedOrder) }}</strong>
+            </div>
+            <div class="detail-item">
+              <span>Ngày đặt</span>
+              <strong>{{ vm.formatDate(vm.selectedOrder.orderDate || vm.selectedOrder.createdAt) }}</strong>
+            </div>
+            <div class="detail-item">
+              <span>Thanh toán</span>
+              <strong>{{ vm.selectedOrder.paymentMethod || 'Chưa có' }}</strong>
+            </div>
+            <div class="detail-item">
+              <span>Trạng thái</span>
+              <strong>{{ vm.selectedOrder.orderStatus || 'Đang xử lý' }}</strong>
+            </div>
+            <div class="detail-item wide">
+              <span>Địa chỉ giao hàng</span>
+              <strong>{{ vm.orderAddress(vm.selectedOrder) }}</strong>
+            </div>
+            <div class="detail-item">
+              <span>Mã giảm giá</span>
+              <strong>{{ vm.selectedOrder.promoCode || 'Không có' }}</strong>
+            </div>
+          </div>
+
+          <div class="order-total-row">
+            <span>Tạm tính: {{ (vm.selectedOrder.subtotal || 0) | number:0 }} VND</span>
+            <span>Phí ship: {{ (vm.selectedOrder.shippingFee || 0) | number:0 }} VND</span>
+            <span>Giảm giá: {{ (vm.selectedOrder.discount || 0) | number:0 }} VND</span>
+            <strong>Tổng: {{ vm.orderAmount(vm.selectedOrder) | number:0 }} VND</strong>
+          </div>
+
+          <div class="order-items">
+            <div class="order-items-title">Sản phẩm trong đơn</div>
+            <div class="empty-row compact-empty" ng-if="vm.orderItems(vm.selectedOrder).length === 0">Đơn hàng chưa có danh sách sản phẩm.</div>
+            <div class="order-item-row" ng-repeat="item in vm.orderItems(vm.selectedOrder) track by $index">
+              <img class="product-thumb" ng-if="item.imageUrl || item.thumbnailUrl" ng-src="{{ item.imageUrl || item.thumbnailUrl }}" alt="{{ item.name || item.productName }}">
+              <div class="order-item-info">
+                <div class="product-name">{{ item.name || item.productName || item.productTitle || ('Sản phẩm #' + (item.productId || $index + 1)) }}</div>
+                <div class="product-meta">SL: {{ item.quantity || 1 }} · Giá: {{ (item.price || 0) | number:0 }} VND</div>
+              </div>
+              <strong>{{ vm.orderItemTotal(item) | number:0 }} VND</strong>
+            </div>
+          </div>
         </div>
       </section>
 

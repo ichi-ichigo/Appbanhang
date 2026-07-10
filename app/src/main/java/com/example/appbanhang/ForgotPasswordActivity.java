@@ -34,6 +34,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         findViewById(R.id.btn_reset_password).setOnClickListener(v -> resetPassword());
     }
 
+    // Gui email dat lai mat khau.
     private void resetPassword() {
         String email = etEmail.getText().toString().trim();
 

@@ -46,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
         }, 2000);
     }
 
+    // Mo man hinh tiep theo.
     private void openScreen(Class<?> activityClass) {
         startActivity(new Intent(SplashActivity.this, activityClass));
         finish();
